@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
+  console.log('Index component rendering...');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   if (isLoggedIn) {

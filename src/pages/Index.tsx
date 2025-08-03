@@ -6,6 +6,7 @@ import { Calendar, Users, TrendingUp, Zap, DollarSign, BarChart3, Crown, Sparkle
 import { HeroSection } from "@/components/landing/HeroSection";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { StatsSection } from "@/components/landing/StatsSection";
+import { CalendarView } from "@/components/calendar/CalendarView";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -50,6 +51,7 @@ const Dashboard = () => {
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [currentView, setCurrentView] = useState<'dashboard' | 'calendar'>('dashboard');
   const { toast } = useToast();
   return (
     <div className="min-h-screen bg-background">
@@ -64,10 +66,22 @@ const Dashboard = () => {
           </div>
           
           <div className="flex items-center space-x-6">
-            <Button variant="ghost" size="sm">Dashboard</Button>
+            <Button 
+              variant={currentView === 'dashboard' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setCurrentView('dashboard')}
+            >
+              Dashboard
+            </Button>
             <Button variant="ghost" size="sm">Events</Button>
             <Button variant="ghost" size="sm">Analytics</Button>
-            <Button variant="ghost" size="sm">Calendar</Button>
+            <Button 
+              variant={currentView === 'calendar' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setCurrentView('calendar')}
+            >
+              Calendar
+            </Button>
             <Button variant="outline" size="sm">Profile</Button>
           </div>
         </div>
@@ -75,9 +89,12 @@ const Dashboard = () => {
 
       {/* Dashboard Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+        {currentView === 'calendar' ? (
+          <CalendarView />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-8">
             {/* Welcome Section */}
             <Card className="bg-gradient-card border-0 shadow-creator">
               <CardHeader>
@@ -209,6 +226,7 @@ const Dashboard = () => {
             </Card>
           </div>
         </div>
+        )}
       </div>
 
       {/* Enhanced Create Event Modal */}

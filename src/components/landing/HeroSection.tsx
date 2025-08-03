@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Play, Users, TrendingUp, Sparkles, Calendar } from "lucide-react";
+import appPreview from "@/assets/app-preview.jpg";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
@@ -43,13 +44,12 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           
           {/* App Preview */}
           <div className="relative max-w-5xl mx-auto">
-            <div className="bg-card rounded-2xl shadow-2xl border border-border p-6">
-              <div className="bg-muted/50 rounded-xl h-96 flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg">Beautiful app preview coming soon</p>
-                </div>
-              </div>
+            <div className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
+              <img 
+                src={appPreview} 
+                alt="LiveStatz dashboard showing event calendar, analytics, and RSVP management" 
+                className="w-full h-auto rounded-xl"
+              />
             </div>
           </div>
         </div>

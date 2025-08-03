@@ -53,12 +53,30 @@ export const EventRSVPPage = () => {
   const [name, setName] = useState('');
   const [rsvpStatus, setRsvpStatus] = useState<'yes' | 'maybe' | 'no' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     // Simulate loading event data
     setTimeout(() => {
       if (eventId && mockEvents[eventId as keyof typeof mockEvents]) {
         setEvent(mockEvents[eventId as keyof typeof mockEvents]);
+      } else {
+        // Create a dynamic event if not found in mock data (for newly created events)
+        setEvent({
+          id: eventId,
+          title: 'Sample Event',
+          description: 'This is a sample event description with all the details you need to know.',
+          dateTime: '2025-08-15T14:30:00',
+          platform: 'Online',
+          location: 'Zoom Meeting',
+          isPaid: false,
+          price: 0,
+          organizer: 'Event Organizer',
+          organizerAvatar: '',
+          maxAttendees: 100,
+          currentAttendees: 45,
+          tags: ['Live Event', 'Interactive', 'Community']
+        });
       }
       setLoading(false);
     }, 1000);
@@ -93,6 +111,7 @@ export const EventRSVPPage = () => {
       });
       
       setIsSubmitting(false);
+      setShowConfirmation(true);
     }, 2000);
   };
 
@@ -292,39 +311,90 @@ export const EventRSVPPage = () => {
                   <Button
                     variant={rsvpStatus === 'yes' ? 'default' : 'outline'}
                     onClick={() => setRsvpStatus('yes')}
-                    className="justify-start h-auto p-4"
+                    className={`justify-start h-auto p-4 transition-all duration-200 hover:scale-[1.02] ${
+                      rsvpStatus === 'yes' 
+                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/25' 
+                        : 'hover:border-blue-300 hover:bg-blue-50'
+                    }`}
                   >
-                    <Check className="h-5 w-5 mr-3 text-green-600" />
+                    <div className={`h-5 w-5 mr-3 rounded-full border-2 flex items-center justify-center ${
+                      rsvpStatus === 'yes' 
+                        ? 'border-white bg-white' 
+                        : 'border-green-600'
+                    }`}>
+                      {rsvpStatus === 'yes' && <Check className="h-3 w-3 text-blue-600" />}
+                    </div>
                     <div className="text-left">
                       <div className="font-medium">Yes, I'll attend</div>
-                      <div className="text-sm text-muted-foreground">Count me in!</div>
+                      <div className={`text-sm ${rsvpStatus === 'yes' ? 'text-blue-100' : 'text-muted-foreground'}`}>
+                        Count me in!
+                      </div>
                     </div>
                   </Button>
 
                   <Button
                     variant={rsvpStatus === 'maybe' ? 'default' : 'outline'}
                     onClick={() => setRsvpStatus('maybe')}
-                    className="justify-start h-auto p-4"
+                    className={`justify-start h-auto p-4 transition-all duration-200 hover:scale-[1.02] ${
+                      rsvpStatus === 'maybe' 
+                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/25' 
+                        : 'hover:border-blue-300 hover:bg-blue-50'
+                    }`}
                   >
-                    <HelpCircle className="h-5 w-5 mr-3 text-yellow-600" />
+                    <div className={`h-5 w-5 mr-3 rounded-full border-2 flex items-center justify-center ${
+                      rsvpStatus === 'maybe' 
+                        ? 'border-white bg-white' 
+                        : 'border-yellow-600'
+                    }`}>
+                      {rsvpStatus === 'maybe' && <Check className="h-3 w-3 text-blue-600" />}
+                    </div>
                     <div className="text-left">
                       <div className="font-medium">Maybe</div>
-                      <div className="text-sm text-muted-foreground">I'm interested but not sure yet</div>
+                      <div className={`text-sm ${rsvpStatus === 'maybe' ? 'text-blue-100' : 'text-muted-foreground'}`}>
+                        I'm interested but not sure yet
+                      </div>
                     </div>
                   </Button>
 
                   <Button
                     variant={rsvpStatus === 'no' ? 'default' : 'outline'}
                     onClick={() => setRsvpStatus('no')}
-                    className="justify-start h-auto p-4"
+                    className={`justify-start h-auto p-4 transition-all duration-200 hover:scale-[1.02] ${
+                      rsvpStatus === 'no' 
+                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/25' 
+                        : 'hover:border-blue-300 hover:bg-blue-50'
+                    }`}
                   >
-                    <X className="h-5 w-5 mr-3 text-red-600" />
+                    <div className={`h-5 w-5 mr-3 rounded-full border-2 flex items-center justify-center ${
+                      rsvpStatus === 'no' 
+                        ? 'border-white bg-white' 
+                        : 'border-red-600'
+                    }`}>
+                      {rsvpStatus === 'no' && <Check className="h-3 w-3 text-blue-600" />}
+                    </div>
                     <div className="text-left">
                       <div className="font-medium">No, I can't attend</div>
-                      <div className="text-sm text-muted-foreground">Thanks for the invite</div>
+                      <div className={`text-sm ${rsvpStatus === 'no' ? 'text-blue-100' : 'text-muted-foreground'}`}>
+                        Thanks for the invite
+                      </div>
                     </div>
                   </Button>
                 </div>
+
+                {/* Confirmation Message */}
+                {showConfirmation && (
+                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg animate-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center space-x-2">
+                      <Check className="h-5 w-5 text-green-600" />
+                      <span className="text-green-800 font-medium">
+                        RSVP submitted successfully! 
+                      </span>
+                    </div>
+                    <p className="text-green-700 text-sm mt-1">
+                      You'll receive a confirmation email shortly.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -347,7 +417,7 @@ export const EventRSVPPage = () => {
                 <Button 
                   variant="outline" 
                   onClick={addToCalendar}
-                  className="flex-1 sm:flex-none"
+                  className="flex-1 sm:flex-none transition-all duration-200 hover:scale-[1.02] hover:bg-primary/5 hover:border-primary/30"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add to Calendar

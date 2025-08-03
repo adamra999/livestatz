@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +51,7 @@ const Index = () => {
 
 // Mock Dashboard Component
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
@@ -423,8 +424,13 @@ const Dashboard = () => {
       
       toast({
         title: "Event Created!",
-        description: "Your live event has been successfully created",
+        description: "Your live event has been successfully created. Redirecting to RSVP page...",
       });
+
+      // Navigate to RSVP page after 2 seconds
+      setTimeout(() => {
+        navigate(`/e/${eventId}`);
+      }, 2000);
     };
 
     return (

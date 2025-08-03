@@ -16,15 +16,15 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-8 border border-primary/20">
             <Sparkles className="w-4 h-4 mr-2" />
-            A better creator planner
+            Social events for influencers
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-foreground">
-            CreatorFlow helps you{" "}
+            LiveStatz gives you{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              organize events
+              one calendar
             </span>{" "}
-            and plan your content in a beautiful and simple app.
+            for all your meetups, drops, collabs, and livestreams.
           </h1>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
@@ -33,7 +33,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
               className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 py-4 h-auto font-medium shadow-creator"
               onClick={onGetStarted}
             >
-              Try CreatorFlow - It's Free
+              Start Building Your Community
             </Button>
           </div>
           

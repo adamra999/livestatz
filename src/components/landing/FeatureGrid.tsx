@@ -5,8 +5,8 @@ export const FeatureGrid = () => {
   const features = [
     {
       icon: Calendar,
-      title: "Content Calendar",
-      description: "Plan and schedule your content funnel with drag & drop simplicity",
+      title: "Social Event Calendar",
+      description: "One calendar for meetups, drops, collabs, and livestreams with smart RSVP links",
       color: "primary"
     },
     {
@@ -24,13 +24,13 @@ export const FeatureGrid = () => {
     {
       icon: DollarSign,
       title: "Monetization",
-      description: "Ticketed events, tip jars, and creator shop integration",
+      description: "Tiered access, VIP events, and monetization tools for your community",
       color: "accent"
     },
     {
       icon: Bot,
       title: "AI Recommendations",
-      description: "Smart insights on best posting times and content strategy",
+      description: "Track RSVPs, attendance, and engagement across all your events",
       color: "primary"
     },
     {
@@ -42,7 +42,7 @@ export const FeatureGrid = () => {
     {
       icon: Zap,
       title: "Automation",
-      description: "Automated workflows for content promotion and follow-ups",
+      description: "Automated RSVP reminders and cross-platform event sharing tools",
       color: "secondary"
     },
     {

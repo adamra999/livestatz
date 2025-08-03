@@ -7,28 +7,28 @@ export const StatsSection = () => {
       icon: Users,
       value: "94%",
       label: "RSVP Show Rate",
-      description: "Average attendance rate for creator events",
+      description: "Average attendance rate for influencer events",
       trend: "+12% this month"
     },
     {
       icon: TrendingUp,
       value: "3.2x",
       label: "Revenue Growth",
-      description: "Average creator revenue increase",
+      description: "Average influencer revenue increase",
       trend: "vs traditional methods"
     },
     {
       icon: Play,
       value: "45min",
       label: "Time Saved Daily",
-      description: "On content planning and management",
-      trend: "per creator"
+      description: "On event planning and follower engagement",
+      trend: "per influencer"
     },
     {
       icon: DollarSign,
       value: "$1,247",
       label: "Average Monthly Revenue",
-      description: "Per active creator on the platform",
+      description: "Per active influencer on the platform",
       trend: "+23% growth rate"
     }
   ];
@@ -39,7 +39,7 @@ export const StatsSection = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">The Numbers Don't Lie</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            See how creators are transforming their business with our platform.
+            See how influencers are growing their communities with social events.
           </p>
         </div>
         
@@ -73,8 +73,8 @@ export const StatsSection = () => {
           <Card className="bg-gradient-primary p-8 text-white border-0 text-center">
             <div className="max-w-3xl mx-auto">
               <blockquote className="text-2xl font-medium mb-6 italic">
-                "CreatorFlow completely transformed how I manage my content and engage with my audience. 
-                My RSVP rates went from 20% to 78% in just two months!"
+                "LiveStatz completely transformed how I connect with my followers and grow my community. 
+                My event attendance went from 20% to 78% in just two months!"
               </blockquote>
               <div className="flex items-center justify-center space-x-4">
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -82,7 +82,7 @@ export const StatsSection = () => {
                 </div>
                 <div className="text-left">
                   <div className="font-semibold">Sarah Martinez</div>
-                  <div className="text-white/80">Fashion & Lifestyle Creator • 2.3M followers</div>
+                  <div className="text-white/80">Fashion & Lifestyle Influencer • 2.3M followers</div>
                 </div>
               </div>
             </div>

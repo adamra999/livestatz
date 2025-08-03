@@ -43,6 +43,7 @@ const Index = () => {
 
 // Mock Dashboard Component
 const Dashboard = () => {
+  const [showEventForm, setShowEventForm] = useState(false);
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -143,7 +144,11 @@ const Dashboard = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full" variant="default">
+                <Button 
+                  className="w-full" 
+                  variant="default"
+                  onClick={() => setShowEventForm(true)}
+                >
                   <Zap className="mr-2 h-4 w-4" />
                   Create Live Event
                 </Button>
@@ -198,6 +203,59 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Create Event Modal */}
+      {showEventForm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold mb-4">Create Live Event</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Event Title</label>
+                <input 
+                  type="text" 
+                  className="w-full p-3 border rounded-lg bg-background"
+                  placeholder="Enter event title..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Platform</label>
+                <select className="w-full p-3 border rounded-lg bg-background">
+                  <option>Instagram Live</option>
+                  <option>TikTok Live</option>
+                  <option>YouTube Live</option>
+                  <option>Twitter Spaces</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Date & Time</label>
+                <input 
+                  type="datetime-local" 
+                  className="w-full p-3 border rounded-lg bg-background"
+                />
+              </div>
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  onClick={() => setShowEventForm(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setShowEventForm(false);
+                    // Add toast notification here
+                  }}
+                  className="flex-1"
+                >
+                  Create Event
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

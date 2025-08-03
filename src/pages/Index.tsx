@@ -83,23 +83,23 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 bg-creator-purple/10 rounded-lg">
-                    <Users className="h-8 w-8 text-creator-purple mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/10 rounded-lg">
+                    <Users className="h-8 w-8 text-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">2.4K</div>
                     <div className="text-sm text-muted-foreground">Total RSVPs</div>
                   </div>
-                  <div className="text-center p-4 bg-creator-blue/10 rounded-lg">
-                    <Calendar className="h-8 w-8 text-creator-blue mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/10 rounded-lg">
+                    <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
                     <div className="text-2xl font-bold">12</div>
                     <div className="text-sm text-muted-foreground">Live Events</div>
                   </div>
-                  <div className="text-center p-4 bg-creator-pink/10 rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-creator-pink mx-auto mb-2" />
+                  <div className="text-center p-4 bg-secondary/10 rounded-lg">
+                    <TrendingUp className="h-8 w-8 text-secondary-foreground mx-auto mb-2" />
                     <div className="text-2xl font-bold">78%</div>
                     <div className="text-sm text-muted-foreground">Show Rate</div>
                   </div>
-                  <div className="text-center p-4 bg-creator-yellow/10 rounded-lg">
-                    <DollarSign className="h-8 w-8 text-creator-yellow mx-auto mb-2" />
+                  <div className="text-center p-4 bg-accent/10 rounded-lg">
+                    <DollarSign className="h-8 w-8 text-accent-foreground mx-auto mb-2" />
                     <div className="text-2xl font-bold">$1.2K</div>
                     <div className="text-sm text-muted-foreground">Revenue</div>
                   </div>

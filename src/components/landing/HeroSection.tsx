@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Play, Users, TrendingUp, Sparkles, Calendar } from "lucide-react";
-import appPreview from "@/assets/app-preview.jpg";
+import eventsDashboard from "@/assets/events-dashboard.jpg";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
@@ -23,7 +23,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-foreground">
             LiveStatz gives you{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              one calendar
+              one platform
             </span>{" "}
             for all your meetups, drops, collabs, and livestreams.
           </h1>
@@ -46,8 +46,8 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           <div className="relative max-w-5xl mx-auto">
             <div className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
               <img 
-                src={appPreview} 
-                alt="LiveStatz dashboard showing event calendar, analytics, and RSVP management" 
+                src={eventsDashboard} 
+                alt="LiveStatz events dashboard showing event management, RSVP tracking, and analytics" 
                 className="w-full h-auto rounded-xl"
               />
             </div>

@@ -54,35 +54,27 @@ export const FeatureGrid = () => {
   ];
 
   return (
-    <section className="py-20 px-4 bg-muted/30">
+    <section className="py-24 px-6">
       <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Everything You Need to Succeed</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            From content planning to monetization, we've got every aspect of your creator journey covered.
-          </p>
+        <div className="text-center mb-20">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Simple, but powerful</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
-              <Card 
-                key={index} 
-                className="group hover:shadow-creator transition-all duration-300 hover:-translate-y-1 bg-gradient-card border-0"
-              >
-                <CardHeader className="text-center pb-4">
-                  <div className={`mx-auto w-16 h-16 rounded-full bg-${feature.color}/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <IconComponent className={`h-8 w-8 text-${feature.color}`} />
+              <div key={index} className="text-center">
+                <div className="mb-6">
+                  <div className={`mx-auto w-12 h-12 rounded-xl bg-${feature.color}/10 flex items-center justify-center mb-4`}>
+                    <IconComponent className={`h-6 w-6 text-${feature.color}`} />
                   </div>
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-center leading-relaxed">
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+                  </p>
+                </div>
+              </div>
             );
           })}
         </div>

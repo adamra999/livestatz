@@ -436,10 +436,10 @@ const Dashboard = () => {
             {/* Basic Event Info */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Event Title *</label>
+                <label className="block text-sm font-medium mb-2 leading-normal">Event Title *</label>
                 <input 
                   type="text" 
-                  className="w-full p-3 border rounded-lg bg-background"
+                  className="w-full p-3 border rounded-lg bg-background leading-normal"
                   placeholder="e.g., Morning Workout Session"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -447,9 +447,9 @@ const Dashboard = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Platform</label>
+                <label className="block text-sm font-medium mb-2 leading-normal">Platform</label>
                 <select 
-                  className="w-full p-3 border rounded-lg bg-background"
+                  className="w-full p-3 border rounded-lg bg-background leading-normal"
                   value={formData.platform}
                   onChange={(e) => setFormData({...formData, platform: e.target.value})}
                 >
@@ -464,19 +464,19 @@ const Dashboard = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Date & Time *</label>
+                <label className="block text-sm font-medium mb-2 leading-normal">Date & Time *</label>
                 <input 
                   type="datetime-local" 
-                  className="w-full p-3 border rounded-lg bg-background"
+                  className="w-full p-3 border rounded-lg bg-background leading-normal"
                   value={formData.dateTime}
                   onChange={(e) => setFormData({...formData, dateTime: e.target.value})}
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Event Description</label>
+                <label className="block text-sm font-medium mb-2 leading-normal">Event Description</label>
                 <textarea 
-                  className="w-full p-3 border rounded-lg bg-background h-24"
+                  className="w-full p-3 border rounded-lg bg-background h-24 leading-relaxed resize-none"
                   placeholder="What will you be sharing with your audience?"
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
@@ -486,24 +486,26 @@ const Dashboard = () => {
 
             {/* Payment Section */}
             <div className="border-t pt-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-6">
                 <label className="text-sm font-medium">Event Type</label>
-                <div className="flex items-center space-x-3">
-                  <span className={!formData.isPaid ? 'text-primary font-medium' : 'text-muted-foreground'}>
+                <div className="flex items-center space-x-4">
+                  <span className={`text-sm font-medium transition-colors ${!formData.isPaid ? 'text-green-600' : 'text-muted-foreground'}`}>
                     🆓 Free
                   </span>
                   <button
                     type="button"
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      formData.isPaid ? 'bg-yellow-500' : 'bg-muted'
+                    className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                      formData.isPaid 
+                        ? 'bg-gradient-to-r from-yellow-400 to-orange-500 shadow-yellow-300' 
+                        : 'bg-gradient-to-r from-gray-300 to-gray-400 shadow-gray-200'
                     }`}
                     onClick={() => setFormData({...formData, isPaid: !formData.isPaid, price: '', attendeeBenefits: []})}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      formData.isPaid ? 'translate-x-6' : 'translate-x-1'
+                    <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-all duration-300 shadow-md ${
+                      formData.isPaid ? 'translate-x-9' : 'translate-x-1'
                     }`} />
                   </button>
-                  <span className={formData.isPaid ? 'text-yellow-600 font-medium' : 'text-muted-foreground'}>
+                  <span className={`text-sm font-medium transition-colors ${formData.isPaid ? 'text-yellow-600' : 'text-muted-foreground'}`}>
                     💰 Paid
                   </span>
                 </div>
@@ -512,7 +514,7 @@ const Dashboard = () => {
               {formData.isPaid && (
                 <div className="space-y-6 p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl">
                   <div>
-                    <label className="block text-sm font-medium mb-3 flex items-center">
+                    <label className="block text-sm font-medium mb-3 flex items-center leading-normal">
                       💵 Ticket Price (USD)
                     </label>
                     <div className="relative">
@@ -520,7 +522,7 @@ const Dashboard = () => {
                       <input 
                         type="number" 
                         step="0.01"
-                        className="w-full pl-10 pr-4 py-4 text-lg font-semibold border-2 border-yellow-300 rounded-lg bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
+                        className="w-full pl-10 pr-4 py-4 text-lg font-semibold border-2 border-yellow-300 rounded-lg bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all leading-normal"
                         placeholder="29.99"
                         value={formData.price}
                         onChange={(e) => setFormData({...formData, price: e.target.value})}
@@ -529,7 +531,7 @@ const Dashboard = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-3 flex items-center">
+                    <label className="block text-sm font-medium mb-3 flex items-center leading-normal">
                       🎯 What will attendees get?
                     </label>
                     <div className="space-y-2">
@@ -556,7 +558,7 @@ const Dashboard = () => {
                               }
                             }}
                           />
-                          <span className="text-sm text-gray-700">{benefit}</span>
+                          <span className="text-sm text-gray-700 leading-normal">{benefit}</span>
                         </label>
                       ))}
                     </div>
@@ -570,13 +572,13 @@ const Dashboard = () => {
                         checked={formData.offerWithSubscription}
                         onChange={(e) => setFormData({...formData, offerWithSubscription: e.target.checked})}
                       />
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-lg">🔁</span>
-                          <span className="font-medium text-gray-800">Offer with subscription</span>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">🔁</span>
+                            <span className="font-medium text-gray-800 leading-normal">Offer with subscription</span>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1 leading-relaxed">Include in monthly/yearly plans</p>
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">Include in monthly/yearly plans</p>
-                      </div>
                     </label>
                     
                     <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-50 transition-colors">
@@ -586,13 +588,13 @@ const Dashboard = () => {
                         checked={formData.includeReplay}
                         onChange={(e) => setFormData({...formData, includeReplay: e.target.checked})}
                       />
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-lg">🎥</span>
-                          <span className="font-medium text-gray-800">Include replay access</span>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">🎥</span>
+                            <span className="font-medium text-gray-800 leading-normal">Include replay access</span>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1 leading-relaxed">24-48hr access after event</p>
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">24-48hr access after event</p>
-                      </div>
                     </label>
                     
                     <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-50 transition-colors">
@@ -602,20 +604,20 @@ const Dashboard = () => {
                         checked={formData.includePerks}
                         onChange={(e) => setFormData({...formData, includePerks: e.target.checked, perkDescription: ''})}
                       />
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-lg">🎁</span>
-                          <span className="font-medium text-gray-800">Include downloadable perk</span>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">🎁</span>
+                            <span className="font-medium text-gray-800 leading-normal">Include downloadable perk</span>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1 leading-relaxed">PDF, audio, exclusive content</p>
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">PDF, audio, exclusive content</p>
-                      </div>
                     </label>
                     
                     {formData.includePerks && (
                       <div className="ml-8 mt-2">
                         <input 
                           type="text" 
-                          className="w-full p-3 border border-gray-300 rounded-lg bg-white text-sm focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                          className="w-full p-3 border border-gray-300 rounded-lg bg-white text-sm focus:border-green-500 focus:ring-2 focus:ring-green-200 leading-normal"
                           placeholder="e.g., Exclusive workout PDF, bonus audio content..."
                           value={formData.perkDescription}
                           onChange={(e) => setFormData({...formData, perkDescription: e.target.value})}
@@ -628,8 +630,8 @@ const Dashboard = () => {
                     <div className="flex items-start space-x-3">
                       <span className="text-lg">💡</span>
                       <div>
-                        <p className="font-medium text-blue-800 mb-1">Tip:</p>
-                        <p className="text-sm text-blue-700">
+                        <p className="font-medium text-blue-800 mb-1 leading-normal">Tip:</p>
+                        <p className="text-sm text-blue-700 leading-relaxed">
                           Clear value proposition increases conversion. Mention specific benefits and exclusivity!
                         </p>
                       </div>

@@ -384,7 +384,7 @@ const Dashboard = () => {
       description: '',
       isPaid: false,
       price: '',
-      accessDescription: '',
+      attendeeBenefits: [] as string[],
       includeReplay: false,
       includePerks: false,
       perkDescription: '',
@@ -497,7 +497,7 @@ const Dashboard = () => {
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       formData.isPaid ? 'bg-yellow-500' : 'bg-muted'
                     }`}
-                    onClick={() => setFormData({...formData, isPaid: !formData.isPaid, price: '', accessDescription: ''})}
+                    onClick={() => setFormData({...formData, isPaid: !formData.isPaid, price: '', attendeeBenefits: []})}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
                       formData.isPaid ? 'translate-x-6' : 'translate-x-1'
@@ -510,16 +510,18 @@ const Dashboard = () => {
               </div>
 
               {formData.isPaid && (
-                <div className="space-y-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="space-y-6 p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Ticket Price (USD)</label>
+                    <label className="block text-sm font-medium mb-3 flex items-center">
+                      💵 Ticket Price (USD)
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-3 text-muted-foreground">$</span>
+                      <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-lg font-semibold text-green-600">$</span>
                       <input 
                         type="number" 
                         step="0.01"
-                        className="w-full pl-8 p-3 border rounded-lg bg-background"
-                        placeholder="9.99"
+                        className="w-full pl-10 pr-4 py-4 text-lg font-semibold border-2 border-yellow-300 rounded-lg bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
+                        placeholder="29.99"
                         value={formData.price}
                         onChange={(e) => setFormData({...formData, price: e.target.value})}
                       />
@@ -527,52 +529,111 @@ const Dashboard = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-2">What will attendees get?</label>
-                    <textarea 
-                      className="w-full p-3 border rounded-lg bg-background h-20"
-                      placeholder="Live Q&A, exclusive tips, downloadable resources..."
-                      value={formData.accessDescription}
-                      onChange={(e) => setFormData({...formData, accessDescription: e.target.value})}
-                    />
+                    <label className="block text-sm font-medium mb-3 flex items-center">
+                      🎯 What will attendees get?
+                    </label>
+                    <div className="space-y-2">
+                      {[
+                        'Live Q&A session',
+                        'Exclusive content reveal',
+                        'Direct interaction with you',
+                        'Behind-the-scenes access',
+                        'Priority questions answered',
+                        'Early access to announcements',
+                        'VIP community access',
+                        'Personalized shout-outs'
+                      ].map((benefit) => (
+                        <label key={benefit} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-white/50 transition-colors cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="w-4 h-4 text-yellow-600 rounded focus:ring-yellow-500"
+                            checked={formData.attendeeBenefits.includes(benefit)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFormData({...formData, attendeeBenefits: [...formData.attendeeBenefits, benefit]});
+                              } else {
+                                setFormData({...formData, attendeeBenefits: formData.attendeeBenefits.filter(b => b !== benefit)});
+                              }
+                            }}
+                          />
+                          <span className="text-sm text-gray-700">{benefit}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <label className="flex items-center space-x-2">
-                      <input 
-                        type="checkbox" 
-                        checked={formData.includeReplay}
-                        onChange={(e) => setFormData({...formData, includeReplay: e.target.checked})}
-                      />
-                      <span className="text-sm">Include 48hr replay access</span>
-                    </label>
-                    
-                    <label className="flex items-center space-x-2">
+                  <div className="space-y-4">
+                    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-50 transition-colors">
                       <input 
                         type="checkbox"
-                        checked={formData.includePerks}
-                        onChange={(e) => setFormData({...formData, includePerks: e.target.checked, perkDescription: ''})}
-                      />
-                      <span className="text-sm">Include downloadable perks</span>
-                    </label>
-                    
-                    {formData.includePerks && (
-                      <input 
-                        type="text" 
-                        className="w-full ml-6 p-2 border rounded bg-background text-sm"
-                        placeholder="PDF guide, audio replay, exclusive content..."
-                        value={formData.perkDescription}
-                        onChange={(e) => setFormData({...formData, perkDescription: e.target.value})}
-                      />
-                    )}
-                    
-                    <label className="flex items-center space-x-2">
-                      <input 
-                        type="checkbox"
+                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
                         checked={formData.offerWithSubscription}
                         onChange={(e) => setFormData({...formData, offerWithSubscription: e.target.checked})}
                       />
-                      <span className="text-sm">Offer free with subscription</span>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-lg">🔁</span>
+                          <span className="font-medium text-gray-800">Offer with subscription</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">Include in monthly/yearly plans</p>
+                      </div>
                     </label>
+                    
+                    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-50 transition-colors">
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                        checked={formData.includeReplay}
+                        onChange={(e) => setFormData({...formData, includeReplay: e.target.checked})}
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-lg">🎥</span>
+                          <span className="font-medium text-gray-800">Include replay access</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">24-48hr access after event</p>
+                      </div>
+                    </label>
+                    
+                    <label className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-50 transition-colors">
+                      <input 
+                        type="checkbox"
+                        className="w-5 h-5 text-green-600 rounded focus:ring-green-500"
+                        checked={formData.includePerks}
+                        onChange={(e) => setFormData({...formData, includePerks: e.target.checked, perkDescription: ''})}
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-lg">🎁</span>
+                          <span className="font-medium text-gray-800">Include downloadable perk</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">PDF, audio, exclusive content</p>
+                      </div>
+                    </label>
+                    
+                    {formData.includePerks && (
+                      <div className="ml-8 mt-2">
+                        <input 
+                          type="text" 
+                          className="w-full p-3 border border-gray-300 rounded-lg bg-white text-sm focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                          placeholder="e.g., Exclusive workout PDF, bonus audio content..."
+                          value={formData.perkDescription}
+                          onChange={(e) => setFormData({...formData, perkDescription: e.target.value})}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-3">
+                      <span className="text-lg">💡</span>
+                      <div>
+                        <p className="font-medium text-blue-800 mb-1">Tip:</p>
+                        <p className="text-sm text-blue-700">
+                          Clear value proposition increases conversion. Mention specific benefits and exclusivity!
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

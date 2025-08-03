@@ -2,9 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
 import { Calendar, Users, DollarSign, TrendingUp, Eye, Heart, MessageCircle, Target, Activity, Clock } from "lucide-react";
-import { format, startOfWeek, endOfWeek, eachWeekOfInterval, eachMonthOfInterval, startOfMonth, endOfMonth } from "date-fns";
 
 // Analytics data for July-August 2024
 const analyticsData = {
@@ -19,10 +17,6 @@ const analyticsData = {
     { week: 'Aug 19-25', events: 2, revenue: 20840, rsvps: 1067 },
     { week: 'Aug 26-Sep 1', events: 2, revenue: 3204, rsvps: 1159 }
   ],
-  monthlyEvents: [
-    { month: 'July 2024', events: 11, revenue: 48327, rsvps: 4393, avgViews: 2845 },
-    { month: 'August 2024', events: 13, revenue: 49761, rsvps: 5509, avgViews: 3125 }
-  ],
   platformStats: [
     { platform: 'Instagram Live', events: 10, rsvps: 3574, revenue: 24940, color: '#E1306C' },
     { platform: 'YouTube Live', events: 6, rsvps: 2300, revenue: 41275, color: '#FF0000' },
@@ -36,21 +30,11 @@ const analyticsData = {
     { title: 'Business Strategy Session', rsvps: 534, revenue: 13350, platform: 'YouTube Live', engagement: 92 },
     { title: 'Tech Talk: AI Future', rsvps: 623, revenue: 12460, platform: 'LinkedIn Live', engagement: 87 },
     { title: 'Cooking with Gordon', rsvps: 892, revenue: 8920, platform: 'Instagram Live', engagement: 94 }
-  ],
-  engagementMetrics: [
-    { date: 'Jul 1', views: 2340, engagement: 78, monetization: 156 },
-    { date: 'Jul 8', views: 3120, engagement: 82, monetization: 234 },
-    { date: 'Jul 15', views: 2890, engagement: 75, monetization: 189 },
-    { date: 'Jul 22', views: 3456, engagement: 88, monetization: 287 },
-    { date: 'Jul 29', views: 3780, engagement: 91, monetization: 312 },
-    { date: 'Aug 5', views: 2960, engagement: 79, monetization: 198 },
-    { date: 'Aug 12', views: 3240, engagement: 84, monetization: 245 },
-    { date: 'Aug 19', views: 3890, engagement: 93, monetization: 356 },
-    { date: 'Aug 26', views: 3120, engagement: 86, monetization: 267 }
   ]
 };
 
 export const AnalyticsView = () => {
+  console.log('AnalyticsView: Component rendering...');
   const totalStats = {
     totalEvents: 24,
     totalRSVPs: 9902,
@@ -135,39 +119,49 @@ export const AnalyticsView = () => {
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Weekly Events Chart */}
+            {/* Weekly Events Chart - Temporarily using table */}
             <Card>
               <CardHeader>
                 <CardTitle>Events Per Week</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={analyticsData.weeklyEvents}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="week" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="events" fill="hsl(var(--primary))" />
-                  </BarChart>
-                </ResponsiveContainer>
+                <div className="space-y-2">
+                  {analyticsData.weeklyEvents.map((week, index) => (
+                    <div key={index} className="flex justify-between p-2 border rounded">
+                      <span className="text-sm">{week.week}</span>
+                      <div className="text-right">
+                        <div className="font-medium">{week.events} events</div>
+                        <div className="text-xs text-muted-foreground">${week.revenue.toLocaleString()}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
-            {/* Monthly Summary */}
+            {/* Platform Stats */}
             <Card>
               <CardHeader>
-                <CardTitle>Monthly Performance</CardTitle>
+                <CardTitle>Platform Performance</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={analyticsData.monthlyEvents}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <div className="space-y-3">
+                  {analyticsData.platformStats.map((platform, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: platform.color }}
+                        />
+                        <span className="font-medium">{platform.platform}</span>
+                      </div>
+                      <div className="text-right text-sm">
+                        <div>{platform.events} events</div>
+                        <div className="text-muted-foreground">{platform.rsvps} RSVPs</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -207,54 +201,6 @@ export const AnalyticsView = () => {
 
         {/* Platforms Tab */}
         <TabsContent value="platforms" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Platform Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Events by Platform</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={analyticsData.platformStats}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="events"
-                      label={({ platform, events }) => `${platform}: ${events}`}
-                    >
-                      {analyticsData.platformStats.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Platform Performance */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Platform Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={analyticsData.platformStats} layout="horizontal">
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
-                    <YAxis dataKey="platform" type="category" width={100} />
-                    <Tooltip />
-                    <Bar dataKey="revenue" fill="hsl(var(--primary))" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Platform Details */}
           <Card>
             <CardHeader>
               <CardTitle>Platform Performance Details</CardTitle>
@@ -288,67 +234,35 @@ export const AnalyticsView = () => {
         <TabsContent value="engagement" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Engagement Trends</CardTitle>
+              <CardTitle>Engagement Metrics</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={analyticsData.engagementMetrics}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="views" stroke="#8884d8" strokeWidth={2} name="Views" />
-                  <Line type="monotone" dataKey="engagement" stroke="#82ca9d" strokeWidth={2} name="Engagement %" />
-                </LineChart>
-              </ResponsiveContainer>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <Eye className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-blue-600">{totalStats.totalViews.toLocaleString()}</div>
+                  <div className="text-sm text-blue-700">Total Views</div>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <Heart className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-green-600">{totalStats.avgEngagement}%</div>
+                  <div className="text-sm text-green-700">Avg Engagement</div>
+                </div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <MessageCircle className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-purple-600">8.4K</div>
+                  <div className="text-sm text-purple-700">Total Comments</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Monetization Tab */}
         <TabsContent value="monetization" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Revenue Trends */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Revenue Trends</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={analyticsData.weeklyEvents}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="week" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Monetization Rate */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Monetization Performance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={analyticsData.engagementMetrics}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="monetization" stroke="#ff7300" strokeWidth={2} name="Monetization Score" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Revenue Breakdown */}
           <Card>
             <CardHeader>
-              <CardTitle>Revenue by Event Type</CardTitle>
+              <CardTitle>Revenue Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

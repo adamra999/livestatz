@@ -99,7 +99,10 @@ const Dashboard = () => {
         {currentView === 'calendar' ? (
           <CalendarView />
         ) : currentView === 'analytics' ? (
-          <AnalyticsView />
+          <>
+            {console.log('Rendering Analytics View')}
+            <AnalyticsView />
+          </>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}

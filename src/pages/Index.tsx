@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -612,13 +613,12 @@ const Dashboard = () => {
             >
               Create Another Event
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => window.open(createdEvent.url, '_blank')}
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Preview Event Page
-            </Button>
+            <Link to={`/e/${createdEvent.id}`}>
+              <Button variant="outline">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Preview Event Page
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

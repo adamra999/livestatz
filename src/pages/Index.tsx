@@ -7,6 +7,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { StatsSection } from "@/components/landing/StatsSection";
 import { CalendarView } from "@/components/calendar/CalendarView";
+import { AnalyticsView } from "@/components/analytics/AnalyticsView";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -34,7 +35,7 @@ const Index = () => {
               className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
               onClick={() => setIsLoggedIn(true)}
             >
-              Try CreatorFlow - It's Free
+              Try LiveStatz - It's Free
             </Button>
             <p className="text-xs text-muted-foreground mt-4">No credit card required</p>
           </div>
@@ -51,7 +52,7 @@ const Dashboard = () => {
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'calendar'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'calendar' | 'analytics'>('dashboard');
   const { toast } = useToast();
   return (
     <div className="min-h-screen bg-background">
@@ -61,7 +62,7 @@ const Dashboard = () => {
           <div className="flex items-center space-x-2">
             <Crown className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              CreatorFlow
+              LiveStatz
             </span>
           </div>
           
@@ -74,7 +75,13 @@ const Dashboard = () => {
               Dashboard
             </Button>
             <Button variant="ghost" size="sm">Events</Button>
-            <Button variant="ghost" size="sm">Analytics</Button>
+            <Button 
+              variant={currentView === 'analytics' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setCurrentView('analytics')}
+            >
+              Analytics
+            </Button>
             <Button 
               variant={currentView === 'calendar' ? 'default' : 'ghost'} 
               size="sm"
@@ -91,6 +98,8 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {currentView === 'calendar' ? (
           <CalendarView />
+        ) : currentView === 'analytics' ? (
+          <AnalyticsView />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}

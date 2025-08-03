@@ -15,57 +15,276 @@ interface Event {
   isPaid: boolean;
   price?: number;
   status: 'upcoming' | 'live' | 'completed';
+  views?: number;
+  engagement?: number;
+  posts?: number;
 }
 
-// Mock events data
+// Mock events data for July-August 2024
 const mockEvents: Event[] = [
+  // July events
   {
     id: '1',
-    title: 'Morning Workout Session',
-    dateTime: '2024-01-15T09:00:00',
+    title: 'Summer Fitness Challenge',
+    dateTime: '2024-07-02T09:00:00',
     platform: 'Instagram Live',
-    rsvps: 156,
-    revenue: 780,
+    rsvps: 342,
+    revenue: 1710,
     isPaid: true,
     price: 5,
-    status: 'upcoming'
+    status: 'completed'
   },
   {
     id: '2',
-    title: 'Gaming Stream Q&A',
-    dateTime: '2024-01-16T19:00:00',
-    platform: 'TikTok Live',
-    rsvps: 89,
+    title: 'Gaming Tournament Finals',
+    dateTime: '2024-07-05T19:00:00',
+    platform: 'Twitch',
+    rsvps: 1289,
     revenue: 0,
     isPaid: false,
-    status: 'upcoming'
+    status: 'completed'
   },
   {
     id: '3',
-    title: 'Fashion Haul & Tips',
-    dateTime: '2024-01-18T15:00:00',
+    title: 'Fashion Week Preview',
+    dateTime: '2024-07-08T15:00:00',
     platform: 'YouTube Live',
-    rsvps: 203,
-    revenue: 1215,
+    rsvps: 567,
+    revenue: 4536,
     isPaid: true,
     price: 8,
-    status: 'upcoming'
+    status: 'completed'
   },
   {
     id: '4',
-    title: 'Cooking Masterclass',
-    dateTime: '2024-01-20T14:00:00',
+    title: 'Cooking with Gordon',
+    dateTime: '2024-07-10T14:00:00',
     platform: 'Instagram Live',
-    rsvps: 124,
-    revenue: 620,
+    rsvps: 892,
+    revenue: 8920,
     isPaid: true,
     price: 10,
-    status: 'upcoming'
+    status: 'completed'
+  },
+  {
+    id: '5',
+    title: 'Music Production Tips',
+    dateTime: '2024-07-12T20:00:00',
+    platform: 'TikTok Live',
+    rsvps: 234,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
+  },
+  {
+    id: '6',
+    title: 'Crypto Trading 101',
+    dateTime: '2024-07-15T18:00:00',
+    platform: 'YouTube Live',
+    rsvps: 445,
+    revenue: 6675,
+    isPaid: true,
+    price: 15,
+    status: 'completed'
+  },
+  {
+    id: '7',
+    title: 'Art Workshop Live',
+    dateTime: '2024-07-18T16:00:00',
+    platform: 'Instagram Live',
+    rsvps: 178,
+    revenue: 1068,
+    isPaid: true,
+    price: 6,
+    status: 'completed'
+  },
+  {
+    id: '8',
+    title: 'Tech Talk: AI Future',
+    dateTime: '2024-07-22T19:00:00',
+    platform: 'LinkedIn Live',
+    rsvps: 623,
+    revenue: 12460,
+    isPaid: true,
+    price: 20,
+    status: 'completed'
+  },
+  {
+    id: '9',
+    title: 'Weekend Yoga Flow',
+    dateTime: '2024-07-25T10:00:00',
+    platform: 'Instagram Live',
+    rsvps: 289,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
+  },
+  {
+    id: '10',
+    title: 'Business Strategy Session',
+    dateTime: '2024-07-28T17:00:00',
+    platform: 'YouTube Live',
+    rsvps: 534,
+    revenue: 13350,
+    isPaid: true,
+    price: 25,
+    status: 'completed'
+  },
+  {
+    id: '11',
+    title: 'Photography Masterclass',
+    dateTime: '2024-07-30T14:00:00',
+    platform: 'Instagram Live',
+    rsvps: 412,
+    revenue: 4944,
+    isPaid: true,
+    price: 12,
+    status: 'completed'
+  },
+  
+  // August events
+  {
+    id: '12',
+    title: 'Back to School Prep',
+    dateTime: '2024-08-01T11:00:00',
+    platform: 'TikTok Live',
+    rsvps: 367,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
+  },
+  {
+    id: '13',
+    title: 'Digital Marketing Deep Dive',
+    dateTime: '2024-08-03T16:00:00',
+    platform: 'LinkedIn Live',
+    rsvps: 789,
+    revenue: 11835,
+    isPaid: true,
+    price: 15,
+    status: 'completed'
+  },
+  {
+    id: '14',
+    title: 'Skincare Routine Live',
+    dateTime: '2024-08-05T13:00:00',
+    platform: 'Instagram Live',
+    rsvps: 456,
+    revenue: 2736,
+    isPaid: true,
+    price: 6,
+    status: 'completed'
+  },
+  {
+    id: '15',
+    title: 'Gaming Setup Tour',
+    dateTime: '2024-08-08T20:00:00',
+    platform: 'Twitch',
+    rsvps: 1124,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
+  },
+  {
+    id: '16',
+    title: 'Investment Strategies 2024',
+    dateTime: '2024-08-10T18:00:00',
+    platform: 'YouTube Live',
+    rsvps: 692,
+    revenue: 20760,
+    isPaid: true,
+    price: 30,
+    status: 'completed'
+  },
+  {
+    id: '17',
+    title: 'Home Decor Trends',
+    dateTime: '2024-08-12T15:00:00',
+    platform: 'Instagram Live',
+    rsvps: 334,
+    revenue: 2672,
+    isPaid: true,
+    price: 8,
+    status: 'completed'
+  },
+  {
+    id: '18',
+    title: 'Nutrition & Wellness Q&A',
+    dateTime: '2024-08-15T12:00:00',
+    platform: 'Instagram Live',
+    rsvps: 567,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
+  },
+  {
+    id: '19',
+    title: 'Creative Writing Workshop',
+    dateTime: '2024-08-18T17:00:00',
+    platform: 'YouTube Live',
+    rsvps: 234,
+    revenue: 3510,
+    isPaid: true,
+    price: 15,
+    status: 'completed'
+  },
+  {
+    id: '20',
+    title: 'Mental Health Awareness',
+    dateTime: '2024-08-20T19:00:00',
+    platform: 'Instagram Live',
+    rsvps: 445,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
+  },
+  {
+    id: '21',
+    title: 'E-commerce Masterclass',
+    dateTime: '2024-08-22T16:00:00',
+    platform: 'LinkedIn Live',
+    rsvps: 678,
+    revenue: 16950,
+    isPaid: true,
+    price: 25,
+    status: 'completed'
+  },
+  {
+    id: '22',
+    title: 'Travel Photography Tips',
+    dateTime: '2024-08-25T14:00:00',
+    platform: 'Instagram Live',
+    rsvps: 389,
+    revenue: 3890,
+    isPaid: true,
+    price: 10,
+    status: 'completed'
+  },
+  {
+    id: '23',
+    title: 'Music Theory Basics',
+    dateTime: '2024-08-28T18:00:00',
+    platform: 'YouTube Live',
+    rsvps: 267,
+    revenue: 3204,
+    isPaid: true,
+    price: 12,
+    status: 'completed'
+  },
+  {
+    id: '24',
+    title: 'Weekend Dance Party',
+    dateTime: '2024-08-30T21:00:00',
+    platform: 'TikTok Live',
+    rsvps: 892,
+    revenue: 0,
+    isPaid: false,
+    status: 'completed'
   }
 ];
 
 export const CalendarView = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date(2024, 6, 1)); // Start with July 2024
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 

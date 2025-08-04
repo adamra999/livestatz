@@ -1,13 +1,51 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Crown, Play, Users, TrendingUp, Sparkles, Calendar } from "lucide-react";
-import eventsDashboard from "@/assets/events-dashboard.jpg";
+import { useToast } from "@/hooks/use-toast";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
 }
 
 export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulate sending email to adam.mailme@gmail.com
+    try {
+      // In a real implementation, you'd send this to your backend
+      console.log("Sending email to adam.mailme@gmail.com:", email);
+      
+      toast({
+        title: "Thanks for your interest!",
+        description: "We'll be in touch soon with early access.",
+      });
+      
+      setShowEmailDialog(false);
+      setEmail("");
+      onGetStarted();
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Clean background with subtle gradient */}
@@ -32,7 +70,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             <Button 
               size="lg" 
               className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 py-4 h-auto font-medium shadow-creator"
-              onClick={onGetStarted}
+              onClick={() => setShowEmailDialog(true)}
             >
               Start Building Your Community
             </Button>
@@ -46,7 +84,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           <div className="relative max-w-5xl mx-auto">
             <div className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
               <img 
-                src={eventsDashboard} 
+                src="/lovable-uploads/a9048a85-bb95-4514-b115-e3c11f9d0bca.png" 
                 alt="LiveStatz events dashboard showing event management, RSVP tracking, and analytics" 
                 className="w-full h-auto rounded-xl"
               />
@@ -54,6 +92,34 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           </div>
         </div>
       </div>
+
+      {/* Email Capture Dialog */}
+      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">Get Early Access</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <div>
+              <Input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Get Early Access"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

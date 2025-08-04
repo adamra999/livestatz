@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, ExternalLink, Gift, Heart } from "lucide-react";
+import { Calendar, ExternalLink, Gift, Heart, Mail, Check } from "lucide-react";
 
 interface BioLink {
   id: string;
@@ -16,6 +17,10 @@ export default function BioPage() {
   const { username } = useParams();
   const { toast } = useToast();
   const [rsvpStatus, setRsvpStatus] = useState<'going' | 'maybe' | 'not-going' | null>(null);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
 
   // Mock data - in real app, this would come from API based on username
   const bioData = {
@@ -33,10 +38,35 @@ export default function BioPage() {
   };
 
   const handleRSVP = (status: 'going' | 'maybe' | 'not-going') => {
+    if (status === 'going' && !emailSubmitted) {
+      setShowEmailForm(true);
+      setRsvpStatus(status);
+      return;
+    }
+    
     setRsvpStatus(status);
     toast({
       title: "RSVP Confirmed!",
       description: `Thanks for letting us know you're ${status === 'going' ? 'attending' : status === 'maybe' ? 'maybe attending' : 'not attending'}.`,
+    });
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulate API call for email submission and calendar invite
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setEmailSubmitted(true);
+    setShowEmailForm(false);
+    setIsSubmitting(false);
+    
+    toast({
+      title: "RSVP Complete! 📅",
+      description: "Calendar invite sent to your email. Check your inbox!",
     });
   };
 
@@ -96,27 +126,77 @@ export default function BioPage() {
               <button
                 onClick={() => handleRSVP('going')}
                 className={getRSVPButtonClass('going')}
+                disabled={showEmailForm}
               >
                 ✅ Going
               </button>
               <button
                 onClick={() => handleRSVP('maybe')}
                 className={getRSVPButtonClass('maybe')}
+                disabled={showEmailForm}
               >
                 🤔 Maybe
               </button>
               <button
                 onClick={() => handleRSVP('not-going')}
                 className={getRSVPButtonClass('not-going')}
+                disabled={showEmailForm}
               >
                 ❌ Can't Make It
               </button>
             </div>
             
-            {rsvpStatus && (
+            {/* Email Form for Going RSVP */}
+            {showEmailForm && (
+              <div className="mt-4 p-4 bg-white/5 rounded-lg border border-white/10">
+                <div className="flex items-center gap-2 mb-3">
+                  <Mail className="w-4 h-4" />
+                  <span className="font-medium text-sm">Get your calendar invite</span>
+                </div>
+                <form onSubmit={handleEmailSubmit} className="space-y-3">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                  />
+                  <div className="flex gap-2">
+                    <Button 
+                      type="submit" 
+                      className="flex-1 bg-blue-500 hover:bg-blue-600" 
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Sending..." : "Send Calendar Invite"}
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setShowEmailForm(false)}
+                      className="border-white/20 text-white hover:bg-white/10"
+                    >
+                      Skip
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            )}
+            
+            {(rsvpStatus && !showEmailForm) && (
               <div className="text-center">
                 <Badge variant="secondary" className="bg-blue-500/20 text-blue-200 border-blue-400/30">
-                  ✓ RSVP Confirmed
+                  {emailSubmitted && rsvpStatus === 'going' ? (
+                    <span className="flex items-center gap-1">
+                      <Check className="w-3 h-3" />
+                      RSVP Confirmed + Calendar Sent
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1">
+                      <Check className="w-3 h-3" />
+                      RSVP Confirmed
+                    </span>
+                  )}
                 </Badge>
               </div>
             )}

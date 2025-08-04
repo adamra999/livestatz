@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import { EventRSVPPage } from "./pages/EventRSVP";
 import EventDetail from "./pages/EventDetail";
+import LinkBioBuilder from "./pages/LinkBioBuilder";
+import BioPage from "./pages/BioPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="/" element={<Index />} />
           <Route path="/e/:eventId" element={<EventRSVPPage />} />
           <Route path="/events/:eventId" element={<EventDetail />} />
+          <Route path="/bio-builder" element={<LinkBioBuilder />} />
+          <Route path="/bio/:username" element={<BioPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

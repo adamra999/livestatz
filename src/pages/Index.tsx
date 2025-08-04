@@ -99,6 +99,13 @@ const Dashboard = () => {
             >
               Calendar
             </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/bio-builder')}
+            >
+              Bio Builder
+            </Button>
             <Button variant="outline" size="sm">Profile</Button>
           </div>
         </div>

@@ -65,7 +65,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/new-livestatz-logo.png" 
+              src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
               alt="LiveStatz - Social Growth" 
               className="h-24 w-auto"
             />

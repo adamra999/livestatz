@@ -179,7 +179,7 @@ export const EventRSVPPage = () => {
           <Link to="/" className="flex items-center space-x-2">
             <ArrowLeft className="h-5 w-5" />
             <img 
-              src="/lovable-uploads/new-livestatz-logo.png" 
+              src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
               alt="LiveStatz" 
               className="h-18 w-auto"
             />

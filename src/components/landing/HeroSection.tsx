@@ -53,26 +53,17 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Brand Logo */}
-          <div className="mb-8">
-            <img 
-              src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
-              alt="LiveStatz - Social Growth" 
-              className="h-48 w-auto mx-auto mb-8"
-            />
-          </div>
-
           <div className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-8 border border-primary/20">
             <Sparkles className="w-4 h-4 mr-2" />
             Social events for influencers
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-foreground">
-            One platform{" "}
+            LiveStatz gives you{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              for all your events
+              one platform
             </span>{" "}
-            - meetups, drops, collabs, and livestreams.
+            for all your meetups, drops, collabs, and livestreams.
           </h1>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">

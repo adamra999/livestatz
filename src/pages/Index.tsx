@@ -67,7 +67,7 @@ const Dashboard = () => {
             <img 
               src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
               alt="LiveStatz - Social Growth" 
-              className="h-8 w-auto"
+              className="h-24 w-auto"
             />
           </div>
           

@@ -64,10 +64,11 @@ const Dashboard = () => {
       <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Crown className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              LiveStatz
-            </span>
+            <img 
+              src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
+              alt="LiveStatz - Social Growth" 
+              className="h-8 w-auto"
+            />
           </div>
           
           <div className="flex items-center space-x-6">

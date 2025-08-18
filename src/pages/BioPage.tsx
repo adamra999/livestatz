@@ -223,9 +223,14 @@ export default function BioPage() {
 
         {/* Footer */}
         <div className="text-center mt-8 pt-6 border-t border-white/10">
-          <p className="text-xs opacity-60">
-            Powered by LiveStatz
-          </p>
+          <div className="flex items-center justify-center space-x-2 opacity-60">
+            <span className="text-xs">Powered by</span>
+            <img 
+              src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
+              alt="LiveStatz" 
+              className="h-3 w-auto"
+            />
+          </div>
         </div>
       </div>
     </div>

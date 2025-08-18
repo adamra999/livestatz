@@ -226,7 +226,7 @@ export default function BioPage() {
           <div className="flex items-center justify-center space-x-2 opacity-60">
             <span className="text-xs">Powered by</span>
             <img 
-              src="/lovable-uploads/def4dcb4-fadf-44a9-9165-7dc152e72c4b.png" 
+              src="/lovable-uploads/new-livestatz-logo.png" 
               alt="LiveStatz" 
               className="h-9 w-auto"
             />

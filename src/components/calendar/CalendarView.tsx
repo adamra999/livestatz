@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Users, DollarSign, Clock, MapPin } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Users, DollarSign, Clock, MapPin, Plus } from "lucide-react";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, addWeeks, subWeeks, isSameMonth, isSameDay, parseISO } from "date-fns";
 
 interface Event {
@@ -287,6 +290,16 @@ export const CalendarView = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2024, 6, 1)); // Start with July 2024
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [events, setEvents] = useState<Event[]>(mockEvents);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [newEvent, setNewEvent] = useState({
+    title: '',
+    dateTime: '',
+    platform: '',
+    isPaid: false,
+    price: 0
+  });
 
   const navigateDate = (direction: 'prev' | 'next') => {
     if (viewMode === 'month') {
@@ -321,17 +334,52 @@ export const CalendarView = () => {
   };
 
   const getEventsForDate = (date: Date) => {
-    return mockEvents.filter(event => 
+    return events.filter(event => 
       isSameDay(parseISO(event.dateTime), date)
     );
   };
 
   const getTotalStats = () => {
     return {
-      totalRsvps: mockEvents.reduce((sum, event) => sum + event.rsvps, 0),
-      totalRevenue: mockEvents.reduce((sum, event) => sum + event.revenue, 0),
-      totalEvents: mockEvents.length
+      totalRsvps: events.reduce((sum, event) => sum + event.rsvps, 0),
+      totalRevenue: events.reduce((sum, event) => sum + event.revenue, 0),
+      totalEvents: events.length
     };
+  };
+
+  const handleCellClick = (date: Date) => {
+    if (viewMode === 'week') {
+      setSelectedDate(date);
+      setNewEvent({
+        ...newEvent,
+        dateTime: format(date, "yyyy-MM-dd'T'HH:mm")
+      });
+      setShowCreateModal(true);
+    }
+  };
+
+  const handleCreateEvent = () => {
+    const eventData: Event = {
+      id: `new-${Date.now()}`,
+      title: newEvent.title,
+      dateTime: newEvent.dateTime,
+      platform: newEvent.platform,
+      rsvps: 0,
+      revenue: 0,
+      isPaid: newEvent.isPaid,
+      price: newEvent.price,
+      status: 'upcoming'
+    };
+
+    setEvents([...events, eventData]);
+    setShowCreateModal(false);
+    setNewEvent({
+      title: '',
+      dateTime: '',
+      platform: '',
+      isPaid: false,
+      price: 0
+    });
   };
 
   const stats = getTotalStats();
@@ -471,10 +519,11 @@ export const CalendarView = () => {
                 return (
                   <div
                     key={index}
-                    className={`border rounded-lg p-2 ${
+                    onClick={() => handleCellClick(day)}
+                    className={`border rounded-lg p-2 transition-colors ${
                       isCurrentMonth ? 'bg-background' : 'bg-muted/50'
                     } ${isToday ? 'ring-2 ring-primary' : ''} ${
-                      viewMode === 'week' ? 'min-h-[576px]' : 'min-h-[120px]'
+                      viewMode === 'week' ? 'min-h-[576px] cursor-pointer hover:bg-muted/20' : 'min-h-[120px]'
                     }`}
                   >
                     <div className={`text-sm font-medium mb-2 ${
@@ -567,6 +616,107 @@ export const CalendarView = () => {
                 <Badge variant="outline" className="capitalize">
                   {selectedEvent.status}
                 </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Create Event Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <Card className="max-w-md w-full">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center space-x-2">
+                  <Plus className="h-5 w-5" />
+                  <span>Create New Event</span>
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowCreateModal(false)}
+                >
+                  ×
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Event Title</Label>
+                <Input
+                  id="title"
+                  value={newEvent.title}
+                  onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                  placeholder="Enter event title"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="datetime">Date & Time</Label>
+                <Input
+                  id="datetime"
+                  type="datetime-local"
+                  value={newEvent.dateTime}
+                  onChange={(e) => setNewEvent({ ...newEvent, dateTime: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="platform">Platform</Label>
+                <Select value={newEvent.platform} onValueChange={(value) => setNewEvent({ ...newEvent, platform: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select platform" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Instagram Live">Instagram Live</SelectItem>
+                    <SelectItem value="YouTube Live">YouTube Live</SelectItem>
+                    <SelectItem value="TikTok Live">TikTok Live</SelectItem>
+                    <SelectItem value="Twitch">Twitch</SelectItem>
+                    <SelectItem value="LinkedIn Live">LinkedIn Live</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="isPaid"
+                  checked={newEvent.isPaid}
+                  onChange={(e) => setNewEvent({ ...newEvent, isPaid: e.target.checked })}
+                  className="rounded"
+                />
+                <Label htmlFor="isPaid">Paid Event</Label>
+              </div>
+
+              {newEvent.isPaid && (
+                <div className="space-y-2">
+                  <Label htmlFor="price">Ticket Price ($)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    value={newEvent.price}
+                    onChange={(e) => setNewEvent({ ...newEvent, price: Number(e.target.value) })}
+                    placeholder="0"
+                  />
+                </div>
+              )}
+
+              <div className="flex space-x-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCreateModal(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreateEvent}
+                  className="flex-1"
+                  disabled={!newEvent.title || !newEvent.dateTime || !newEvent.platform}
+                >
+                  Create Event
+                </Button>
               </div>
             </CardContent>
           </Card>

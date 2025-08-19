@@ -448,58 +448,73 @@ export const CalendarView = () => {
             ))}
           </div>
           
-          <div className={`grid grid-cols-7 gap-1 ${viewMode === 'week' ? 'min-h-[400px]' : 'min-h-[600px]'}`}>
-            {calendarDays.map((day, index) => {
-              const events = getEventsForDate(day);
-              const isCurrentMonth = viewMode === 'week' || isSameMonth(day, currentDate);
-              const isToday = isSameDay(day, new Date());
-              
-              return (
-                <div
-                  key={index}
-                  className={`border rounded-lg p-2 ${
-                    isCurrentMonth ? 'bg-background' : 'bg-muted/50'
-                  } ${isToday ? 'ring-2 ring-primary' : ''} ${
-                    viewMode === 'week' ? 'min-h-[350px]' : 'min-h-[120px]'
-                  }`}
-                >
-                  <div className={`text-sm font-medium mb-2 ${
-                    isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
-                  }`}>
-                    {format(day, 'd')}
+          {/* Calendar Grid with Time Axis */}
+          <div className="flex">
+            {/* Time axis on the left for week view */}
+            {viewMode === 'week' && (
+              <div className="flex flex-col mr-2">
+                <div className="h-8 mb-4"></div> {/* Spacer for day headers */}
+                {Array.from({ length: 24 }, (_, hour) => (
+                  <div key={hour} className="text-xs text-muted-foreground h-6 flex items-start">
+                    {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
                   </div>
-                  
-                  <div className="space-y-1">
-                    {events.map((event) => (
-                      <div
-                        key={event.id}
-                        onClick={() => setSelectedEvent(event)}
-                        className={`p-2 rounded text-xs cursor-pointer transition-colors ${
-                          event.isPaid 
-                            ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-200' 
-                            : 'bg-primary/10 hover:bg-primary/20 text-primary'
-                        }`}
-                      >
-                        <div className="font-medium truncate">{event.title}</div>
-                        <div className="text-xs opacity-75">{format(parseISO(event.dateTime), 'HH:mm')}</div>
-                        <div className="flex items-center justify-between mt-1">
-                          <div className="flex items-center space-x-1">
-                            <Users className="h-3 w-3" />
-                            <span>{event.rsvps}</span>
-                          </div>
-                          {event.isPaid && (
+                ))}
+              </div>
+            )}
+            
+            <div className={`grid grid-cols-7 gap-1 flex-1 ${viewMode === 'week' ? 'min-h-[600px]' : 'min-h-[600px]'}`}>
+              {calendarDays.map((day, index) => {
+                const events = getEventsForDate(day);
+                const isCurrentMonth = viewMode === 'week' || isSameMonth(day, currentDate);
+                const isToday = isSameDay(day, new Date());
+                
+                return (
+                  <div
+                    key={index}
+                    className={`border rounded-lg p-2 ${
+                      isCurrentMonth ? 'bg-background' : 'bg-muted/50'
+                    } ${isToday ? 'ring-2 ring-primary' : ''} ${
+                      viewMode === 'week' ? 'min-h-[576px]' : 'min-h-[120px]'
+                    }`}
+                  >
+                    <div className={`text-sm font-medium mb-2 ${
+                      isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
+                    }`}>
+                      {format(day, 'd')}
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {events.map((event) => (
+                        <div
+                          key={event.id}
+                          onClick={() => setSelectedEvent(event)}
+                          className={`p-2 rounded text-xs cursor-pointer transition-colors ${
+                            event.isPaid 
+                              ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-200' 
+                              : 'bg-primary/10 hover:bg-primary/20 text-primary'
+                          }`}
+                        >
+                          <div className="font-medium truncate">{event.title}</div>
+                          <div className="text-xs opacity-75">{format(parseISO(event.dateTime), 'HH:mm')}</div>
+                          <div className="flex items-center justify-between mt-1">
                             <div className="flex items-center space-x-1">
-                              <DollarSign className="h-3 w-3" />
-                              <span>${event.revenue}</span>
+                              <Users className="h-3 w-3" />
+                              <span>{event.rsvps}</span>
                             </div>
-                          )}
+                            {event.isPaid && (
+                              <div className="flex items-center space-x-1">
+                                <DollarSign className="h-3 w-3" />
+                                <span>${event.revenue}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -62,8 +62,8 @@ const ContentManager = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Content Manager</h1>
-            <p className="text-muted-foreground">Plan, schedule, and track your content across platforms</p>
+            <h1 className="text-3xl font-bold">ClipGen</h1>
+            <p className="text-muted-foreground">Generate, schedule, and track your content clips across platforms</p>
           </div>
           <Button>
             <Plus className="h-4 w-4 mr-2" />

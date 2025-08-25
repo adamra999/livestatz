@@ -112,7 +112,7 @@ const Dashboard = () => {
               size="sm"
               onClick={() => navigate('/content-manager')}
             >
-              Content Manager
+              ClipGen
             </Button>
             <Button variant="outline" size="sm">Profile</Button>
           </div>

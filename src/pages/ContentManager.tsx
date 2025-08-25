@@ -27,41 +27,7 @@ const ContentManager = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewingClip, setPreviewingClip] = useState<string | null>(null);
   const [uploadedVideo, setUploadedVideo] = useState<any>(null);
-  const [generatedClips, setGeneratedClips] = useState([
-    {
-      id: "1",
-      title: "Best moment from stream",
-      duration: "0:15",
-      thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop&crop=center",
-      status: "ready",
-      views: 0,
-      platform: "tiktok",
-      timestamp: "02:34 - 02:49",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    },
-    {
-      id: "2", 
-      title: "Funny reaction clip",
-      duration: "0:12",
-      thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=225&fit=crop&crop=center",
-      status: "ready",
-      views: 0,
-      platform: "instagram",
-      timestamp: "15:22 - 15:34",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-    },
-    {
-      id: "3",
-      title: "Key insight moment",
-      duration: "0:18",
-      thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=225&fit=crop&crop=center",
-      status: "ready",
-      views: 0,
-      platform: "youtube",
-      timestamp: "28:15 - 28:33",
-      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-    }
-  ]);
+  const [generatedClips, setGeneratedClips] = useState<any[]>([]);
 
   const handleVideoUpload = async (file: File) => {
     setIsProcessing(true);
@@ -81,8 +47,45 @@ const ContentManager = () => {
         description: "AI is analyzing your video for clip generation...",
       });
       
-      // Simulate AI processing
+      // Simulate AI processing and generate clips
       setTimeout(() => {
+        const newClips = [
+          {
+            id: "1",
+            title: `Best moment from ${file.name}`,
+            duration: "0:15",
+            thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop&crop=center",
+            status: "ready",
+            views: 0,
+            platform: "tiktok",
+            timestamp: "02:34 - 02:49",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          },
+          {
+            id: "2", 
+            title: `Funny reaction from ${file.name}`,
+            duration: "0:12",
+            thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=225&fit=crop&crop=center",
+            status: "ready",
+            views: 0,
+            platform: "instagram",
+            timestamp: "15:22 - 15:34",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+          },
+          {
+            id: "3",
+            title: `Key insight from ${file.name}`,
+            duration: "0:18",
+            thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=225&fit=crop&crop=center",
+            status: "ready",
+            views: 0,
+            platform: "youtube",
+            timestamp: "28:15 - 28:33",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+          }
+        ];
+        
+        setGeneratedClips(newClips);
         toast({
           title: "🎬 Clips generated!",
           description: "3 viral-ready clips have been created from your video.",
@@ -109,6 +112,51 @@ const ContentManager = () => {
         title: "YouTube video imported!",
         description: "AI is processing your video for clips...",
       });
+      
+      // Generate clips after YouTube import
+      setTimeout(() => {
+        const newClips = [
+          {
+            id: "1",
+            title: "Best moment from YouTube video",
+            duration: "0:15",
+            thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop&crop=center",
+            status: "ready",
+            views: 0,
+            platform: "tiktok",
+            timestamp: "02:34 - 02:49",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          },
+          {
+            id: "2", 
+            title: "Highlight from YouTube video",
+            duration: "0:12",
+            thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=225&fit=crop&crop=center",
+            status: "ready",
+            views: 0,
+            platform: "instagram",
+            timestamp: "15:22 - 15:34",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+          },
+          {
+            id: "3",
+            title: "Key moment from YouTube video",
+            duration: "0:18",
+            thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=225&fit=crop&crop=center",
+            status: "ready",
+            views: 0,
+            platform: "youtube",
+            timestamp: "28:15 - 28:33",
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+          }
+        ];
+        
+        setGeneratedClips(newClips);
+        toast({
+          title: "🎬 Clips generated!",
+          description: "3 viral-ready clips have been created from your YouTube video.",
+        });
+      }, 3000);
     }, 2000);
   };
 

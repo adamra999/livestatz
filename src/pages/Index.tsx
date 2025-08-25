@@ -135,14 +135,22 @@ const Dashboard = () => {
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">🎉</div>
                     <div>
-                      <div className="font-semibold">12 New Fans RSVPed this week</div>
+                      <div className="font-semibold">
+                        <a href="/contacts?filter=new-fans" className="text-primary hover:underline cursor-pointer">
+                          12 New Fans RSVPed this week
+                        </a>
+                      </div>
                       <div className="text-sm text-muted-foreground">Growing your community!</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">💜</div>
                     <div>
-                      <div className="font-semibold">3 Superfans joined</div>
+                      <div className="font-semibold">
+                        <a href="/contacts?filter=superfans" className="text-primary hover:underline cursor-pointer">
+                          3 Superfans joined
+                        </a>
+                      </div>
                       <div className="text-sm text-muted-foreground">Attended 3+ live events</div>
                     </div>
                   </div>

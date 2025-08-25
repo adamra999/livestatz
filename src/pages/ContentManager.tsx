@@ -25,37 +25,41 @@ import { useToast } from "@/hooks/use-toast";
 const ContentManager = () => {
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [previewingClip, setPreviewingClip] = useState<string | null>(null);
   const [uploadedVideo, setUploadedVideo] = useState<any>(null);
   const [generatedClips, setGeneratedClips] = useState([
     {
       id: "1",
       title: "Best moment from stream",
       duration: "0:15",
-      thumbnail: "/placeholder.svg",
+      thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop&crop=center",
       status: "ready",
       views: 0,
       platform: "tiktok",
-      timestamp: "02:34 - 02:49"
+      timestamp: "02:34 - 02:49",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     },
     {
       id: "2", 
       title: "Funny reaction clip",
       duration: "0:12",
-      thumbnail: "/placeholder.svg",
+      thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=225&fit=crop&crop=center",
       status: "ready",
       views: 0,
       platform: "instagram",
-      timestamp: "15:22 - 15:34"
+      timestamp: "15:22 - 15:34",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
     },
     {
       id: "3",
       title: "Key insight moment",
       duration: "0:18",
-      thumbnail: "/placeholder.svg",
+      thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=225&fit=crop&crop=center",
       status: "ready",
       views: 0,
       platform: "youtube",
-      timestamp: "28:15 - 28:33"
+      timestamp: "28:15 - 28:33",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
     }
   ]);
 
@@ -113,6 +117,14 @@ const ContentManager = () => {
       title: `Exporting to ${platform}...`,
       description: "Your clip will be ready for posting in a few seconds.",
     });
+  };
+
+  const previewClip = (clipId: string) => {
+    setPreviewingClip(clipId);
+  };
+
+  const closePreview = () => {
+    setPreviewingClip(null);
   };
 
   const getPlatformIcon = (platform: string) => {
@@ -326,13 +338,23 @@ const ContentManager = () => {
               <CardDescription>AI-generated clips ready for social media</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {generatedClips.map((clip) => (
                   <div key={clip.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
                     {/* Thumbnail */}
-                    <div className="aspect-video bg-muted rounded-lg mb-3 relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Play className="h-8 w-8 text-muted-foreground" />
+                    <div 
+                      className="aspect-video bg-muted rounded-lg mb-3 relative cursor-pointer overflow-hidden group"
+                      onClick={() => previewClip(clip.id)}
+                    >
+                      <img 
+                        src={clip.thumbnail} 
+                        alt={clip.title}
+                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                        <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 group-hover:bg-white/30 transition-colors">
+                          <Play className="h-6 w-6 text-white" />
+                        </div>
                       </div>
                       <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
                         {clip.duration}
@@ -384,6 +406,58 @@ const ContentManager = () => {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Video Preview Modal */}
+        {previewingClip && (
+          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+            <div className="bg-card rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold">
+                    {generatedClips.find(c => c.id === previewingClip)?.title}
+                  </h3>
+                  <Button variant="ghost" onClick={closePreview}>
+                    ✕
+                  </Button>
+                </div>
+                
+                <div className="aspect-video bg-black rounded-lg mb-4">
+                  <video 
+                    controls 
+                    autoPlay
+                    className="w-full h-full rounded-lg"
+                    src={generatedClips.find(c => c.id === previewingClip)?.videoUrl}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    Duration: {generatedClips.find(c => c.id === previewingClip)?.duration} • 
+                    From: {generatedClips.find(c => c.id === previewingClip)?.timestamp}
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <Button variant="outline">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Clip
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        const clip = generatedClips.find(c => c.id === previewingClip);
+                        if (clip) exportToSocial(clip.id, clip.platform);
+                      }}
+                    >
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Share to {generatedClips.find(c => c.id === previewingClip)?.platform}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

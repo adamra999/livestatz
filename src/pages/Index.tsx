@@ -122,6 +122,41 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
+            {/* Weekly Fan Growth */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  🔥 Weekly Fan Growth
+                </CardTitle>
+                <CardDescription>Your fan growth metrics this week</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">🎉</div>
+                    <div>
+                      <div className="font-semibold">12 New Fans RSVPed this week</div>
+                      <div className="text-sm text-muted-foreground">Growing your community!</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">💜</div>
+                    <div>
+                      <div className="font-semibold">3 Superfans joined</div>
+                      <div className="text-sm text-muted-foreground">Attended 3+ live events</div>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-primary">Total RSVP Growth</span>
+                      <span className="font-bold text-xl text-primary">+28%</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1">vs last week</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Upcoming Events */}
             <Card>
               <CardHeader>

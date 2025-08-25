@@ -27,7 +27,41 @@ const ContentManager = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewingClip, setPreviewingClip] = useState<string | null>(null);
   const [uploadedVideo, setUploadedVideo] = useState<any>(null);
-  const [generatedClips, setGeneratedClips] = useState<any[]>([]);
+  const [generatedClips, setGeneratedClips] = useState([
+    {
+      id: "1",
+      title: "Sample highlight clip",
+      duration: "0:15",
+      thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop&crop=center",
+      status: "ready",
+      views: 0,
+      platform: "tiktok",
+      timestamp: "02:34 - 02:49",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    },
+    {
+      id: "2", 
+      title: "Funny reaction moment",
+      duration: "0:12",
+      thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=225&fit=crop&crop=center",
+      status: "ready",
+      views: 0,
+      platform: "instagram",
+      timestamp: "15:22 - 15:34",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+    },
+    {
+      id: "3",
+      title: "Key insight segment",
+      duration: "0:18",
+      thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=225&fit=crop&crop=center",
+      status: "ready",
+      views: 0,
+      platform: "youtube",
+      timestamp: "28:15 - 28:33",
+      videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+    }
+  ]);
 
   const handleVideoUpload = async (file: File) => {
     setIsProcessing(true);

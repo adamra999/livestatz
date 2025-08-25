@@ -136,9 +136,9 @@ const Dashboard = () => {
                     <div className="text-2xl">🎉</div>
                     <div>
                       <div className="font-semibold">
-                        <a href="/contacts?filter=new-fans" className="text-primary hover:underline cursor-pointer">
+                        <Link to="/profile?tab=fans" className="text-primary hover:underline cursor-pointer">
                           12 New Fans RSVPed this week
-                        </a>
+                        </Link>
                       </div>
                       <div className="text-sm text-muted-foreground">Growing your community!</div>
                     </div>
@@ -147,9 +147,9 @@ const Dashboard = () => {
                     <div className="text-2xl">💜</div>
                     <div>
                       <div className="font-semibold">
-                        <a href="/contacts?filter=superfans" className="text-primary hover:underline cursor-pointer">
+                        <Link to="/profile?tab=superfans" className="text-primary hover:underline cursor-pointer">
                           3 Superfans joined
-                        </a>
+                        </Link>
                       </div>
                       <div className="text-sm text-muted-foreground">Attended 3+ live events</div>
                     </div>

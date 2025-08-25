@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,73 +52,24 @@ const Index = () => {
 // Mock Dashboard Component
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [currentView, setCurrentView] = useState<'dashboard' | 'calendar' | 'analytics' | 'events'>('dashboard');
   const { toast } = useToast();
+
+  useEffect(() => {
+    const view = searchParams.get('view');
+    if (view && ['calendar', 'analytics', 'events'].includes(view)) {
+      setCurrentView(view as 'calendar' | 'analytics' | 'events');
+    } else {
+      setCurrentView('dashboard');
+    }
+  }, [searchParams]);
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <img 
-              src="/lovable-uploads/new-livestatz-logo.png" 
-              alt="LiveStatz - Social Growth" 
-              className="h-24 w-auto"
-            />
-          </div>
-          
-          <div className="flex items-center space-x-6">
-            <Button 
-              variant={currentView === 'dashboard' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setCurrentView('dashboard')}
-            >
-              Dashboard
-            </Button>
-            <Button 
-              variant={currentView === 'events' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setCurrentView('events')}
-            >
-              Events
-            </Button>
-            <Button 
-              variant={currentView === 'analytics' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setCurrentView('analytics')}
-            >
-              Analytics
-            </Button>
-            <Button 
-              variant={currentView === 'calendar' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setCurrentView('calendar')}
-            >
-              Calendar
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/bio-builder')}
-            >
-              Bio Builder
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/content-manager')}
-            >
-              ClipGen
-            </Button>
-            <Button variant="outline" size="sm">Profile</Button>
-          </div>
-        </div>
-      </nav>
-
       {/* Dashboard Content */}
       <div className="container mx-auto px-4 py-8">
         {currentView === 'calendar' ? (

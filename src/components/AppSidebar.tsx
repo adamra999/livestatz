@@ -1,4 +1,4 @@
-import { Home, User, Video } from "lucide-react";
+import { Home, User, Video, BarChart3, Calendar, Tv, UserCircle } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -14,9 +14,13 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Home", url: "/", icon: Home },
+  { title: "Dashboard", url: "/", icon: Home },
+  { title: "Events", url: "/?view=events", icon: Tv },
+  { title: "Analytics", url: "/?view=analytics", icon: BarChart3 },
+  { title: "Calendar", url: "/?view=calendar", icon: Calendar },
   { title: "Bio Builder", url: "/bio-builder", icon: User },
   { title: "ClipGen", url: "/content-manager", icon: Video },
+  { title: "Profile", url: "/profile", icon: UserCircle },
 ];
 
 export function AppSidebar() {
@@ -25,8 +29,9 @@ export function AppSidebar() {
   const currentPath = location.pathname;
 
   const isActive = (path: string) => {
-    if (path === "/" && currentPath === "/") return true;
-    if (path !== "/" && currentPath.startsWith(path)) return true;
+    if (path === "/" && currentPath === "/" && !location.search) return true;
+    if (path.includes("?view=") && currentPath === "/" && location.search.includes(path.split("?view=")[1])) return true;
+    if (path !== "/" && !path.includes("?view=") && currentPath.startsWith(path)) return true;
     return false;
   };
 

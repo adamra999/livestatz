@@ -107,6 +107,13 @@ const Dashboard = () => {
             >
               Bio Builder
             </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/content-manager')}
+            >
+              Content Manager
+            </Button>
             <Button variant="outline" size="sm">Profile</Button>
           </div>
         </div>

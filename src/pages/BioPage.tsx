@@ -109,19 +109,54 @@ export default function BioPage() {
       style={{ backgroundColor: bioData.backgroundColor, color: bioData.textColor }}
     >
       <div className="max-w-md mx-auto px-6 py-8">
-        {/* Profile Section */}
-        <div className="text-center space-y-4 mb-8">
-          <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto" />
-          <div>
-            <h1 className="font-bold text-xl leading-tight mb-3">{bioData.title}</h1>
-            <p className="text-sm opacity-90">{bioData.description}</p>
+        {/* Welcome Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold mb-2">
+            ✨ Welcome to {username || 'Creator'}'s Live Hub! ✨
+          </h1>
+          <div className="border-t border-b border-white/20 py-2 my-4">
+            <div className="text-sm opacity-80">Your gateway to exclusive live content</div>
           </div>
         </div>
 
-        {/* RSVP Section */}
+        {/* Email List Section */}
         <div className="mb-8">
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-            <h3 className="font-semibold text-center mb-4">Will you be joining the live?</h3>
+          <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+            <div className="text-center mb-4">
+              <h3 className="font-semibold text-lg mb-2">👋 Want to stay in the loop?</h3>
+              <p className="text-sm opacity-90">Get updates, giveaways, and exclusive clips</p>
+            </div>
+            <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3">
+              <Mail className="w-4 h-4 mr-2" />
+              Join the Email List
+            </Button>
+          </div>
+        </div>
+
+        {/* Upcoming Live Event */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+            <div className="text-center mb-4">
+              <h3 className="font-semibold text-lg mb-2">🎤 Upcoming Live Event</h3>
+              <div className="bg-white/10 rounded-lg p-4 mb-4">
+                <h4 className="font-bold text-xl mb-2">"🔥 Dance with Me - Live Zumba Party"</h4>
+                <div className="flex items-center justify-center gap-4 text-sm">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    August 30, 7PM PST
+                  </span>
+                </div>
+              </div>
+              <p className="text-sm opacity-90 mb-4">
+                RSVP to unlock: early entry, chance to be featured live
+              </p>
+            </div>
+            
+            <Button className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-4 text-lg mb-4">
+              🎯 RSVP Now - Free Access
+            </Button>
+            
+            <h4 className="font-semibold text-center mb-4">Will you be joining the live?</h4>
             <div className="flex gap-2 mb-4">
               <button
                 onClick={() => handleRSVP('going')}
@@ -203,7 +238,24 @@ export default function BioPage() {
           </div>
         </div>
 
-        {/* Links */}
+        {/* Fan Perks Section */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+            <h3 className="font-semibold text-lg mb-4 text-center">🛍️ Fan Perks</h3>
+            <div className="space-y-3">
+              <div className="bg-white/10 rounded-lg p-4">
+                <h4 className="font-medium mb-2">💎 VIP RSVP Benefits</h4>
+                <p className="text-sm opacity-90">→ Early merch drop access + exclusive replay</p>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4">
+                <h4 className="font-medium mb-2">⭐ Superfan Squad</h4>
+                <p className="text-sm opacity-90">→ Private Q&A with {username || 'Creator'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Links */}
         <div className="space-y-3">
           {bioData.links.filter(link => link.type !== 'rsvp').map((link) => (
             <button

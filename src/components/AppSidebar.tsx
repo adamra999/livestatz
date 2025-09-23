@@ -1,4 +1,4 @@
-import { Home, User, Video, BarChart3, Calendar, Tv, UserCircle } from "lucide-react";
+import { Home, User, Video, BarChart3, Calendar, Tv, UserCircle, Users, Heart, MessageSquare, Gift } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -13,7 +13,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const items = [
+const mainItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Events", url: "/?view=events", icon: Tv },
   { title: "Analytics", url: "/?view=analytics", icon: BarChart3 },
@@ -21,6 +21,13 @@ const items = [
   { title: "Bio Builder", url: "/bio-builder", icon: User },
   { title: "ClipGen", url: "/content-manager", icon: Video },
   { title: "Profile", url: "/profile", icon: UserCircle },
+];
+
+const fanCrmItems = [
+  { title: "Fan Database", url: "/fan-database", icon: Users },
+  { title: "Interactions", url: "/interactions", icon: MessageSquare },
+  { title: "Rewards", url: "/rewards", icon: Gift },
+  { title: "Favorites", url: "/favorites", icon: Heart },
 ];
 
 export function AppSidebar() {
@@ -45,12 +52,33 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.url} 
                       end={item.url === "/"}
+                      className={({ isActive: navIsActive }) => getNavCls({ isActive: navIsActive || isActive(item.url) })}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {state !== "collapsed" && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Fan CRM</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {fanCrmItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to={item.url} 
                       className={({ isActive: navIsActive }) => getNavCls({ isActive: navIsActive || isActive(item.url) })}
                     >
                       <item.icon className="h-4 w-4" />

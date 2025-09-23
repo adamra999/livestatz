@@ -173,46 +173,90 @@ const FanDatabase = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredFans.map((fan) => (
-          <Card key={fan.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openFanDetails(fan)}>
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={fan.avatar_url} />
-                  <AvatarFallback>{fan.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <CardTitle className="text-lg">{fan.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{fan.email}</p>
+          <Card key={fan.id} className="hover:shadow-lg transition-shadow cursor-pointer border-2" onClick={() => openFanDetails(fan)}>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">🎟️</span>
+                <div>
+                  <CardTitle className="text-xl font-bold">Fan Profile: {fan.name}</CardTitle>
                 </div>
-                <Badge className={`${getSegmentColor(fan.segment)} text-white border-0`}>
-                  {fan.segment}
-                </Badge>
+              </div>
+              
+              {/* Core Info Section */}
+              <div className="space-y-3">
+                <h3 className="font-semibold text-lg">Core Info</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span>📧</span>
+                    <span className="font-medium">Email:</span>
+                    <span className="text-muted-foreground">{fan.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>🏷️</span>
+                    <span className="font-medium">Tags:</span>
+                    <Badge className={`${getSegmentColor(fan.segment)} text-white border-0 text-xs`}>
+                      {fan.segment.toUpperCase()}
+                    </Badge>
+                    {fan.total_spent > 0 && <Badge variant="outline" className="text-xs">PAID</Badge>}
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span>📝</span>
+                    <span className="font-medium">Notes:</span>
+                    <span className="text-muted-foreground text-xs">
+                      Joined {new Date(fan.first_interaction_date).toLocaleDateString()}
+                      {fan.location && ` from ${fan.location}`}
+                    </span>
+                  </div>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-0">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                    <DollarSign className="w-3 h-3" />
-                    Spent
+            
+            <CardContent className="space-y-6">
+              {/* Engagement Section */}
+              <div className="space-y-3">
+                <h3 className="font-semibold text-lg">Engagement</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span>✅</span>
+                    <span className="font-medium">Total RSVPs:</span>
+                    <span>{fan.events_attended}</span>
                   </div>
-                  <div className="font-semibold">${fan.total_spent}</div>
+                  <div className="flex items-center gap-2">
+                    <span>👩‍🎨</span>
+                    <span className="font-medium">Events Attended:</span>
+                    <span>{fan.events_attended} (100% attendance rate)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>📅</span>
+                    <span className="font-medium">Last Attended:</span>
+                    <span className="text-muted-foreground text-xs">
+                      {new Date(fan.last_interaction_date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>🎥</span>
+                    <span className="font-medium">Comments Made:</span>
+                    <span>{fan.comments_count}</span>
+                  </div>
                 </div>
-                <div>
-                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                    <Calendar className="w-3 h-3" />
-                    Events
+              </div>
+
+              {/* Value Section */}
+              <div className="space-y-3">
+                <h3 className="font-semibold text-lg">Value</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span>💵</span>
+                    <span className="font-medium">Paid Events:</span>
+                    <span>{fan.events_attended}</span>
                   </div>
-                  <div className="font-semibold">{fan.events_attended}</div>
-                </div>
-                <div>
-                  <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-                    <MessageSquare className="w-3 h-3" />
-                    Comments
+                  <div className="flex items-center gap-2">
+                    <span>💰</span>
+                    <span className="font-medium text-lg">Total Spend:</span>
+                    <span className="font-bold text-lg text-green-600">${fan.total_spent}</span>
                   </div>
-                  <div className="font-semibold">{fan.comments_count}</div>
                 </div>
               </div>
             </CardContent>

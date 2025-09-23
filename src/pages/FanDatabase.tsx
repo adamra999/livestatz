@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Plus, DollarSign, Calendar, MessageSquare, Mail, Phone, MapPin } from "lucide-react";
+import { Search, Plus, DollarSign, Calendar, MessageSquare, Mail, Phone, MapPin, Send, FileText, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -417,6 +417,25 @@ const FanDatabase = () => {
                   </ScrollArea>
                 </TabsContent>
               </Tabs>
+
+              {/* Actions Section */}
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Actions</h3>
+                <div className="flex gap-3 justify-end">
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <Send className="w-4 h-4" />
+                    📩 Send Reminder
+                  </Button>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    🗒️ Add Note
+                  </Button>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <Download className="w-4 h-4" />
+                    📤 Export Contact
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </DialogContent>

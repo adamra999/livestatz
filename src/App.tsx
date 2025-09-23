@@ -11,6 +11,10 @@ import LinkBioBuilder from "./pages/LinkBioBuilder";
 import BioPage from "./pages/BioPage";
 import ContentManager from "./pages/ContentManager";
 import Profile from "./pages/Profile";
+import FanDatabase from "./pages/FanDatabase";
+import Interactions from "./pages/Interactions";
+import Rewards from "./pages/Rewards";
+import Collaborations from "./pages/Collaborations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +34,10 @@ const App = () => {
           <Route path="/bio-builder" element={<Layout><LinkBioBuilder /></Layout>} />
           <Route path="/content-manager" element={<Layout><ContentManager /></Layout>} />
           <Route path="/profile" element={<Layout><Profile /></Layout>} />
+          <Route path="/fan-database" element={<Layout><FanDatabase /></Layout>} />
+          <Route path="/interactions" element={<Layout><Interactions /></Layout>} />
+          <Route path="/rewards" element={<Layout><Rewards /></Layout>} />
+          <Route path="/favorites" element={<Layout><Collaborations /></Layout>} />
           <Route path="/bio/:username" element={<Layout><BioPage /></Layout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<Layout><NotFound /></Layout>} />

@@ -14,7 +14,296 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      collaborations: {
+        Row: {
+          created_at: string
+          deal_value: number | null
+          description: string | null
+          end_date: string | null
+          id: string
+          partner_email: string | null
+          partner_name: string
+          partnership_type: string
+          start_date: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deal_value?: number | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          partner_email?: string | null
+          partner_name: string
+          partnership_type: string
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deal_value?: number | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          partner_email?: string | null
+          partner_name?: string
+          partnership_type?: string
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      fan_comments: {
+        Row: {
+          commented_at: string | null
+          content: string
+          created_at: string
+          fan_id: string
+          id: string
+          platform: string | null
+          sentiment: string | null
+        }
+        Insert: {
+          commented_at?: string | null
+          content: string
+          created_at?: string
+          fan_id: string
+          id?: string
+          platform?: string | null
+          sentiment?: string | null
+        }
+        Update: {
+          commented_at?: string | null
+          content?: string
+          created_at?: string
+          fan_id?: string
+          id?: string
+          platform?: string | null
+          sentiment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fan_comments_fan_id_fkey"
+            columns: ["fan_id"]
+            isOneToOne: false
+            referencedRelation: "fans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fan_events: {
+        Row: {
+          attendance_status: string | null
+          attended_at: string | null
+          created_at: string
+          event_id: string
+          event_name: string
+          fan_id: string
+          id: string
+          ticket_price: number | null
+        }
+        Insert: {
+          attendance_status?: string | null
+          attended_at?: string | null
+          created_at?: string
+          event_id: string
+          event_name: string
+          fan_id: string
+          id?: string
+          ticket_price?: number | null
+        }
+        Update: {
+          attendance_status?: string | null
+          attended_at?: string | null
+          created_at?: string
+          event_id?: string
+          event_name?: string
+          fan_id?: string
+          id?: string
+          ticket_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fan_events_fan_id_fkey"
+            columns: ["fan_id"]
+            isOneToOne: false
+            referencedRelation: "fans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fan_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          fan_id: string
+          id: string
+          transaction_date: string | null
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          fan_id: string
+          id?: string
+          transaction_date?: string | null
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          fan_id?: string
+          id?: string
+          transaction_date?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fan_transactions_fan_id_fkey"
+            columns: ["fan_id"]
+            isOneToOne: false
+            referencedRelation: "fans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fans: {
+        Row: {
+          avatar_url: string | null
+          comments_count: number | null
+          created_at: string
+          email: string
+          events_attended: number | null
+          first_interaction_date: string | null
+          id: string
+          last_interaction_date: string | null
+          location: string | null
+          name: string
+          phone: string | null
+          segment: string | null
+          total_spent: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          comments_count?: number | null
+          created_at?: string
+          email: string
+          events_attended?: number | null
+          first_interaction_date?: string | null
+          id?: string
+          last_interaction_date?: string | null
+          location?: string | null
+          name: string
+          phone?: string | null
+          segment?: string | null
+          total_spent?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          comments_count?: number | null
+          created_at?: string
+          email?: string
+          events_attended?: number | null
+          first_interaction_date?: string | null
+          id?: string
+          last_interaction_date?: string | null
+          location?: string | null
+          name?: string
+          phone?: string | null
+          segment?: string | null
+          total_spent?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      workflow_actions: {
+        Row: {
+          action_data: Json | null
+          action_type: string
+          created_at: string
+          delay_hours: number | null
+          id: string
+          order_index: number
+          workflow_id: string
+        }
+        Insert: {
+          action_data?: Json | null
+          action_type: string
+          created_at?: string
+          delay_hours?: number | null
+          id?: string
+          order_index: number
+          workflow_id: string
+        }
+        Update: {
+          action_data?: Json | null
+          action_type?: string
+          created_at?: string
+          delay_hours?: number | null
+          id?: string
+          order_index?: number
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_actions_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflows: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          target_segment: string | null
+          trigger_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          target_segment?: string | null
+          trigger_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          target_segment?: string | null
+          trigger_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -25,9 +25,9 @@ const mainItems = [
 
 const fanCrmItems = [
   { title: "Fan Database", url: "/fan-database", icon: Users },
-  { title: "Interactions", url: "/interactions", icon: MessageSquare },
-  { title: "Rewards", url: "/rewards", icon: Gift },
-  { title: "Favorites", url: "/favorites", icon: Heart },
+  { title: "Segmentation", url: "/interactions", icon: MessageSquare },
+  { title: "Workflows", url: "/rewards", icon: Gift },
+  { title: "Collabs", url: "/favorites", icon: Heart },
 ];
 
 export function AppSidebar() {

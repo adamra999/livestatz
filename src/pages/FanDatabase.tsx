@@ -259,6 +259,36 @@ const FanDatabase = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Quick Actions */}
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex gap-2 justify-center">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex items-center gap-1 text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Handle send reminder action
+                    }}
+                  >
+                    <Send className="w-3 h-3" />
+                    📩 Send Reminder
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex items-center gap-1 text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Handle export contact action
+                    }}
+                  >
+                    <Download className="w-3 h-3" />
+                    📤 Export Contact
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))}

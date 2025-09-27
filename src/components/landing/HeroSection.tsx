@@ -2,12 +2,38 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Crown, Play, Users, TrendingUp, Sparkles, Calendar } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Crown,
+  Play,
+  Users,
+  TrendingUp,
+  Sparkles,
+  Calendar,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useProfile } from "@/hooks/useProfile";
+import { v4 as uuidv4 } from "uuid";
+export interface Profile {
+  id: string;
+  username: string;
+  full_name: string;
+  avatar_url: string | null;
+  email: string;
+  phone: string | null;
+  role: string;
+  metadata: Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
+}
 
 interface HeroSectionProps {
-  onGetStarted: () => void;
+  onGetStarted: (profile: Profile) => void;
 }
 
 export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
@@ -16,25 +42,51 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
+  const {
+    profile,
+    loading,
+    error,
+    insertProfile,
+    fetchProfile,
+    fetchProfileByEmail,
+  } = useProfile();
+
+  const handleInsert = async (email: string) => {
+    const newUserId = uuidv4(); // generate a random UUID
+
+    const result = await insertProfile(newUserId, {
+      username: email,
+      full_name: email,
+      email: email,
+    });
+    onGetStarted(result);
+  };
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
+
+    const result = await fetchProfileByEmail(email);
+    console.log("Profile:", result);
+    debugger;
+    if (result) {
+      onGetStarted(result);
+    }
+
     setIsSubmitting(true);
-    
+
     // Simulate sending email to adam.mailme@gmail.com
     try {
       // In a real implementation, you'd send this to your backend
       console.log("Sending email to adam.mailme@gmail.com:", email);
-      
+      handleInsert(email);
       toast({
         title: "Thanks for your interest!",
         description: "We'll be in touch soon with early access.",
       });
-      
+
       setShowEmailDialog(false);
-      setEmail("");
-      onGetStarted();
+      setEmail(email);
+      // onGetStarted({});
     } catch (error) {
       toast({
         title: "Something went wrong",
@@ -50,14 +102,14 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Clean background with subtle gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-accent/20 to-primary/5"></div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Brand Logo */}
           <div className="mb-8">
-            <img 
-              src="/lovable-uploads/new-livestatz-logo.png" 
-              alt="LiveStatz - Social Growth" 
+            <img
+              src="/lovable-uploads/new-livestatz-logo.png"
+              alt="LiveStatz - Social Growth"
               className="h-48 w-auto mx-auto mb-8"
             />
           </div>
@@ -66,7 +118,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             <Sparkles className="w-4 h-4 mr-2" />
             Social events for influencers
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-foreground">
             One platform{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
@@ -74,27 +126,27 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             </span>{" "}
             - meetups, drops, collabs, and livestreams.
           </h1>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 py-4 h-auto font-medium shadow-creator"
               onClick={() => setShowEmailDialog(true)}
             >
               Start Building Your Community
             </Button>
           </div>
-          
+
           <div className="text-sm text-muted-foreground mb-12">
             No credit card required
           </div>
-          
+
           {/* App Preview */}
           <div className="relative max-w-5xl mx-auto">
             <div className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
-              <img 
-                src="/lovable-uploads/a9048a85-bb95-4514-b115-e3c11f9d0bca.png" 
-                alt="LiveStatz events dashboard showing event management, RSVP tracking, and analytics" 
+              <img
+                src="/lovable-uploads/a9048a85-bb95-4514-b115-e3c11f9d0bca.png"
+                alt="LiveStatz events dashboard showing event management, RSVP tracking, and analytics"
                 className="w-full h-auto rounded-xl"
               />
             </div>
@@ -119,11 +171,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
                 className="w-full"
               />
             </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Get Early Access"}
             </Button>
           </form>

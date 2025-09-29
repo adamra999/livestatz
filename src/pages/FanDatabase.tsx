@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, Plus, DollarSign, Calendar, MessageSquare, Mail, Phone, MapPin, Send, FileText, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { User } from "@supabase/supabase-js";
 
 interface Fan {
   id: string;
@@ -57,13 +58,41 @@ const FanDatabase = () => {
   const [fanTransactions, setFanTransactions] = useState<FanTransaction[]>([]);
   const [fanComments, setFanComments] = useState<FanComment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchFans();
+    // Check authentication state
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchFans();
+      } else {
+        setLoading(false);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchFans();
+        } else {
+          setFans([]);
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchFans = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('fans')
@@ -73,9 +102,10 @@ const FanDatabase = () => {
       if (error) throw error;
       setFans(data || []);
     } catch (error) {
+      console.error('Error fetching fans:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch fans",
+        description: "Failed to fetch fans. Please make sure you're logged in.",
         variant: "destructive",
       });
     } finally {
@@ -139,6 +169,18 @@ const FanDatabase = () => {
             </Card>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="p-6 text-center">
+        <h1 className="text-3xl font-bold mb-4">Fan Database</h1>
+        <p className="text-muted-foreground mb-6">Please log in to view your fan database.</p>
+        <Button onClick={() => window.location.href = '/auth'}>
+          Log In
+        </Button>
       </div>
     );
   }

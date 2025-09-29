@@ -67,7 +67,6 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
 
     const result = await fetchProfileByEmail(email);
     console.log("Profile:", result);
-    debugger;
     if (result) {
       onGetStarted(result);
     }

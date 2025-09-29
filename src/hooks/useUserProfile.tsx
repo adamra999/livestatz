@@ -4,7 +4,6 @@ const STORAGE_KEY = "userProfile";
 
 export function useUserProfile() {
   const [profile, setProfile] = useState(null);
-  debugger;
   // Load from sessionStorage on first render
   useEffect(() => {
     const storedProfile = sessionStorage.getItem(STORAGE_KEY);

@@ -1,0 +1,25 @@
+UI / UX Links
+Mobile: 
+
+Event Creation:
+https://claude.ai/public/artifacts/3380535b-bf05-42bd-892a-26b80c40c1eb
+
+Desktop (enter any email for access on "start building your community" button.
+
+https://livestatz.com/ 
+https://lovable.dev/projects/0106edc1-8918-4bf2-b77d-0ac242a33fb3
+https://claude.ai/chat/9a69dfc8-b7fe-4be6-9b0a-0b2bc9f0decf?artifactId=remixed-3380535b
+
+Database :
+https://supabase.com/dashboard/project/rwtjswrlbxcjjzfhjusr
+
+
+-- Create user with password
+CREATE USER livestatz WITH PASSWORD 'password';
+
+-- Allow user to create DBs (optional)
+ALTER USER livestatz CREATEDB;
+
+CREATE DATABASE livestatz OWNER livestatz;
+
+GRANT ALL PRIVILEGES ON DATABASE livestatz TO livestatz;

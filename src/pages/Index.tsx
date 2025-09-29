@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { EventCard } from "@/components/events/EventCard";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useEvents } from "@/hooks/useEvents";
 
 const Index = () => {
   console.log("Index component rendering...");
@@ -85,6 +86,7 @@ const Index = () => {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { events, loading, error, createEvent, deleteEvent } = useEvents();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
@@ -500,37 +502,29 @@ const Dashboard = () => {
         });
         return;
       }
+      console.log(loading);
 
       setIsCreating(true);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const eventId = Math.random().toString(36).substring(2, 8);
-      const eventUrl = `https://livestatz.com/e/${eventId}`;
-
-      const event = {
-        id: eventId,
-        url: eventUrl,
+      const responseEvent = createEvent({
         ...formData,
-        createdAt: new Date().toISOString(),
-      };
+      }).then((response) => {
+        setShowSuccessPage(true);
+        toast({
+          title: "Event Created!",
+          description:
+            "Your live event has been successfully created. Redirecting to RSVP page...",
+        });
 
-      setCreatedEvent(event);
+        // Navigate to RSVP page after 2 seconds
+        setTimeout(() => {
+          navigate(`/e/${response?.id}`);
+        }, 1000);
+      });
+      setCreatedEvent(responseEvent);
+      // setCreatedEvent(event);
       setIsCreating(false);
       setShowEventForm(false);
       setShowSuccessPage(true);
-
-      toast({
-        title: "Event Created!",
-        description:
-          "Your live event has been successfully created. Redirecting to RSVP page...",
-      });
-
-      // Navigate to RSVP page after 2 seconds
-      setTimeout(() => {
-        navigate(`/e/${eventId}`);
-      }, 2000);
     };
 
     return (

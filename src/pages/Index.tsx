@@ -494,6 +494,8 @@ const Dashboard = () => {
     });
 
     const handleCreateEvent = async () => {
+      console.log(formData);
+
       if (!formData.title || !formData.dateTime) {
         toast({
           title: "Error",

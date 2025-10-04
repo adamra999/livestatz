@@ -16,6 +16,7 @@ import Interactions from "./pages/Interactions";
 import Rewards from "./pages/Rewards";
 import Collaborations from "./pages/Collaborations";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout><Index /></Layout>} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/e/:eventId" element={<Layout><EventRSVPPage /></Layout>} />
           <Route path="/events/:eventId" element={<Layout><EventDetail /></Layout>} />
           <Route path="/bio-builder" element={<Layout><LinkBioBuilder /></Layout>} />

@@ -35,6 +35,7 @@ export function useEvents() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [eventCount, setEventCount] = useState<number | null>(null);
 
   // 🔹 Fetch all events
   const fetchEvents = useCallback(async () => {
@@ -76,6 +77,27 @@ export function useEvents() {
     []
   );
 
+  // 🔹 Fetch total event count for a specific user
+  const fetchEventCountByUser = useCallback(async (userId: string) => {
+    setLoading(true);
+    setError(null);
+
+    const { count, error } = await supabase
+      .from("Events")
+      .select("*", { count: "exact", head: true })
+      .eq("influencerId", userId);
+
+    if (error) {
+      setError(error.message);
+      setEventCount(null);
+    } else {
+      setEventCount(count ?? 0);
+    }
+
+    setLoading(false);
+    return count ?? 0;
+  }, []);
+
   // 🔹 Create new event
   const createEvent = async (
     eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
@@ -101,6 +123,7 @@ export function useEvents() {
       setError(error.message);
       return null;
     }
+
     setEvents((prev) => [data as Event, ...prev]);
     return data as Event;
   };
@@ -148,8 +171,10 @@ export function useEvents() {
     events,
     loading,
     error,
+    eventCount,
     fetchEvents,
-    fetchEventById, // 👈 added here
+    fetchEventById,
+    fetchEventCountByUser, // ✅ Added new method
     createEvent,
     updateEvent,
     deleteEvent,

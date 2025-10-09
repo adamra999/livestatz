@@ -39,7 +39,14 @@ const Dashboard = () => {
   const { user } = useAuth();
   console.log(user);
 
-  const { events, loading, error, createEvent, deleteEvent } = useEvents();
+  const {
+    events,
+    loading,
+    error,
+    createEvent,
+    fetchEventCountByUser,
+    eventCount,
+  } = useEvents();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
@@ -57,6 +64,9 @@ const Dashboard = () => {
       setCurrentView("dashboard");
     }
   }, [searchParams]);
+  useEffect(() => {
+    if (user?.id) fetchEventCountByUser(user?.id);
+  }, [user?.id, fetchEventCountByUser]);
   const handleClick = () => {
     if (isDesktop) {
       setShowEventForm(true); // open modal
@@ -116,7 +126,7 @@ const Dashboard = () => {
                     </div>
                     <div className="text-center p-4 bg-primary/10 rounded-lg">
                       <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">12</div>
+                      <div className="text-2xl font-bold">12-{eventCount}</div>
                       <div className="text-sm text-muted-foreground">
                         Live Events
                       </div>

@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useProfile } from "@/hooks/useProfile";
 import { v4 as uuidv4 } from "uuid";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 export interface Profile {
   id: string;
   username: string;
@@ -41,6 +42,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const {
     profile,
@@ -96,7 +98,10 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
       setIsSubmitting(false);
     }
   };
-
+  const StartBuildingCommunity = () => {
+    debugger;
+    navigate("/auth");
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Clean background with subtle gradient */}
@@ -130,7 +135,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             <Button
               size="lg"
               className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 py-4 h-auto font-medium shadow-creator"
-              onClick={() => setShowEmailDialog(true)}
+              onClick={StartBuildingCommunity}
             >
               Start Building Your Community
             </Button>

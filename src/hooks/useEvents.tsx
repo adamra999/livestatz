@@ -53,6 +53,29 @@ export function useEvents() {
     setLoading(false);
   }, []);
 
+  // 🔹 Fetch single event by ID
+  const fetchEventById = useCallback(
+    async (id: string): Promise<Event | null> => {
+      setLoading(true);
+      setError(null);
+      const { data, error } = await supabase
+        .from("Events")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return null;
+      }
+
+      setLoading(false);
+      return data as Event;
+    },
+    []
+  );
+
   // 🔹 Create new event
   const createEvent = async (
     eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
@@ -116,7 +139,7 @@ export function useEvents() {
     return true;
   };
 
-  // Auto-fetch on mount
+  // Auto-fetch all events on mount
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
@@ -126,6 +149,7 @@ export function useEvents() {
     loading,
     error,
     fetchEvents,
+    fetchEventById, // 👈 added here
     createEvent,
     updateEvent,
     deleteEvent,

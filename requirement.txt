@@ -14,6 +14,14 @@ Database :
 https://supabase.com/dashboard/project/rwtjswrlbxcjjzfhjusr
 
 
+Google SSO Integration
+Client ID : 992148870695-jecfdfd7p1jvnnh2rcnas32cmad5t79u.apps.googleusercontent.com
+Client secret  : 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
+
+Callback URL of Supabase : https://rwtjswrlbxcjjzfhjusr.supabase.co/auth/v1/callback
+
+
+
 -- Create user with password
 CREATE USER livestatz WITH PASSWORD 'password';
 

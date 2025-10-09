@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
   const [currentView, setCurrentView] = useState<
     "dashboard" | "calendar" | "analytics" | "events"
   >("dashboard");
@@ -50,6 +51,13 @@ const Dashboard = () => {
       setCurrentView("dashboard");
     }
   }, [searchParams]);
+  const handleClick = () => {
+    if (isDesktop) {
+      setShowEventForm(true); // open modal
+    } else {
+      navigate("/events/create-event"); // go to page on mobile
+    }
+  };
   return (
     <div className="min-h-screen bg-background">
       {/* Dashboard Content */}
@@ -250,7 +258,7 @@ const Dashboard = () => {
                     className="w-full"
                     variant="default"
                     // onClick={() => setShowEventForm(true)}
-                    onClick={() => navigate("/events/create-event")}
+                    onClick={handleClick}
                   >
                     <Zap className="mr-2 h-4 w-4" />
                     Create Live Event
@@ -456,8 +464,12 @@ const Dashboard = () => {
         ...formData,
       }).then((response) => {
         debugger;
-        //setShowSuccessPage(true);
-        navigate(`/events/success/${response?.id}`);
+        if (isDesktop) {
+          setCreatedEvent(response);
+          setShowSuccessPage(true); // open modal
+        } else {
+          navigate(`/events/success/${response?.id}`); // go to page on mobile
+        }
         toast({
           title: "Event Created!",
           description:
@@ -469,7 +481,7 @@ const Dashboard = () => {
         //   navigate(`/e/${response?.id}`);
         // }, 1000);
       });
-      setCreatedEvent(responseEvent);
+
       // setCreatedEvent(event);
       setIsCreating(false);
       setShowEventForm(false);

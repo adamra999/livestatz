@@ -28,20 +28,26 @@ import { AnalyticsView } from "@/components/analytics/AnalyticsView";
 import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
+import useAuth from "@/hooks/useAuth";
 
 const Dashboard = () => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const { user } = useAuth();
+  console.log(user);
+
   const { events, loading, error, createEvent, deleteEvent } = useEvents();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+
   const [currentView, setCurrentView] = useState<
     "dashboard" | "calendar" | "analytics" | "events"
   >("dashboard");
-  const { toast } = useToast();
 
   useEffect(() => {
     const view = searchParams.get("view");
@@ -81,7 +87,11 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-2xl">
-                        Welcome back, Creator! 🚀
+                        Welcome back,{" "}
+                        {user?.user_metadata?.full_name
+                          ? user?.user_metadata?.full_name
+                          : "Creator"}
+                        ! 🚀
                       </CardTitle>
                       <CardDescription>
                         Here's what's happening with your content

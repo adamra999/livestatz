@@ -22,15 +22,15 @@ const Index = () => {
   console.log("Index component rendering...");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { profile, setProfile } = useUserProfile();
-  if (isAuthenticated || isLoggedIn || profile?.email) {
-    // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
-    debugger;
-    if (location?.pathname != "/") {
-      navigate(`/dashboard`);
-    }
+  // if (isAuthenticated || isLoggedIn || profile?.email) {
+  //   // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
+  //   debugger;
+  //   if (location?.pathname != "/") {
+  //     navigate(`/dashboard`);
+  //   }
 
-    // return <Dashboard />;
-  }
+  //   // return <Dashboard />;
+  // }
 
   return (
     <div className="min-h-screen bg-background">

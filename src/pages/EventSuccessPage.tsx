@@ -8,29 +8,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Check, ExternalLink } from "lucide-react";
-import { CalendarView } from "@/components/calendar/CalendarView";
-import { AnalyticsView } from "@/components/analytics/AnalyticsView";
 import { useToast } from "@/hooks/use-toast";
-import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
 
 function EventSuccessPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { events, loading, error, createEvent, deleteEvent, fetchEventById } =
-    useEvents();
-  const [showEventForm, setShowEventForm] = useState(false);
-  const [showSuccessPage, setShowSuccessPage] = useState(false);
+  const { fetchEventById } = useEvents();
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
-  console.log(createdEvent);
-
   useEffect(() => {
     if (eventId) fetchEventById(eventId).then(setCreatedEvent);
   }, [eventId, fetchEventById]);
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -56,42 +49,49 @@ function EventSuccessPage() {
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
         createdEvent?.url
       )}`,
-      discord: createdEvent?.url, // Copy for Discord
-      instagram: createdEvent?.url, // Copy for Instagram
+      discord: createdEvent?.url,
+      instagram: createdEvent?.url,
       x: `https://x.com/intent/tweet?text=${encodeURIComponent(message)}`,
-      twitch: createdEvent?.url, // Copy for Twitch
+      twitch: createdEvent?.url,
     };
 
-    if (
-      platform === "discord" ||
-      platform === "instagram" ||
-      platform === "twitch"
-    ) {
+    if (["discord", "instagram", "twitch"].includes(platform)) {
       copyToClipboard(message);
     } else {
       window.open(urls[platform as keyof typeof urls], "_blank");
     }
   };
 
+  if (!createdEvent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading event details...
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-card rounded-xl max-w-4xl w-full p-8 max-h-[90vh] overflow-y-auto">
+    <div className="min-h-screen bg-background px-4 py-6 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto">
+        {/* ✅ Header */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-3xl font-bold mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-foreground">
             Event Created Successfully!
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm sm:text-base">
             Your live event is ready to share with your audience
           </p>
         </div>
 
-        {/* Event URL Section */}
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 mb-8">
-          <h3 className="font-semibold mb-3">Your Event Link</h3>
-          <div className="flex items-center gap-3">
+        {/* ✅ Event Link */}
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 sm:p-6 mb-6">
+          <h3 className="font-semibold mb-3 text-base sm:text-lg">
+            Your Event Link
+          </h3>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <input
               type="text"
               value={createdEvent?.url}
@@ -101,22 +101,25 @@ function EventSuccessPage() {
             <Button
               onClick={() => copyToClipboard(createdEvent?.url)}
               variant="outline"
-              className="px-4"
+              className="w-full sm:w-auto"
             >
               {copied ? (
                 <Check className="w-4 h-4 text-green-600" />
               ) : (
                 <Copy className="w-4 h-4" />
               )}
+              <span className="ml-2 sm:ml-0 sm:hidden">Copy</span>
             </Button>
           </div>
         </div>
 
-        {/* Event Details Preview */}
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
+        {/* ✅ Event Details */}
+        <div className="space-y-6 sm:space-y-8 mb-8">
           <div>
-            <h3 className="font-semibold mb-4">Event Details</h3>
-            <div className="space-y-3 text-sm">
+            <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
+              Event Details
+            </h3>
+            <div className="space-y-2 text-sm">
               <div>
                 <strong>Title:</strong> {createdEvent?.title}
               </div>
@@ -131,6 +134,7 @@ function EventSuccessPage() {
                 <strong>Time:</strong>{" "}
                 {new Date(createdEvent?.dateTime).toLocaleTimeString()}
               </div>
+
               {createdEvent?.isPaid && (
                 <>
                   <div className="flex items-center gap-2">
@@ -153,16 +157,18 @@ function EventSuccessPage() {
             </div>
           </div>
 
+          {/* ✅ Share Section */}
           <div>
-            <h3 className="font-semibold mb-4">Share on Social Media</h3>
-            <div className="grid grid-cols-3 gap-3">
+            <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
+              Share on Social Media
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
                 { name: "Twitter", key: "twitter", icon: "🐦" },
                 { name: "Facebook", key: "facebook", icon: "📘" },
                 { name: "LinkedIn", key: "linkedin", icon: "💼" },
                 { name: "Instagram", key: "instagram", icon: "📸" },
                 { name: "Discord", key: "discord", icon: "🎮" },
-                { name: "X", key: "x", icon: "✖️" },
                 { name: "Twitch", key: "twitch", icon: "🎯" },
               ].map((platform) => (
                 <Button
@@ -170,7 +176,7 @@ function EventSuccessPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => shareToSocial(platform.key)}
-                  className="text-xs"
+                  className="text-xs sm:text-sm"
                 >
                   {platform.icon} {platform.name}
                 </Button>
@@ -183,28 +189,23 @@ function EventSuccessPage() {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-4 justify-center">
+        {/* ✅ Footer Actions */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
           <Button
             variant="outline"
-            onClick={() => {
-              setShowSuccessPage(false);
-              setCreatedEvent(null);
-            }}
+            onClick={() => navigate("/events")}
+            className="w-full sm:w-auto"
           >
             Close
           </Button>
           <Button
-            onClick={() => {
-              setShowSuccessPage(false);
-              setCreatedEvent(null);
-              setShowEventForm(true);
-            }}
+            onClick={() => navigate("/events/new")}
+            className="w-full sm:w-auto"
           >
             Create Another Event
           </Button>
-          <Link to={`/e/${createdEvent?.id}`}>
-            <Button variant="outline">
+          <Link to={`/e/${createdEvent?.id}`} className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto">
               <ExternalLink className="w-4 h-4 mr-2" />
               Preview Event Page
             </Button>

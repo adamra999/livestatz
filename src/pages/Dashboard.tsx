@@ -249,7 +249,8 @@ const Dashboard = () => {
                   <Button
                     className="w-full"
                     variant="default"
-                    onClick={() => setShowEventForm(true)}
+                    // onClick={() => setShowEventForm(true)}
+                    onClick={() => navigate("/events/create-event")}
                   >
                     <Zap className="mr-2 h-4 w-4" />
                     Create Live Event

@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import EventSuccessPage from "./pages/EventSuccessPage";
+import CreateEventPage from "./pages/CreateEventPage";
 
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -48,6 +49,11 @@ const App = () => {
                 path="/events/success/:eventId"
                 element={<EventSuccessPage />}
               />
+              <Route
+                path="/events/create-event"
+                element={<CreateEventPage />}
+              />
+
               <Route
                 path="/e/:eventId"
                 element={

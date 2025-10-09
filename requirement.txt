@@ -31,3 +31,8 @@ ALTER USER livestatz CREATEDB;
 CREATE DATABASE livestatz OWNER livestatz;
 
 GRANT ALL PRIVILEGES ON DATABASE livestatz TO livestatz;
+
+
+
+
+In

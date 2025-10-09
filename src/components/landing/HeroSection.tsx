@@ -99,7 +99,6 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
     }
   };
   const StartBuildingCommunity = () => {
-    debugger;
     navigate("/auth");
   };
   return (

@@ -126,7 +126,7 @@ const Dashboard = () => {
                     </div>
                     <div className="text-center p-4 bg-primary/10 rounded-lg">
                       <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">12-{eventCount}</div>
+                      <div className="text-2xl font-bold">{eventCount}</div>
                       <div className="text-sm text-muted-foreground">
                         Live Events
                       </div>
@@ -466,6 +466,7 @@ const Dashboard = () => {
       includePerks: false,
       perkDescription: "",
       offerWithSubscription: false,
+      influencerId: user?.id,
     });
 
     const handleCreateEvent = async () => {

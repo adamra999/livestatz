@@ -35,7 +35,6 @@ export function useInfluencers() {
     };
     fetchUser();
 
-    // Listen for login/logout changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -78,13 +77,38 @@ export function useInfluencers() {
     setLoading(false);
   }, []);
 
+  // ✅ Fetch influencer by email
+  const fetchInfluencerByEmail = useCallback(async (email: string) => {
+    debugger;
+    if (!email) return null;
+
+    setLoading(true);
+    setError(null);
+
+    const { data, error } = await supabase
+      .from("Influencers")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 = No rows found
+      setError(error.message);
+      setLoading(false);
+      return null;
+    }
+
+    setLoading(false);
+    return data;
+  }, []);
+
   // ✅ Add influencer (uses Google SSO id if available)
   const addInfluencer = useCallback(
     async (id: string, name: string, email: string) => {
+      debugger;
       setLoading(true);
       setError(null);
 
-      // Ensure we have a logged-in user
       if (!id) {
         setError("Id must be provided.");
         setLoading(false);
@@ -92,12 +116,7 @@ export function useInfluencers() {
       }
 
       // Check if influencer with this email exists
-      const { data: existing } = await supabase
-        .from("Influencers")
-        .select("*")
-        .eq("email", email)
-        .single();
-
+      const existing = await fetchInfluencerByEmail(email);
       if (existing) {
         setError("Influencer with this email already exists.");
         setLoading(false);
@@ -118,16 +137,13 @@ export function useInfluencers() {
         .select()
         .single();
 
-      if (error) {
-        setError(error.message);
-      } else if (data) {
-        setInfluencers((prev) => [data, ...prev]);
-      }
+      if (error) setError(error.message);
+      else if (data) setInfluencers((prev) => [data, ...prev]);
 
       setLoading(false);
       return data;
     },
-    [currentUser]
+    [fetchInfluencerByEmail]
   );
 
   // ✅ Update influencer
@@ -175,6 +191,7 @@ export function useInfluencers() {
     error,
     currentUser,
     fetchInfluencers,
+    fetchInfluencerByEmail, // ✅ new function exposed here
     addInfluencer,
     updateInfluencer,
     deleteInfluencer,

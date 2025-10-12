@@ -1,6 +1,7 @@
 import { createContext, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useInfluencers } from "@/hooks/useInfluencers";
 
 const initialState = {
   user: null,
@@ -25,6 +26,7 @@ const AuthContext = createContext({
   method: "JWT",
 });
 export const AuthProvider = ({ children }) => {
+  const { fetchInfluencerByEmail, addInfluencer, error } = useInfluencers();
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
   useEffect(() => {
@@ -37,6 +39,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
+      debugger;
       if (session) {
         if (location?.pathname == "/") {
           navigate("/dashboard");
@@ -44,13 +47,40 @@ export const AuthProvider = ({ children }) => {
         // navigate("/dashboard");
       }
     });
-
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session && event === "SIGNED_IN" && session?.user) {
         const user = session.user;
+        const provider = session.user.app_metadata?.provider;
+
+        console.log("🔹 Auth Provider:", provider);
+        // ✅ Step 1: Verify if user logged in via Google SSO
+        if (provider === "google") {
+          console.log("✅ User signed in via Google SSO:", user.email);
+
+          // ✅ Step 2: Check if this is their first time
+          const influencer = await fetchInfluencerByEmail(user.email);
+          if (!influencer) {
+            // No record found → first-time user
+            console.log("🆕 First-time Google user detected!");
+            await addInfluencer(
+              user.id,
+              user?.user_metadata?.full_name,
+              user.email
+            );
+          } else {
+            console.log("👋 Returning Google user:", user.email);
+
+            // Optional: update last login timestamp
+          }
+          if (location?.pathname == "/") {
+            navigate("/dashboard");
+          }
+        } else {
+          console.log("User logged in via other provider:", provider);
+        }
+
         dispatch({
           type: "INIT",
           payload: { isAuthenticated: true, user },

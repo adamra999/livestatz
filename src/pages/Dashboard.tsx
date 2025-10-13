@@ -28,7 +28,7 @@ import { AnalyticsView } from "@/components/analytics/AnalyticsView";
 import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -484,7 +484,6 @@ const Dashboard = () => {
       const responseEvent = createEvent({
         ...formData,
       }).then((response) => {
-        debugger;
         if (isDesktop) {
           setCreatedEvent(response);
           setShowSuccessPage(true); // open modal

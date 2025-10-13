@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
-      debugger;
       if (session) {
         if (location?.pathname == "/") {
           navigate("/dashboard");
@@ -53,12 +52,13 @@ export const AuthProvider = ({ children }) => {
       if (session && event === "SIGNED_IN" && session?.user) {
         const user = session.user;
         const provider = session.user.app_metadata?.provider;
-
+        if (location?.pathname == "/") {
+          navigate("/dashboard");
+        }
         console.log("🔹 Auth Provider:", provider);
         // ✅ Step 1: Verify if user logged in via Google SSO
         if (provider === "google") {
           console.log("✅ User signed in via Google SSO:", user.email);
-
           // ✅ Step 2: Check if this is their first time
           const influencer = await fetchInfluencerByEmail(user.email);
           if (!influencer) {

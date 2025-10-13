@@ -78,8 +78,7 @@ export function useInfluencers() {
   }, []);
 
   // ✅ Fetch influencer by email
-  const fetchInfluencerByEmail = useCallback(async (email: string) => {
-    debugger;
+  const fetchInfluencerByEmail = async (email: string) => {
     if (!email) return null;
 
     setLoading(true);
@@ -100,12 +99,11 @@ export function useInfluencers() {
 
     setLoading(false);
     return data;
-  }, []);
+  };
 
   // ✅ Add influencer (uses Google SSO id if available)
   const addInfluencer = useCallback(
     async (id: string, name: string, email: string) => {
-      debugger;
       setLoading(true);
       setError(null);
 

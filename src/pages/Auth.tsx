@@ -65,7 +65,6 @@ export default function Auth() {
       });
 
       if (error) throw error;
-      debugger;
       await addInfluencer(data?.user?.id, name, data?.user?.email);
       toast({
         title: "Success!",

@@ -13,7 +13,7 @@ import { EventCard } from "@/components/events/EventCard";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useEvents } from "@/hooks/useEvents";
 import Dashboard from "./Dashboard";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { isAuthenticated, user } = useAuth();

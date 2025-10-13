@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
           payload: { isAuthenticated: true, user },
         });
         // navigate("/dashboard");
-      } else if (event === "SIGNED_OUT") {
+      } else if (event != "INITIAL_SESSION") {
         navigate("/");
       }
     });

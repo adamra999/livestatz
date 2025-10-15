@@ -34,5 +34,10 @@ GRANT ALL PRIVILEGES ON DATABASE livestatz TO livestatz;
 
 
 
+Log in and Generate Types
+supabase login
+supabase link --project-ref ayrwfjeozogozbfwbjje
+supabase gen types typescript --project-id ayrwfjeozogozbfwbjje > src/integrations/supabase/types.ts
 
-In
+
+

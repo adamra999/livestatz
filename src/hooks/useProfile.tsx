@@ -1,11 +1,5 @@
 import { useState, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-// 👇 Setup Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
-);
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Profile {
   id: string;
@@ -14,108 +8,88 @@ export interface Profile {
   email: string;
 }
 
-export function useProfile() {
+interface UseProfileResult {
+  profile: Profile | null;
+  loading: boolean;
+  error: string | null;
+  insertProfile: (
+    newUserId: string,
+    data: Omit<Profile, "id">
+  ) => Promise<Profile | null>;
+  fetchProfile: (id: string) => Promise<Profile | null>;
+  fetchProfileByEmail: (email: string) => Promise<Profile | null>;
+  updateProfile: (
+    id: string,
+    updates: Partial<Profile>
+  ) => Promise<Profile | null>;
+}
+
+export function useProfile(): UseProfileResult {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Insert profile
-  const insertProfile = useCallback(
-    async (newUserId: string, data: Omit<Profile, "id">) => {
+  // 🔹 Generic async handler
+  const runQuery = useCallback(
+    async <T,>(
+      queryFn: () => Promise<{ data: T | null; error: any }>
+    ): Promise<T | null> => {
       setLoading(true);
       setError(null);
-
-      const { data: inserted, error } = await supabase
-        .from("profiles")
-        .insert([{ id: newUserId, ...data }])
-        .select()
-        .single();
-
-      setLoading(false);
-
-      if (error) {
-        setError(error.message);
-        console.error("Error inserting profile:", error);
+      try {
+        const { data, error } = await queryFn();
+        if (error) throw error;
+        if (data) setProfile(data as Profile);
+        return data;
+      } catch (err: any) {
+        console.error("Profile hook error:", err.message);
+        setError(err.message);
         return null;
-      } else {
-        setProfile(inserted);
-        return inserted;
+      } finally {
+        setLoading(false);
       }
     },
     []
   );
 
-  // Fetch profile by ID
-  const fetchProfile = useCallback(async (id: string) => {
-    setLoading(true);
-    setError(null);
+  // 🔹 Insert profile
+  const insertProfile = useCallback(
+    (newUserId: string, data: Omit<Profile, "id">) =>
+      runQuery(async () =>
+        supabase
+          .from("profiles")
+          .insert([{ id: newUserId, ...data }])
+          .select()
+          .single()
+      ),
+    [runQuery]
+  );
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", id)
-      .single();
+  // 🔹 Fetch by ID
+  const fetchProfile = useCallback(
+    (id: string) =>
+      runQuery(async () =>
+        supabase.from("profiles").select("*").eq("id", id).single()
+      ),
+    [runQuery]
+  );
 
-    setLoading(false);
+  // 🔹 Fetch by email
+  const fetchProfileByEmail = useCallback(
+    (email: string) =>
+      runQuery(async () =>
+        supabase.from("profiles").select("*").eq("email", email).single()
+      ),
+    [runQuery]
+  );
 
-    if (error) {
-      setError(error.message);
-      console.error("Error fetching profile:", error);
-      return null;
-    } else {
-      setProfile(data);
-      return data;
-    }
-  }, []);
-
-  // Fetch profile by Email
-  const fetchProfileByEmail = useCallback(async (email: string) => {
-    setLoading(true);
-    setError(null);
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("email", email)
-      .single();
-
-    setLoading(false);
-
-    if (error) {
-      setError(error.message);
-      console.error("Error fetching profile by email:", error);
-      return null;
-    } else {
-      setProfile(data);
-      return data;
-    }
-  }, []);
-
-  // Update profile
+  // 🔹 Update profile
   const updateProfile = useCallback(
-    async (id: string, updates: Partial<Profile>) => {
-      setLoading(true);
-      setError(null);
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .update(updates)
-        .eq("id", id)
-        .select()
-        .single();
-
-      setLoading(false);
-
-      if (error) {
-        setError(error.message);
-        console.error("Error updating profile:", error);
-        return null;
-      } else {
-        setProfile(data);
-        return data;
-      }
-    },
-    []
+    (id: string, updates: Partial<Profile>) =>
+      runQuery(async () =>
+        supabase.from("profiles").update(updates).eq("id", id).select().single()
+      ),
+    [runQuery]
   );
 
   return {

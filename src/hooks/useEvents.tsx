@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "../lib/supabaseClient"; // ✅ use shared instance
+import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 export interface Event {
   id: string;
@@ -17,12 +18,14 @@ export interface Event {
   includeReplay?: boolean;
   includeDownloadablePerk?: boolean;
   perkDescription?: string;
-  selectedFanGroups?: any[];
-  inviteEmails?: any[];
-  tags?: any[];
+  selectedFanGroups?: Json; // ✅ fixed type
+  inviteEmails?: Json; // ✅ fixed type
+  tags?: Json; // ✅ fixed type
   createdAt: string;
   updatedAt: string;
   influencerId?: string;
+  attendeeBenefits?: Json; // ✅ added in case table has this column
+  includePerks?: boolean; // ✅ added if exists in your schema
 }
 
 export function useEvents() {
@@ -30,6 +33,28 @@ export function useEvents() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [eventCount, setEventCount] = useState<number | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // 🔹 Load current user on mount
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) setUserId(user.id);
+    };
+    getCurrentUser();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUserId(session?.user?.id ?? null);
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   // 🔹 Fetch all events
   const fetchEvents = useCallback(async () => {
@@ -41,18 +66,16 @@ export function useEvents() {
       .select("*")
       .order("createdAt", { ascending: false });
 
-    if (error) {
-      setError(error.message);
-    } else {
-      setEvents(data ?? []);
-    }
+    if (error) setError(error.message);
+    else setEvents((data ?? []) as Event[]); // ✅ explicitly cast
 
     setLoading(false);
   }, []);
 
-  // 🔹 Fetch single event by ID
+  // 🔹 Fetch single event
   const fetchEventById = useCallback(
     async (id: string): Promise<Event | null> => {
+      if (!id) return null;
       setLoading(true);
       setError(null);
 
@@ -60,26 +83,24 @@ export function useEvents() {
         .from("Events")
         .select("*")
         .eq("id", id)
-        .maybeSingle(); // ✅ avoids throwing if not found
+        .maybeSingle();
 
       if (error) setError(error.message);
-
       setLoading(false);
       return data as Event | null;
     },
     []
   );
 
-  // 🔹 Fetch total event count by user
+  // 🔹 Fetch event count for user
   const fetchEventCountByUser = useCallback(async (userId: string) => {
     if (!userId) return 0;
-
     setLoading(true);
     setError(null);
 
     const { count, error } = await supabase
       .from("Events")
-      .select("*", { count: "exact", head: true })
+      .select("*", { count: "exact" })
       .eq("influencerId", userId);
 
     if (error) {
@@ -93,7 +114,12 @@ export function useEvents() {
     return count ?? 0;
   }, []);
 
-  // 🔹 Create new event
+  // 🔹 Automatically update event count
+  useEffect(() => {
+    if (userId) fetchEventCountByUser(userId);
+  }, [userId, fetchEventCountByUser]);
+
+  // 🔹 Create event
   const createEvent = useCallback(
     async (
       eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
@@ -143,7 +169,6 @@ export function useEvents() {
       }
 
       setEvents((prev) => prev.map((e) => (e.id === id ? (data as Event) : e)));
-
       return data as Event;
     },
     []
@@ -152,7 +177,6 @@ export function useEvents() {
   // 🔹 Delete event
   const deleteEvent = useCallback(async (id: string) => {
     const { error } = await supabase.from("Events").delete().eq("id", id);
-
     if (error) {
       setError(error.message);
       return false;
@@ -162,7 +186,7 @@ export function useEvents() {
     return true;
   }, []);
 
-  // 🔹 Auto-fetch on mount
+  // 🔹 Auto-fetch events on mount
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
@@ -172,6 +196,7 @@ export function useEvents() {
     loading,
     error,
     eventCount,
+    userId,
     fetchEvents,
     fetchEventById,
     fetchEventCountByUser,

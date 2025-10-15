@@ -59,6 +59,89 @@ export type Database = {
         }
         Relationships: []
       }
+      Events: {
+        Row: {
+          accessDescription: string | null
+          attendeeBenefits: Json | null
+          createdAt: string
+          dateTime: string
+          description: string | null
+          id: string
+          includePerks: boolean | null
+          includeReplay: boolean | null
+          influencerId: string | null
+          inviteEmails: Json | null
+          isPaid: boolean | null
+          isPublic: boolean | null
+          link: string
+          offerWithSubscription: boolean | null
+          perkDescription: string | null
+          platform: string
+          price: string | null
+          selectedFanGroups: Json | null
+          tags: Json | null
+          title: string
+          updatedAt: string
+          url: string
+        }
+        Insert: {
+          accessDescription?: string | null
+          attendeeBenefits?: Json | null
+          createdAt: string
+          dateTime: string
+          description?: string | null
+          id: string
+          includePerks?: boolean | null
+          includeReplay?: boolean | null
+          influencerId?: string | null
+          inviteEmails?: Json | null
+          isPaid?: boolean | null
+          isPublic?: boolean | null
+          link: string
+          offerWithSubscription?: boolean | null
+          perkDescription?: string | null
+          platform: string
+          price?: string | null
+          selectedFanGroups?: Json | null
+          tags?: Json | null
+          title: string
+          updatedAt: string
+          url: string
+        }
+        Update: {
+          accessDescription?: string | null
+          attendeeBenefits?: Json | null
+          createdAt?: string
+          dateTime?: string
+          description?: string | null
+          id?: string
+          includePerks?: boolean | null
+          includeReplay?: boolean | null
+          influencerId?: string | null
+          inviteEmails?: Json | null
+          isPaid?: boolean | null
+          isPublic?: boolean | null
+          link?: string
+          offerWithSubscription?: boolean | null
+          perkDescription?: string | null
+          platform?: string
+          price?: string | null
+          selectedFanGroups?: Json | null
+          tags?: Json | null
+          title?: string
+          updatedAt?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_influencerid_fkey"
+            columns: ["influencerId"]
+            isOneToOne: false
+            referencedRelation: "Influencers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fan_comments: {
         Row: {
           commented_at: string | null
@@ -230,6 +313,146 @@ export type Database = {
         }
         Relationships: []
       }
+      Influencers: {
+        Row: {
+          createdAt: string
+          email: string
+          id: string
+          name: string
+          updatedAt: string
+        }
+        Insert: {
+          createdAt: string
+          email: string
+          id: string
+          name: string
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          email?: string
+          id?: string
+          name?: string
+          updatedAt?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          createdAt: string
+          eventId: string
+          id: string
+          payload: Json | null
+          sentAt: string | null
+          type: string | null
+          updatedAt: string
+        }
+        Insert: {
+          createdAt: string
+          eventId: string
+          id: string
+          payload?: Json | null
+          sentAt?: string | null
+          type?: string | null
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          eventId?: string
+          id?: string
+          payload?: Json | null
+          sentAt?: string | null
+          type?: string | null
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_eventId_fkey"
+            columns: ["eventId"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          metadata: Json | null
+          phone: string | null
+          role: string | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          metadata?: Json | null
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          metadata?: Json | null
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          avatar: string | null
+          createdAt: string
+          email: string
+          id: string
+          name: string | null
+          passwordHash: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["enum_users_role"] | null
+          socialId: string | null
+          updatedAt: string
+        }
+        Insert: {
+          avatar?: string | null
+          createdAt: string
+          email: string
+          id: string
+          name?: string | null
+          passwordHash?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["enum_users_role"] | null
+          socialId?: string | null
+          updatedAt: string
+        }
+        Update: {
+          avatar?: string | null
+          createdAt?: string
+          email?: string
+          id?: string
+          name?: string | null
+          passwordHash?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["enum_users_role"] | null
+          socialId?: string | null
+          updatedAt?: string
+        }
+        Relationships: []
+      }
       workflow_actions: {
         Row: {
           action_data: Json | null
@@ -312,7 +535,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      enum_users_role: "fan" | "influencer" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -439,6 +662,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      enum_users_role: ["fan", "influencer", "admin"],
+    },
   },
 } as const

@@ -1,11 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-// Initialize Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
-);
+import { supabase } from "../lib/supabaseClient"; // ✅ use shared instance
 
 export interface Event {
   id: string;
@@ -33,7 +27,7 @@ export interface Event {
 
 export function useEvents() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [eventCount, setEventCount] = useState<number | null>(null);
 
@@ -41,6 +35,7 @@ export function useEvents() {
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     setError(null);
+
     const { data, error } = await supabase
       .from("Events")
       .select("*")
@@ -49,8 +44,9 @@ export function useEvents() {
     if (error) {
       setError(error.message);
     } else {
-      setEvents(data as Event[]);
+      setEvents(data ?? []);
     }
+
     setLoading(false);
   }, []);
 
@@ -59,28 +55,28 @@ export function useEvents() {
     async (id: string): Promise<Event | null> => {
       setLoading(true);
       setError(null);
+
       const { data, error } = await supabase
         .from("Events")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle(); // ✅ avoids throwing if not found
 
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-        return null;
-      }
+      if (error) setError(error.message);
 
       setLoading(false);
-      return data as Event;
+      return data as Event | null;
     },
     []
   );
 
-  // 🔹 Fetch total event count for a specific user
+  // 🔹 Fetch total event count by user
   const fetchEventCountByUser = useCallback(async (userId: string) => {
+    if (!userId) return 0;
+
     setLoading(true);
     setError(null);
+
     const { count, error } = await supabase
       .from("Events")
       .select("*", { count: "exact", head: true })
@@ -98,58 +94,63 @@ export function useEvents() {
   }, []);
 
   // 🔹 Create new event
-  const createEvent = async (
-    eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
-  ) => {
-    const eventId = crypto.randomUUID();
-    const eventUrl = `https://livestatz.com/e/${eventId}`;
-    const { data, error } = await supabase
-      .from("Events")
-      .insert([
-        {
-          ...eventData,
-          id: eventId,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          url: eventUrl,
-          link: eventUrl,
-        },
-      ])
-      .select()
-      .single();
+  const createEvent = useCallback(
+    async (
+      eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
+    ) => {
+      const eventId = crypto.randomUUID();
+      const eventUrl = `https://livestatz.com/e/${eventId}`;
 
-    if (error) {
-      setError(error.message);
-      return null;
-    }
+      const { data, error } = await supabase
+        .from("Events")
+        .insert([
+          {
+            ...eventData,
+            id: eventId,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            url: eventUrl,
+            link: eventUrl,
+          },
+        ])
+        .select()
+        .single();
 
-    setEvents((prev) => [data as Event, ...prev]);
-    return data as Event;
-  };
+      if (error) {
+        setError(error.message);
+        return null;
+      }
+
+      setEvents((prev) => [data as Event, ...prev]);
+      return data as Event;
+    },
+    []
+  );
 
   // 🔹 Update event
-  const updateEvent = async (id: string, updates: Partial<Event>) => {
-    const { data, error } = await supabase
-      .from("Events")
-      .update({
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      })
-      .eq("id", id)
-      .select()
-      .single();
+  const updateEvent = useCallback(
+    async (id: string, updates: Partial<Event>) => {
+      const { data, error } = await supabase
+        .from("Events")
+        .update({ ...updates, updatedAt: new Date().toISOString() })
+        .eq("id", id)
+        .select()
+        .single();
 
-    if (error) {
-      setError(error.message);
-      return null;
-    }
+      if (error) {
+        setError(error.message);
+        return null;
+      }
 
-    setEvents((prev) => prev.map((e) => (e.id === id ? (data as Event) : e)));
-    return data as Event;
-  };
+      setEvents((prev) => prev.map((e) => (e.id === id ? (data as Event) : e)));
+
+      return data as Event;
+    },
+    []
+  );
 
   // 🔹 Delete event
-  const deleteEvent = async (id: string) => {
+  const deleteEvent = useCallback(async (id: string) => {
     const { error } = await supabase.from("Events").delete().eq("id", id);
 
     if (error) {
@@ -159,9 +160,9 @@ export function useEvents() {
 
     setEvents((prev) => prev.filter((e) => e.id !== id));
     return true;
-  };
+  }, []);
 
-  // Auto-fetch all events on mount
+  // 🔹 Auto-fetch on mount
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
@@ -173,7 +174,7 @@ export function useEvents() {
     eventCount,
     fetchEvents,
     fetchEventById,
-    fetchEventCountByUser, // ✅ Added new method
+    fetchEventCountByUser,
     createEvent,
     updateEvent,
     deleteEvent,

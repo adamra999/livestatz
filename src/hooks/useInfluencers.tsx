@@ -1,11 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { createClient, User } from "@supabase/supabase-js";
-
-// Initialize Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
-);
+import { User } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabaseClient"; // ✅ Reuse single instance
 
 export interface Influencer {
   id: string;
@@ -23,7 +18,7 @@ export function useInfluencers() {
   const [error, setError] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  // ✅ Fetch current Supabase user (e.g., Google SSO user)
+  // ✅ Fetch current user
   useEffect(() => {
     const fetchUser = async () => {
       const {
@@ -35,16 +30,16 @@ export function useInfluencers() {
     };
     fetchUser();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null);
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setCurrentUser(session?.user ?? null);
+      }
+    );
 
-    return () => subscription.unsubscribe();
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  // ✅ Load cached influencers from sessionStorage
+  // ✅ Load from cache
   useEffect(() => {
     const cached = sessionStorage.getItem(STORAGE_KEY);
     if (cached) {
@@ -56,7 +51,7 @@ export function useInfluencers() {
     }
   }, []);
 
-  // ✅ Save influencers to sessionStorage whenever they change
+  // ✅ Save cache
   useEffect(() => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(influencers));
   }, [influencers]);
@@ -72,15 +67,14 @@ export function useInfluencers() {
       .order("createdAt", { ascending: false });
 
     if (error) setError(error.message);
-    else if (data) setInfluencers(data);
+    else setInfluencers(data ?? []);
 
     setLoading(false);
   }, []);
 
   // ✅ Fetch influencer by email
-  const fetchInfluencerByEmail = async (email: string) => {
+  const fetchInfluencerByEmail = useCallback(async (email: string) => {
     if (!email) return null;
-
     setLoading(true);
     setError(null);
 
@@ -88,20 +82,14 @@ export function useInfluencers() {
       .from("Influencers")
       .select("*")
       .eq("email", email)
-      .single();
+      .maybeSingle(); // simpler than single() + error check
 
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 = No rows found
-      setError(error.message);
-      setLoading(false);
-      return null;
-    }
-
+    if (error) setError(error.message);
     setLoading(false);
     return data;
-  };
+  }, []);
 
-  // ✅ Add influencer (uses Google SSO id if available)
+  // ✅ Add influencer
   const addInfluencer = useCallback(
     async (id: string, name: string, email: string) => {
       setLoading(true);
@@ -113,7 +101,6 @@ export function useInfluencers() {
         return null;
       }
 
-      // Check if influencer with this email exists
       const existing = await fetchInfluencerByEmail(email);
       if (existing) {
         setError("Influencer with this email already exists.");
@@ -136,7 +123,7 @@ export function useInfluencers() {
         .single();
 
       if (error) setError(error.message);
-      else if (data) setInfluencers((prev) => [data, ...prev]);
+      else setInfluencers((prev) => [data, ...prev]);
 
       setLoading(false);
       return data;
@@ -157,13 +144,11 @@ export function useInfluencers() {
         .select()
         .single();
 
-      if (error) {
-        setError(error.message);
-      } else if (data) {
+      if (error) setError(error.message);
+      else
         setInfluencers((prev) =>
           prev.map((inf) => (inf.id === id ? data : inf))
         );
-      }
 
       setLoading(false);
       return data;
@@ -189,7 +174,7 @@ export function useInfluencers() {
     error,
     currentUser,
     fetchInfluencers,
-    fetchInfluencerByEmail, // ✅ new function exposed here
+    fetchInfluencerByEmail,
     addInfluencer,
     updateInfluencer,
     deleteInfluencer,

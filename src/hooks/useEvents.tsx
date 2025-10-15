@@ -81,7 +81,6 @@ export function useEvents() {
   const fetchEventCountByUser = useCallback(async (userId: string) => {
     setLoading(true);
     setError(null);
-
     const { count, error } = await supabase
       .from("Events")
       .select("*", { count: "exact", head: true })

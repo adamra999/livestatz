@@ -56,6 +56,10 @@ export const AuthProvider = ({ children }) => {
           navigate("/dashboard");
         }
         console.log("🔹 Auth Provider:", provider);
+        dispatch({
+          type: "INIT",
+          payload: { isAuthenticated: true, user },
+        });
         // ✅ Step 1: Verify if user logged in via Google SSO
         if (provider === "google") {
           console.log("✅ User signed in via Google SSO:", user.email);
@@ -80,11 +84,6 @@ export const AuthProvider = ({ children }) => {
         } else {
           console.log("User logged in via other provider:", provider);
         }
-
-        dispatch({
-          type: "INIT",
-          payload: { isAuthenticated: true, user },
-        });
         // navigate("/dashboard");
       } else if (event != "INITIAL_SESSION") {
         navigate("/");

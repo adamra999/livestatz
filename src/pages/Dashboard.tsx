@@ -64,9 +64,9 @@ const Dashboard = () => {
       setCurrentView("dashboard");
     }
   }, [searchParams]);
-  useEffect(() => {
-    if (user?.id) fetchEventCountByUser(user?.id);
-  }, [user?.id, fetchEventCountByUser]);
+  // useEffect(() => {
+  //   if (user?.id) fetchEventCountByUser(user?.id);
+  // }, [user?.id, fetchEventCountByUser]);
   const handleClick = () => {
     if (isDesktop) {
       setShowEventForm(true); // open modal
@@ -126,7 +126,9 @@ const Dashboard = () => {
                     </div>
                     <div className="text-center p-4 bg-primary/10 rounded-lg">
                       <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">{eventCount}</div>
+                      <div className="text-2xl font-bold">
+                        {events?.length || 0}
+                      </div>
                       <div className="text-sm text-muted-foreground">
                         Live Events
                       </div>
@@ -221,39 +223,52 @@ const Dashboard = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {[
-                      {
-                        id: "1",
-                        title: "Morning Workout Session",
-                        date: "Today",
-                        time: "9:00 AM",
-                        rsvpCount: 156,
-                        platform: "Instagram Live",
-                        isPaid: false,
-                        isLive: true,
-                        liveLink: "https://instagram.com/live/workout123",
-                      },
-                      {
-                        id: "2",
-                        title: "Gaming Stream Q&A",
-                        date: "Tomorrow",
-                        time: "7:00 PM",
-                        rsvpCount: 89,
-                        platform: "TikTok Live",
-                        isPaid: true,
-                        price: 9.99,
-                      },
-                      {
-                        id: "3",
-                        title: "Fashion Haul & Tips",
-                        date: "Friday",
-                        time: "3:00 PM",
-                        rsvpCount: 203,
-                        platform: "YouTube Live",
-                        isPaid: false,
-                        rsvpGoal: 300,
-                        totalViews: 1250,
-                        revenue: 145.5,
-                      },
+                      // {
+                      //   id: "1",
+                      //   title: "Morning Workout Session",
+                      //   date: "Today",
+                      //   time: "9:00 AM",
+                      //   rsvpCount: 156,
+                      //   platform: "Instagram Live",
+                      //   isPaid: false,
+                      //   isLive: true,
+                      //   liveLink: "https://instagram.com/live/workout123",
+                      // },
+                      // {
+                      //   id: "2",
+                      //   title: "Gaming Stream Q&A",
+                      //   date: "Tomorrow",
+                      //   time: "7:00 PM",
+                      //   rsvpCount: 89,
+                      //   platform: "TikTok Live",
+                      //   isPaid: true,
+                      //   price: 9.99,
+                      // },
+                      // {
+                      //   id: "3",
+                      //   title: "Fashion Haul & Tips",
+                      //   date: "Friday",
+                      //   time: "3:00 PM",
+                      //   rsvpCount: 203,
+                      //   platform: "YouTube Live",
+                      //   isPaid: false,
+                      //   rsvpGoal: 300,
+                      //   totalViews: 1250,
+                      //   revenue: 145.5,
+                      // },
+                      ...events.map((e) => {
+                        return {
+                          id: e.id,
+                          title: e.title,
+                          date: e.dateTime,
+                          time: "9:00 AM",
+                          rsvpCount: 156,
+                          platform: e.platform,
+                          isPaid: e.isPaid,
+                          isLive: true,
+                          liveLink: e.link,
+                        };
+                      }),
                     ].map((event) => (
                       <EventCard
                         key={event.id}
@@ -478,8 +493,6 @@ const Dashboard = () => {
         });
         return;
       }
-      console.log(loading);
-      debugger;
       setIsCreating(true);
       const responseEvent = createEvent({
         ...formData,

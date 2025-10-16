@@ -18,32 +18,32 @@ export interface Event {
   includeReplay?: boolean;
   includeDownloadablePerk?: boolean;
   perkDescription?: string;
-  selectedFanGroups?: Json; // ✅ fixed type
-  inviteEmails?: Json; // ✅ fixed type
-  tags?: Json; // ✅ fixed type
+  selectedFanGroups?: Json;
+  inviteEmails?: Json;
+  tags?: Json;
   createdAt: string;
   updatedAt: string;
   influencerId?: string;
-  attendeeBenefits?: Json; // ✅ added in case table has this column
-  includePerks?: boolean; // ✅ added if exists in your schema
+  attendeeBenefits?: Json;
+  includePerks?: boolean;
 }
 
 export function useEvents() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [eventCount, setEventCount] = useState<number | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // 🔹 Load current user on mount
+  // 🔹 Track user session
   useEffect(() => {
-    const getCurrentUser = async () => {
+    const loadUser = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) setUserId(user.id);
     };
-    getCurrentUser();
+    loadUser();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -56,21 +56,23 @@ export function useEvents() {
     };
   }, []);
 
-  // 🔹 Fetch all events
+  // 🔹 Fetch events for current user
   const fetchEvents = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     setError(null);
 
     const { data, error } = await supabase
       .from("Events")
       .select("*")
+      .eq("influencerId", userId)
       .order("createdAt", { ascending: false });
 
     if (error) setError(error.message);
-    else setEvents((data ?? []) as Event[]); // ✅ explicitly cast
+    else setEvents((data ?? []) as Event[]);
 
     setLoading(false);
-  }, []);
+  }, [userId]);
 
   // 🔹 Fetch single event
   const fetchEventById = useCallback(
@@ -92,16 +94,13 @@ export function useEvents() {
     []
   );
 
-  // 🔹 Fetch event count for user
-  const fetchEventCountByUser = useCallback(async (userId: string) => {
-    if (!userId) return 0;
-    setLoading(true);
-    setError(null);
-
+  // 🔹 Fetch event count
+  const fetchEventCountByUser = useCallback(async (uid: string) => {
+    if (!uid) return 0;
     const { count, error } = await supabase
       .from("Events")
       .select("*", { count: "exact" })
-      .eq("influencerId", userId);
+      .eq("influencerId", uid);
 
     if (error) {
       setError(error.message);
@@ -110,22 +109,27 @@ export function useEvents() {
       setEventCount(count ?? 0);
     }
 
-    setLoading(false);
     return count ?? 0;
   }, []);
 
-  // 🔹 Automatically update event count
+  // 🔹 Auto update event count when userId changes
   useEffect(() => {
     if (userId) fetchEventCountByUser(userId);
   }, [userId, fetchEventCountByUser]);
 
-  // 🔹 Create event
+  // 🔹 Create new event
   const createEvent = useCallback(
     async (
       eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
     ) => {
+      if (!userId) {
+        setError("User not authenticated");
+        return null;
+      }
+
       const eventId = crypto.randomUUID();
       const eventUrl = `https://livestatz.com/e/${eventId}`;
+      const now = new Date().toISOString();
 
       const { data, error } = await supabase
         .from("Events")
@@ -133,10 +137,11 @@ export function useEvents() {
           {
             ...eventData,
             id: eventId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: now,
+            updatedAt: now,
             url: eventUrl,
             link: eventUrl,
+            influencerId: userId,
           },
         ])
         .select()
@@ -150,7 +155,7 @@ export function useEvents() {
       setEvents((prev) => [data as Event, ...prev]);
       return data as Event;
     },
-    []
+    [userId]
   );
 
   // 🔹 Update event
@@ -181,15 +186,14 @@ export function useEvents() {
       setError(error.message);
       return false;
     }
-
     setEvents((prev) => prev.filter((e) => e.id !== id));
     return true;
   }, []);
 
-  // 🔹 Auto-fetch events on mount
+  // 🔹 Auto-fetch events when userId is ready
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+    if (userId) fetchEvents();
+  }, [userId, fetchEvents]);
 
   return {
     events,

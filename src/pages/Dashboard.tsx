@@ -479,10 +479,11 @@ const Dashboard = () => {
         return;
       }
       console.log(loading);
-
+      debugger;
       setIsCreating(true);
       const responseEvent = createEvent({
         ...formData,
+        influencerId: user?.id,
       }).then((response) => {
         if (isDesktop) {
           setCreatedEvent(response);

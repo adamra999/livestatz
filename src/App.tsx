@@ -43,8 +43,16 @@ const App = () => {
                   </Layout>
                 }
               />
+              <Route
+                path="/dashboard"
+                element={
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
+                }
+              />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
               <Route
                 path="/events/success/:eventId"
                 element={<EventSuccessPage />}

@@ -1,4 +1,16 @@
-import { Home, User, Video, BarChart3, Calendar, Tv, UserCircle, Users, Heart, MessageSquare, Gift } from "lucide-react";
+import {
+  Home,
+  User,
+  Video,
+  BarChart3,
+  Calendar,
+  Tv,
+  UserCircle,
+  Users,
+  Heart,
+  MessageSquare,
+  Gift,
+} from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -15,7 +27,8 @@ import {
 
 const mainItems = [
   { title: "Dashboard", url: "/", icon: Home },
-  { title: "Events", url: "/?view=events", icon: Tv },
+  // { title: "Events", url: "/?view=events", icon: Tv },
+  { title: "Events", url: "/events", icon: Tv },
   { title: "Analytics", url: "/?view=analytics", icon: BarChart3 },
   { title: "Calendar", url: "/?view=calendar", icon: Calendar },
   { title: "Bio Builder", url: "/bio-builder", icon: User },
@@ -37,13 +50,25 @@ export function AppSidebar() {
 
   const isActive = (path: string) => {
     if (path === "/" && currentPath === "/" && !location.search) return true;
-    if (path.includes("?view=") && currentPath === "/" && location.search.includes(path.split("?view=")[1])) return true;
-    if (path !== "/" && !path.includes("?view=") && currentPath.startsWith(path)) return true;
+    if (
+      path.includes("?view=") &&
+      currentPath === "/" &&
+      location.search.includes(path.split("?view=")[1])
+    )
+      return true;
+    if (
+      path !== "/" &&
+      !path.includes("?view=") &&
+      currentPath.startsWith(path)
+    )
+      return true;
     return false;
   };
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-accent text-accent-foreground font-medium" : "hover:bg-accent/50";
+    isActive
+      ? "bg-accent text-accent-foreground font-medium"
+      : "hover:bg-accent/50";
 
   return (
     <Sidebar className={state === "collapsed" ? "w-14" : "w-60"}>
@@ -55,10 +80,14 @@ export function AppSidebar() {
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
+                    <NavLink
+                      to={item.url}
                       end={item.url === "/"}
-                      className={({ isActive: navIsActive }) => getNavCls({ isActive: navIsActive || isActive(item.url) })}
+                      className={({ isActive: navIsActive }) =>
+                        getNavCls({
+                          isActive: navIsActive || isActive(item.url),
+                        })
+                      }
                     >
                       <item.icon className="h-4 w-4" />
                       {state !== "collapsed" && <span>{item.title}</span>}
@@ -69,7 +98,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
+
         <SidebarGroup>
           <SidebarGroupLabel>Fan CRM</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -77,9 +106,13 @@ export function AppSidebar() {
               {fanCrmItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      className={({ isActive: navIsActive }) => getNavCls({ isActive: navIsActive || isActive(item.url) })}
+                    <NavLink
+                      to={item.url}
+                      className={({ isActive: navIsActive }) =>
+                        getNavCls({
+                          isActive: navIsActive || isActive(item.url),
+                        })
+                      }
                     >
                       <item.icon className="h-4 w-4" />
                       {state !== "collapsed" && <span>{item.title}</span>}

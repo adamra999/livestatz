@@ -20,6 +20,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import EventSuccessPage from "./pages/EventSuccessPage";
 import CreateEventPage from "./pages/CreateEventPage";
+import EventsView from "./pages/EventsView";
 
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -51,8 +52,16 @@ const App = () => {
                   </Layout>
                 }
               />
+              <Route
+                path="/events"
+                element={
+                  <Layout>
+                    <EventsView />
+                  </Layout>
+                }
+              />
+
               <Route path="/auth" element={<Auth />} />
-              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
               <Route
                 path="/events/success/:eventId"
                 element={<EventSuccessPage />}

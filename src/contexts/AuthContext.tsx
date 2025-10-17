@@ -44,6 +44,8 @@ export const AuthProvider = ({ children }) => {
           navigate("/dashboard");
         }
         // navigate("/dashboard");
+      } else {
+        navigate("/");
       }
     });
     const {

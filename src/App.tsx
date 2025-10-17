@@ -22,6 +22,7 @@ import EventSuccessPage from "./pages/EventSuccessPage";
 import CreateEventPage from "./pages/CreateEventPage";
 import EventsView from "./components/events/EventsView";
 import { CalendarView } from "@/components/calendar/CalendarView";
+import { AnalyticsView } from "@/components/analytics/AnalyticsView";
 
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -69,7 +70,14 @@ const App = () => {
                   </Layout>
                 }
               />
-
+              <Route
+                path="/analytics"
+                element={
+                  <Layout>
+                    <AnalyticsView />
+                  </Layout>
+                }
+              />
               <Route path="/auth" element={<Auth />} />
               <Route
                 path="/events/success/:eventId"

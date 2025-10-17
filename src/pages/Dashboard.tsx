@@ -23,8 +23,6 @@ import {
   Share2,
   ExternalLink,
 } from "lucide-react";
-import { CalendarView } from "@/components/calendar/CalendarView";
-import { AnalyticsView } from "@/components/analytics/AnalyticsView";
 import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
@@ -78,14 +76,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Dashboard Content */}
       <div className="container mx-auto px-4 py-8">
-        {currentView === "calendar" ? (
-          <CalendarView />
-        ) : currentView === "analytics" ? (
-          <>
-            {console.log("Rendering Analytics View")}
-            <AnalyticsView />
-          </>
-        ) : (
+        {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
@@ -355,7 +346,7 @@ const Dashboard = () => {
               </Card>
             </div>
           </div>
-        )}
+        }
       </div>
 
       {/* Enhanced Create Event Modal */}

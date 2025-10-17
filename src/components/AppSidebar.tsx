@@ -29,7 +29,7 @@ const mainItems = [
   { title: "Dashboard", url: "/", icon: Home },
   // { title: "Events", url: "/?view=events", icon: Tv },
   { title: "Events", url: "/events", icon: Tv },
-  { title: "Analytics", url: "/?view=analytics", icon: BarChart3 },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Bio Builder", url: "/bio-builder", icon: User },
   { title: "ClipGen", url: "/content-manager", icon: Video },

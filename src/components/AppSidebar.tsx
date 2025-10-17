@@ -30,7 +30,7 @@ const mainItems = [
   // { title: "Events", url: "/?view=events", icon: Tv },
   { title: "Events", url: "/events", icon: Tv },
   { title: "Analytics", url: "/?view=analytics", icon: BarChart3 },
-  { title: "Calendar", url: "/?view=calendar", icon: Calendar },
+  { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Bio Builder", url: "/bio-builder", icon: User },
   { title: "ClipGen", url: "/content-manager", icon: Video },
   { title: "Profile", url: "/profile", icon: UserCircle },

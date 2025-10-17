@@ -20,7 +20,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import EventSuccessPage from "./pages/EventSuccessPage";
 import CreateEventPage from "./pages/CreateEventPage";
-import EventsView from "./pages/EventsView";
+import EventsView from "./components/events/EventsView";
+import { CalendarView } from "@/components/calendar/CalendarView";
 
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -57,6 +58,14 @@ const App = () => {
                 element={
                   <Layout>
                     <EventsView />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/calendar"
+                element={
+                  <Layout>
+                    <CalendarView />
                   </Layout>
                 }
               />

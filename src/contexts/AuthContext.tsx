@@ -45,7 +45,9 @@ export const AuthProvider = ({ children }) => {
         }
         // navigate("/dashboard");
       } else {
-        navigate("/");
+        if (location?.pathname != "/" && location?.pathname != "/auth") {
+          navigate("/");
+        }
       }
     });
     const {

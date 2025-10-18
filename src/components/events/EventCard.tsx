@@ -4,9 +4,20 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Calendar, Clock, Users, DollarSign, Eye, Copy, Check, 
-  Instagram, Youtube, Play, ExternalLink, TrendingUp, Zap
+import {
+  Calendar,
+  Clock,
+  Users,
+  DollarSign,
+  Eye,
+  Copy,
+  Check,
+  Instagram,
+  Youtube,
+  Play,
+  ExternalLink,
+  TrendingUp,
+  Zap,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,22 +40,24 @@ interface EventCardProps {
     revenue?: number;
     organizer?: string;
   };
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
 }
 
-export function EventCard({ event, variant = 'default' }: EventCardProps) {
+export function EventCard({ event, variant = "default" }: EventCardProps) {
   const { toast } = useToast();
   const [copiedLink, setCopiedLink] = useState(false);
-  
-  const rsvpProgress = event.rsvpGoal ? (event.rsvpCount / event.rsvpGoal) * 100 : 0;
-  
+
+  const rsvpProgress = event.rsvpGoal
+    ? (event.rsvpCount / event.rsvpGoal) * 100
+    : 0;
+
   const copyLink = async () => {
     if (event.liveLink) {
       await navigator.clipboard.writeText(event.liveLink);
       setCopiedLink(true);
       toast({
         title: "Link copied!",
-        description: "Event link has been copied to clipboard"
+        description: "Event link has been copied to clipboard",
       });
       setTimeout(() => setCopiedLink(false), 2000);
     }
@@ -52,50 +65,55 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
 
   const getPlatformIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
-      case 'instagram live':
-      case 'instagram':
+      case "instagram live":
+      case "instagram":
         return <Instagram className="h-4 w-4 text-pink-500" />;
-      case 'youtube live':
-      case 'youtube':
+      case "youtube live":
+      case "youtube":
         return <Youtube className="h-4 w-4 text-red-500" />;
       default:
         return <Play className="h-4 w-4" />;
     }
   };
 
-  if (variant === 'compact') {
+  if (variant === "compact") {
     return (
-      <Card className="hover:shadow-md transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <h4 className="font-semibold text-sm">{event.title}</h4>
-                {event.isLive && (
-                  <Badge variant="destructive" className="text-xs animate-pulse">
-                    🔴 LIVE
-                  </Badge>
-                )}
+      <Link to={`/events/${event.id}`}>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h4 className="font-semibold text-sm">{event.title}</h4>
+                  {event.isLive && (
+                    <Badge
+                      variant="destructive"
+                      className="text-xs animate-pulse"
+                    >
+                      🔴 LIVE
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                  <div className="flex items-center space-x-1">
+                    {getPlatformIcon(event.platform)}
+                    <span>{event.platform}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{event.time}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                <div className="flex items-center space-x-1">
-                  {getPlatformIcon(event.platform)}
-                  <span>{event.platform}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{event.time}</span>
-                </div>
+              <div className="text-right">
+                <Badge variant="secondary" className="text-xs">
+                  {event.rsvpCount} RSVPs
+                </Badge>
               </div>
             </div>
-            <div className="text-right">
-              <Badge variant="secondary" className="text-xs">
-                {event.rsvpCount} RSVPs
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Link>
     );
   }
 
@@ -115,13 +133,13 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
                 {event.isPaid ? `$${event.price}` : "Free"}
               </Badge>
             </div>
-            
+
             {event.description && (
               <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                 {event.description}
               </p>
             )}
-            
+
             <div className="flex flex-wrap gap-3 text-sm">
               <div className="flex items-center space-x-1">
                 {getPlatformIcon(event.platform)}
@@ -137,19 +155,19 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
               </div>
             </div>
           </div>
-          
+
           {event.coverImage && (
             <div className="ml-4">
-              <img 
-                src={event.coverImage} 
-                alt="Event cover" 
+              <img
+                src={event.coverImage}
+                alt="Event cover"
                 className="w-16 h-16 rounded-lg object-cover"
               />
             </div>
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent>
         {/* Key Metrics */}
         <div className="grid grid-cols-3 gap-4 mb-4">
@@ -158,24 +176,28 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
             <div className="text-lg font-bold">{event.rsvpCount}</div>
             <div className="text-xs text-muted-foreground">RSVPs</div>
           </div>
-          
+
           {event.totalViews && (
             <div className="text-center p-3 bg-secondary/10 rounded-lg">
               <Eye className="h-5 w-5 text-secondary-foreground mx-auto mb-1" />
-              <div className="text-lg font-bold">{event.totalViews.toLocaleString()}</div>
+              <div className="text-lg font-bold">
+                {event.totalViews.toLocaleString()}
+              </div>
               <div className="text-xs text-muted-foreground">Views</div>
             </div>
           )}
-          
+
           {event.revenue && (
             <div className="text-center p-3 bg-accent/10 rounded-lg">
               <DollarSign className="h-5 w-5 text-accent-foreground mx-auto mb-1" />
-              <div className="text-lg font-bold">${event.revenue.toLocaleString()}</div>
+              <div className="text-lg font-bold">
+                ${event.revenue.toLocaleString()}
+              </div>
               <div className="text-xs text-muted-foreground">Revenue</div>
             </div>
           )}
         </div>
-        
+
         {/* RSVP Progress */}
         {event.rsvpGoal && (
           <div className="mb-4">
@@ -186,7 +208,7 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
             <Progress value={rsvpProgress} className="h-2" />
           </div>
         )}
-        
+
         {/* Action Buttons */}
         <div className="flex items-center justify-between">
           <div className="flex space-x-2">
@@ -196,7 +218,7 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
                 View Details
               </Button>
             </Link>
-            
+
             {event.liveLink && (
               <Button size="sm" variant="outline" onClick={copyLink}>
                 {copiedLink ? (
@@ -204,14 +226,18 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
                 ) : (
                   <Copy className="h-4 w-4 mr-2" />
                 )}
-                {copiedLink ? 'Copied!' : 'Copy Link'}
+                {copiedLink ? "Copied!" : "Copy Link"}
               </Button>
             )}
           </div>
-          
+
           {event.isLive && (
             <Button size="sm" variant="secondary" asChild>
-              <a href={event.liveLink} target="_blank" rel="noopener noreferrer">
+              <a
+                href={event.liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Join Live
               </a>

@@ -251,7 +251,7 @@ const Dashboard = () => {
                           id: e.id,
                           title: e.title,
                           date: format(new Date(e.dateTime), "M/d/yyyy"),
-                          time: "9:00 AM",
+                          time: format(new Date(e.dateTime), "h:mm a"),
                           rsvpCount: 156,
                           platform: e.platform,
                           isPaid: e.isPaid,

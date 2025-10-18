@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useUsers } from "@/hooks/useUsers";
+import { useEvents } from "@/hooks/useEvents";
+
 import {
   Calendar,
   Clock,
@@ -60,6 +62,7 @@ const mockEvents = {
 };
 
 export const EventRSVPPage = () => {
+  const { fetchEventById } = useEvents();
   const { eventId } = useParams<{ eventId: string }>();
   const { toast } = useToast();
   const [event, setEvent] = useState<any>(null);
@@ -75,71 +78,94 @@ export const EventRSVPPage = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const { users, createUser, deleteUser } = useUsers();
-  useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        // navigate("/");
-        // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
-      }
-    });
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session && event === "SIGNED_IN" && session?.user) {
-        const user = session.user;
-        createUser({
-          id: user.id,
-          name:
-            user.user_metadata?.full_name || user.user_metadata?.name || null,
-          avatar: user.user_metadata?.avatar_url || null,
-          email: user.email,
-          role: "fan",
-        });
-        // upsert user row (id = auth user id)
-        // await supabase.from<any>("users").upsert({
-        //   id: user.id,
-        //   email: user.email,
-        //   name:
-        //     user.user_metadata?.full_name || user.user_metadata?.name || null,
-        //   avatar: user.user_metadata?.avatar_url || null,
-        // });
-        // navigate("/");
-        // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
   useEffect(() => {
-    // Simulate loading event data
-    setTimeout(() => {
-      if (eventId && mockEvents[eventId as keyof typeof mockEvents]) {
-        setEvent(mockEvents[eventId as keyof typeof mockEvents]);
-      } else {
-        // Create a dynamic event if not found in mock data (for newly created events)
-        setEvent({
-          id: eventId,
-          title: "Sample Event",
-          description:
-            "This is a sample event description with all the details you need to know.",
-          dateTime: "2025-08-15T14:30:00",
-          platform: "Online",
-          location: "Zoom Meeting",
-          isPaid: false,
-          price: 0,
-          organizer: "Event Organizer",
-          organizerAvatar: "",
-          maxAttendees: 100,
-          currentAttendees: 45,
-          tags: ["Live Event", "Interactive", "Community"],
-        });
+    const loadEvent = async () => {
+      if (eventId) {
+        setLoading(true);
+        const eventData = await fetchEventById(eventId);
+        setEvent({ ...mockEvents, ...eventData });
+        setLoading(false);
       }
-      setLoading(false);
-    }, 1000);
-  }, [eventId]);
+    };
+    loadEvent();
+  }, [eventId, fetchEventById]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg">Loading event...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // useEffect(() => {
+  //   // Check if user is already logged in
+  //   supabase.auth.getSession().then(({ data: { session } }) => {
+  //     if (session) {
+  //       // navigate("/");
+  //       // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
+  //     }
+  //   });
+
+  //   // Listen for auth changes
+  //   const {
+  //     data: { subscription },
+  //   } = supabase.auth.onAuthStateChange(async (event, session) => {
+  //     if (session && event === "SIGNED_IN" && session?.user) {
+  //       const user = session.user;
+  //       createUser({
+  //         id: user.id,
+  //         name:
+  //           user.user_metadata?.full_name || user.user_metadata?.name || null,
+  //         avatar: user.user_metadata?.avatar_url || null,
+  //         email: user.email,
+  //         role: "fan",
+  //       });
+  //       // upsert user row (id = auth user id)
+  //       // await supabase.from<any>("users").upsert({
+  //       //   id: user.id,
+  //       //   email: user.email,
+  //       //   name:
+  //       //     user.user_metadata?.full_name || user.user_metadata?.name || null,
+  //       //   avatar: user.user_metadata?.avatar_url || null,
+  //       // });
+  //       // navigate("/");
+  //       // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
+  //     }
+  //   });
+
+  //   return () => subscription.unsubscribe();
+  // }, [navigate]);
+  // useEffect(() => {
+  //   // Simulate loading event data
+  //   setTimeout(() => {
+  //     if (eventId && mockEvents[eventId as keyof typeof mockEvents]) {
+  //       setEvent(mockEvents[eventId as keyof typeof mockEvents]);
+  //     } else {
+  //       // Create a dynamic event if not found in mock data (for newly created events)
+  //       setEvent({
+  //         id: eventId,
+  //         title: "Sample Event",
+  //         description:
+  //           "This is a sample event description with all the details you need to know.",
+  //         dateTime: "2025-08-15T14:30:00",
+  //         platform: "Online",
+  //         location: "Zoom Meeting",
+  //         isPaid: false,
+  //         price: 0,
+  //         organizer: "Event Organizer",
+  //         organizerAvatar: "",
+  //         maxAttendees: 100,
+  //         currentAttendees: 45,
+  //         tags: ["Live Event", "Interactive", "Community"],
+  //       });
+  //     }
+  //     setLoading(false);
+  //   }, 1000);
+  // }, [eventId]);
 
   const handleRSVP = async () => {
     if (!email.trim()) {

@@ -292,10 +292,10 @@ const Dashboard = () => {
                     <Calendar className="mr-2 h-4 w-4" />
                     Schedule Content
                   </Button>
-                  <Button 
-                    className="w-full" 
+                  <Button
+                    className="w-full"
                     variant="outline"
-                    onClick={() => navigate("/dashboard?view=analytics")}
+                    onClick={() => navigate("/analytics")}
                   >
                     <BarChart3 className="mr-2 h-4 w-4" />
                     View Analytics

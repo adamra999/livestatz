@@ -65,37 +65,39 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
 
   if (variant === 'compact') {
     return (
-      <Card className="hover:shadow-md transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <h4 className="font-semibold text-sm">{event.title}</h4>
-                {event.isLive && (
-                  <Badge variant="destructive" className="text-xs animate-pulse">
-                    🔴 LIVE
-                  </Badge>
-                )}
+      <Link to={`/events/${event.id}`}>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h4 className="font-semibold text-sm">{event.title}</h4>
+                  {event.isLive && (
+                    <Badge variant="destructive" className="text-xs animate-pulse">
+                      🔴 LIVE
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                  <div className="flex items-center space-x-1">
+                    {getPlatformIcon(event.platform)}
+                    <span>{event.platform}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{event.time}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                <div className="flex items-center space-x-1">
-                  {getPlatformIcon(event.platform)}
-                  <span>{event.platform}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{event.time}</span>
-                </div>
+              <div className="text-right">
+                <Badge variant="secondary" className="text-xs">
+                  {event.rsvpCount} RSVPs
+                </Badge>
               </div>
             </div>
-            <div className="text-right">
-              <Badge variant="secondary" className="text-xs">
-                {event.rsvpCount} RSVPs
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Link>
     );
   }
 

@@ -17,21 +17,9 @@ import {
   Calendar,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile, Profile } from "@/hooks/useProfile";
 import { v4 as uuidv4 } from "uuid";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-export interface Profile {
-  id: string;
-  username: string;
-  full_name: string;
-  avatar_url: string | null;
-  email: string;
-  phone: string | null;
-  role: string;
-  metadata: Record<string, any> | null;
-  created_at: string;
-  updated_at: string;
-}
 
 interface HeroSectionProps {
   onGetStarted: (profile: Profile) => void;

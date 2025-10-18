@@ -5,6 +5,7 @@ import { Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
+import { format } from "date-fns";
 
 function EventsView() {
   const [showEventForm, setShowEventForm] = useState(false);
@@ -92,7 +93,7 @@ function EventsView() {
       return {
         id: e.id,
         title: e.title,
-        date: e.dateTime,
+        date: format(new Date(e.dateTime), "M/d/yyyy"),
         time: "9:00 AM",
         rsvpCount: 156,
         platform: e.platform,

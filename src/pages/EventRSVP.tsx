@@ -79,7 +79,7 @@ export const EventRSVPPage = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/");
+        // navigate("/");
         // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
       }
     });
@@ -106,7 +106,7 @@ export const EventRSVPPage = () => {
         //     user.user_metadata?.full_name || user.user_metadata?.name || null,
         //   avatar: user.user_metadata?.avatar_url || null,
         // });
-        navigate("/");
+        // navigate("/");
         // navigate(`/e/${"f927f03d-ca98-47f7-a197-1931a94b6f80"}`);
       }
     });

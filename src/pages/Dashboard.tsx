@@ -27,6 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useAuth } from "@/hooks/useAuth";
+import { format } from "date-fns";
 
 const Dashboard = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -249,7 +250,7 @@ const Dashboard = () => {
                         return {
                           id: e.id,
                           title: e.title,
-                          date: e.dateTime,
+                          date: format(new Date(e.dateTime), "M/d/yyyy"),
                           time: "9:00 AM",
                           rsvpCount: 156,
                           platform: e.platform,

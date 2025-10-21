@@ -414,6 +414,57 @@ export type Database = {
         }
         Relationships: []
       }
+      rsvps: {
+        Row: {
+          added_to_calendar: boolean | null
+          created_at: string
+          event_id: string
+          fan_id: string
+          id: string
+          reminder_sent_10: boolean | null
+          reminder_sent_30: boolean | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          added_to_calendar?: boolean | null
+          created_at?: string
+          event_id: string
+          fan_id: string
+          id?: string
+          reminder_sent_10?: boolean | null
+          reminder_sent_30?: boolean | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          added_to_calendar?: boolean | null
+          created_at?: string
+          event_id?: string
+          fan_id?: string
+          id?: string
+          reminder_sent_10?: boolean | null
+          reminder_sent_30?: boolean | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rsvps_fan_id_fkey"
+            columns: ["fan_id"]
+            isOneToOne: false
+            referencedRelation: "fans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar: string | null

@@ -583,7 +583,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_event_owner: {
+        Args: { event_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       enum_users_role: "fan" | "influencer" | "admin"

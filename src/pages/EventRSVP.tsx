@@ -466,6 +466,19 @@ export const EventRSVPPage = () => {
                 />
               </div>
 
+              {/* Password Input */}
+              <div className="space-y-2">
+                <Label htmlFor="password">Password *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
               {/* Google Login Alternative */}
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-3">Or</p>

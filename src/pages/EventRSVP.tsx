@@ -25,7 +25,15 @@ import {
   HelpCircle,
   Mail,
   Loader2,
+  UserPlus,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { format } from "date-fns";
 
 // Mock event data - in a real app, this would come from your backend/Supabase
@@ -79,8 +87,12 @@ export const EventRSVPPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showAddFanModal, setShowAddFanModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [fanName, setFanName] = useState("");
+  const [fanEmail, setFanEmail] = useState("");
   const navigate = useNavigate();
-  const { createFan } = useFans();
+  const { createFan, fans, fetchFans } = useFans();
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -93,6 +105,49 @@ export const EventRSVPPage = () => {
     };
     loadEvent();
   }, [eventId, fetchEventById]);
+
+  // Check if authenticated user exists in fans table
+  useEffect(() => {
+    const checkUserInFans = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      
+      if (user) {
+        setCurrentUser(user);
+        // Fetch fans to check if user exists
+        await fetchFans();
+      }
+    };
+
+    checkUserInFans();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setCurrentUser(session.user);
+        await fetchFans();
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [fetchFans]);
+
+  // Check if current user is in fans table
+  useEffect(() => {
+    if (currentUser && fans) {
+      const userInFans = fans.find((fan) => fan.id === currentUser.id);
+      if (!userInFans) {
+        // User is authenticated but not in fans table
+        setFanName(currentUser.user_metadata?.full_name || "");
+        setFanEmail(currentUser.email || "");
+        setShowAddFanModal(true);
+      }
+    }
+  }, [currentUser, fans]);
 
   if (loading) {
     return (
@@ -257,6 +312,12 @@ export const EventRSVPPage = () => {
 
       if (error) throw error;
 
+      // Check if user exists in fans table
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData.user) {
+        await fetchFans();
+      }
+
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
@@ -269,6 +330,31 @@ export const EventRSVPPage = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddFan = async () => {
+    if (!currentUser) return;
+
+    try {
+      await createFan({
+        id: currentUser.id,
+        name: fanName,
+        email: fanEmail,
+      });
+
+      toast({
+        title: "Success!",
+        description: "You have been added to the fans database.",
+      });
+
+      setShowAddFanModal(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -750,6 +836,48 @@ export const EventRSVPPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Add Fan Modal */}
+      <Dialog open={showAddFanModal} onOpenChange={setShowAddFanModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5" />
+              Complete Your Profile
+            </DialogTitle>
+            <DialogDescription>
+              You're signed in but not registered as a fan yet. Please complete your profile to continue.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="fan-name">Name</Label>
+              <Input
+                id="fan-name"
+                type="text"
+                placeholder="Your full name"
+                value={fanName}
+                onChange={(e) => setFanName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fan-email">Email</Label>
+              <Input
+                id="fan-email"
+                type="email"
+                placeholder="you@example.com"
+                value={fanEmail}
+                onChange={(e) => setFanEmail(e.target.value)}
+                required
+              />
+            </div>
+            <Button onClick={handleAddFan} className="w-full">
+              Add to Fans Database
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

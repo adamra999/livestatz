@@ -139,7 +139,7 @@ export const EventRSVPPage = () => {
   // Check if current user is in fans table
   useEffect(() => {
     if (currentUser && fans) {
-      const userInFans = fans.find((fan) => fan.id === currentUser.id);
+      const userInFans = fans.find((fan) => fan.user_id === currentUser.id);
       if (!userInFans) {
         // User is authenticated but not in fans table
         setFanName(currentUser.user_metadata?.full_name || "");

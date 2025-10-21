@@ -112,7 +112,7 @@ export const EventRSVPPage = () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      
+
       if (user) {
         setCurrentUser(user);
         // Fetch fans to check if user exists
@@ -138,8 +138,8 @@ export const EventRSVPPage = () => {
 
   // Check if current user is in fans table
   useEffect(() => {
-    if (currentUser && fans) {
-      const userInFans = fans.find((fan) => fan.id === currentUser.id);
+    if (currentUser && fans && fans?.length > 0) {
+      const userInFans = fans.find((fan) => fan.user_id === currentUser.id);
       if (!userInFans) {
         // User is authenticated but not in fans table
         setFanName(currentUser.user_metadata?.full_name || "");
@@ -148,7 +148,6 @@ export const EventRSVPPage = () => {
       }
     }
   }, [currentUser, fans]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -335,7 +334,7 @@ export const EventRSVPPage = () => {
 
   const handleAddFan = async () => {
     if (!currentUser) return;
-
+    debugger;
     try {
       await createFan({
         id: currentUser.id,
@@ -846,7 +845,8 @@ export const EventRSVPPage = () => {
               Complete Your Profile
             </DialogTitle>
             <DialogDescription>
-              You're signed in but not registered as a fan yet. Please complete your profile to continue.
+              You're signed in but not registered as a fan yet. Please complete
+              your profile to continue.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

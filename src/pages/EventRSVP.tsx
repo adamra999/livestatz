@@ -12,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useUsers } from "@/hooks/useUsers";
 import { useEvents } from "@/hooks/useEvents";
 import { useFans } from "@/hooks/useFans";
+import { useRsvps } from "@/hooks/useRsvps";
+import { z } from "zod";
 
 import {
   Calendar,
@@ -93,6 +95,16 @@ export const EventRSVPPage = () => {
   const [fanEmail, setFanEmail] = useState("");
   const navigate = useNavigate();
   const { createFan, fans, fetchFans } = useFans();
+  const { createRsvp, getRsvpByEventAndFan } = useRsvps();
+
+  // Validation schema
+  const rsvpSchema = z.object({
+    event_id: z.string().uuid({ message: "Invalid event ID" }),
+    fan_id: z.string().uuid({ message: "Invalid fan ID" }),
+    status: z.enum(["yes", "maybe", "no"], {
+      errorMap: () => ({ message: "Please select a valid RSVP status" }),
+    }),
+  });
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -225,10 +237,10 @@ export const EventRSVPPage = () => {
   // }, [eventId]);
 
   const handleRSVP = async () => {
-    if (!email.trim()) {
+    if (!currentUser) {
       toast({
-        title: "Email Required",
-        description: "Please enter your email address to RSVP.",
+        title: "Authentication Required",
+        description: "Please sign in to RSVP for this event.",
         variant: "destructive",
       });
       return;
@@ -245,16 +257,79 @@ export const EventRSVPPage = () => {
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      toast({
-        title: "RSVP Confirmed!",
-        description: `Your RSVP status "${rsvpStatus}" has been recorded. A confirmation email will be sent to ${email}.`,
+    try {
+      // Get the current user's fan record
+      const currentFan = fans.find((fan) => fan.user_id === currentUser.id);
+      
+      if (!currentFan) {
+        toast({
+          title: "Profile Not Found",
+          description: "Please complete your fan profile first.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Check if RSVP already exists
+      const { data: existingRsvp } = await getRsvpByEventAndFan(
+        eventId!,
+        currentFan.id
+      );
+
+      if (existingRsvp) {
+        toast({
+          title: "Already Registered",
+          description: "You have already RSVP'd for this event.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Validate input data
+      const validatedData = rsvpSchema.parse({
+        event_id: eventId,
+        fan_id: currentFan.id,
+        status: rsvpStatus,
       });
 
-      setIsSubmitting(false);
+      // Create RSVP record
+      const { data, error } = await createRsvp({
+        event_id: validatedData.event_id,
+        fan_id: validatedData.fan_id,
+        status: validatedData.status,
+      });
+
+      if (error) {
+        throw new Error(error);
+      }
+
+      toast({
+        title: "RSVP Confirmed!",
+        description: `Your RSVP status "${rsvpStatus}" has been recorded successfully.`,
+      });
+
       setShowConfirmation(true);
-    }, 2000);
+    } catch (error: any) {
+      console.error("Error creating RSVP:", error);
+      
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0]?.message || "Invalid input data.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to submit RSVP. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleLogin = () => {

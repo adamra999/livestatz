@@ -25,7 +25,10 @@ export function useInfluencers() {
         data: { user },
         error,
       } = await supabase.auth.getUser();
-      if (error) console.error("Error fetching user:", error);
+      // Silently handle missing session - this is expected when not logged in
+      if (error && error.name !== "AuthSessionMissingError") {
+        console.error("Error fetching user:", error);
+      }
       setCurrentUser(user);
     };
     fetchUser();

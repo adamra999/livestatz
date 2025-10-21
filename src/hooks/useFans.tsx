@@ -28,12 +28,16 @@ export function useFans() {
   // Get current user
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUserId(user?.id || null);
     };
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUserId(session?.user?.id || null);
     });
 
@@ -43,7 +47,7 @@ export function useFans() {
   // Fetch all fans for current user
   const fetchFans = useCallback(async () => {
     if (!userId) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -65,7 +69,7 @@ export function useFans() {
 
   // Create new fan
   const createFan = useCallback(
-    async (newFan: Omit<Fan, "id" | "created_at" | "updated_at" | "user_id">) => {
+    async (newFan: Omit<Fan, "created_at" | "updated_at" | "user_id">) => {
       if (!userId) {
         setError("User not authenticated");
         return null;

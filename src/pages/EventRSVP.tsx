@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useUsers } from "@/hooks/useUsers";
 import { useEvents } from "@/hooks/useEvents";
+import { useFans } from "@/hooks/useFans";
 
 import {
   Calendar,
@@ -79,7 +80,7 @@ export const EventRSVPPage = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
-  const { users, createUser, deleteUser } = useUsers();
+  const { createFan } = useFans();
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -216,16 +217,19 @@ export const EventRSVPPage = () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
 
-      const { error } = await supabase.auth.signUp({
+      const { error, data } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: redirectUrl,
+          data: {
+            full_name: name, // 👈 custom user metadata
+          },
         },
       });
 
       if (error) throw error;
-
+      await createFan({ id: data?.user?.id, name, email: data?.user?.email });
       toast({
         title: "Success!",
         description: "Check your email for the confirmation link.",

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { useUsers } from "@/hooks/useUsers";
+import { useAuth } from "@/hooks/useAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { useFans } from "@/hooks/useFans";
 import { useRsvps } from "@/hooks/useRsvps";
@@ -75,6 +75,7 @@ const mockEvents = {
 };
 
 export const EventRSVPPage = () => {
+  const { user } = useAuth();
   const { fetchEventById } = useEvents();
   const { eventId } = useParams<{ eventId: string }>();
   const { toast } = useToast();
@@ -90,7 +91,6 @@ export const EventRSVPPage = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showAddFanModal, setShowAddFanModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [fanName, setFanName] = useState("");
   const [fanEmail, setFanEmail] = useState("");
   const navigate = useNavigate();
@@ -118,48 +118,18 @@ export const EventRSVPPage = () => {
     loadEvent();
   }, [eventId, fetchEventById]);
 
-  // Check if authenticated user exists in fans table
-  useEffect(() => {
-    const checkUserInFans = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        setCurrentUser(user);
-        // Fetch fans to check if user exists
-        await fetchFans();
-      }
-    };
-
-    checkUserInFans();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        setCurrentUser(session.user);
-        await fetchFans();
-      } else {
-        setCurrentUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [fetchFans]);
-
   // Check if current user is in fans table
   useEffect(() => {
-    if (currentUser && fans && fans?.length > 0) {
-      const userInFans = fans.find((fan) => fan.user_id === currentUser.id);
+    if (user && fans && fans?.length > 0) {
+      const userInFans = fans.find((fan) => fan.user_id === user.id);
       if (!userInFans) {
         // User is authenticated but not in fans table
-        setFanName(currentUser.user_metadata?.full_name || "");
-        setFanEmail(currentUser.email || "");
+        setFanName(user.user_metadata?.full_name || "");
+        setFanEmail(user.email || "");
         setShowAddFanModal(true);
       }
     }
-  }, [currentUser, fans]);
+  }, [user, fans]);
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -237,7 +207,7 @@ export const EventRSVPPage = () => {
   // }, [eventId]);
 
   const handleRSVP = async () => {
-    if (!currentUser) {
+    if (!user) {
       toast({
         title: "Authentication Required",
         description: "Please sign in to RSVP for this event.",
@@ -259,7 +229,7 @@ export const EventRSVPPage = () => {
 
     try {
       // Get the current user's fan record
-      const currentFan = fans.find((fan) => fan.user_id === currentUser.id);
+      const currentFan = fans.find((fan) => fan.user_id === user.id);
       
       if (!currentFan) {
         toast({
@@ -386,12 +356,6 @@ export const EventRSVPPage = () => {
 
       if (error) throw error;
 
-      // Check if user exists in fans table
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData.user) {
-        await fetchFans();
-      }
-
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
@@ -408,11 +372,11 @@ export const EventRSVPPage = () => {
   };
 
   const handleAddFan = async () => {
-    if (!currentUser) return;
-    debugger;
+    if (!user) return;
+    
     try {
       await createFan({
-        id: currentUser.id,
+        id: user.id,
         name: fanName,
         email: fanEmail,
       });
@@ -608,7 +572,7 @@ export const EventRSVPPage = () => {
               <h3 className="text-xl font-semibold">RSVP for this Event</h3>
 
               {/* Login Section - Only shown when user is not signed in */}
-              {!currentUser && (
+              {!user && (
                 <>
                   {/* Google Login */}
                   <div>

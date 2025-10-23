@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }) => {
       currentPath &&
       currentPath !== "/" &&
       currentPath !== "/auth" &&
-      !currentPath.includes("/e/") &&
       !sessionStorage.getItem("preAuthPath")
     ) {
       sessionStorage.setItem("preAuthPath", currentPath);
@@ -74,10 +73,9 @@ export const AuthProvider = ({ children }) => {
 
       if (session && event === "SIGNED_IN" && user) {
         const provider = user.app_metadata?.provider;
-        
+
         // Check for stored pre-auth path
         const preAuthPath = sessionStorage.getItem("preAuthPath");
-        
         if (location?.pathname == "/" && !location?.pathname.includes("/e/")) {
           if (preAuthPath) {
             sessionStorage.removeItem("preAuthPath");

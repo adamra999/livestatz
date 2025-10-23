@@ -36,6 +36,18 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Store the pre-auth path for post-login redirect (excluding auth pages)
+    const currentPath = location?.pathname;
+    if (
+      currentPath &&
+      currentPath !== "/" &&
+      currentPath !== "/auth" &&
+      !currentPath.includes("/e/") &&
+      !sessionStorage.getItem("preAuthPath")
+    ) {
+      sessionStorage.setItem("preAuthPath", currentPath);
+    }
+
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       setCurrentUser(session?.user || null);
@@ -62,9 +74,17 @@ export const AuthProvider = ({ children }) => {
 
       if (session && event === "SIGNED_IN" && user) {
         const provider = user.app_metadata?.provider;
+        
+        // Check for stored pre-auth path
+        const preAuthPath = sessionStorage.getItem("preAuthPath");
+        
         if (location?.pathname == "/" && !location?.pathname.includes("/e/")) {
-          debugger;
-          navigate("/dashboard");
+          if (preAuthPath) {
+            sessionStorage.removeItem("preAuthPath");
+            navigate(preAuthPath);
+          } else {
+            navigate("/dashboard");
+          }
         }
         console.log("🔹 Auth Provider:", provider);
         dispatch({
@@ -105,7 +125,13 @@ export const AuthProvider = ({ children }) => {
           }, 0);
 
           if (location?.pathname == "/") {
-            navigate("/dashboard");
+            const preAuthPath = sessionStorage.getItem("preAuthPath");
+            if (preAuthPath) {
+              sessionStorage.removeItem("preAuthPath");
+              navigate(preAuthPath);
+            } else {
+              navigate("/dashboard");
+            }
           }
         } else {
           console.log("User logged in via other provider:", provider);

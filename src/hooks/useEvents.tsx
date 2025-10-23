@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Json } from "@/integrations/supabase/types";
+import { useAuth } from "./useAuth";
 
 export interface Event {
   id: string;
@@ -29,32 +30,13 @@ export interface Event {
 }
 
 export function useEvents() {
+  const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [eventCount, setEventCount] = useState<number | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-
-  // 🔹 Track user session
-  useEffect(() => {
-    const loadUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
-    };
-    loadUser();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUserId(session?.user?.id ?? null);
-      }
-    );
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
+  
+  const userId = user?.id || null;
 
   // 🔹 Fetch events for current user
   const fetchEvents = useCallback(async () => {

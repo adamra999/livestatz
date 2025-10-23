@@ -1,7 +1,7 @@
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useInfluencers } from "@/hooks/useInfluencers";
+import { User } from "@supabase/supabase-js";
 
 const initialState = {
   user: null,
@@ -21,24 +21,24 @@ const reducer = (state, action) => {
   }
 };
 
-const AuthContext = createContext({
+const AuthContext = createContext<{
+  user: User | null;
+  isInitialized: boolean;
+  isAuthenticated: boolean;
+  method: string;
+}>({
   ...initialState,
   method: "JWT",
 });
 export const AuthProvider = ({ children }) => {
-  const { fetchInfluencerByEmail, addInfluencer, error } = useInfluencers();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const navigate = useNavigate();
-  useEffect(() => {
-    // Dispatch the login action to update the state
-    dispatch({
-      type: "INIT",
-      payload: { isAuthenticated: true, user: {} },
-    });
-  }, []);
+  
   useEffect(() => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setCurrentUser(session?.user || null);
       if (session) {
         if (location?.pathname == "/") {
           navigate("/dashboard");
@@ -57,9 +57,11 @@ export const AuthProvider = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session && event === "SIGNED_IN" && session?.user) {
-        const user = session.user;
-        const provider = session.user.app_metadata?.provider;
+      const user = session?.user || null;
+      setCurrentUser(user);
+      
+      if (session && event === "SIGNED_IN" && user) {
+        const provider = user.app_metadata?.provider;
         if (location?.pathname == "/") {
           navigate("/dashboard");
         }
@@ -68,31 +70,43 @@ export const AuthProvider = ({ children }) => {
           type: "INIT",
           payload: { isAuthenticated: true, user },
         });
-        // ✅ Step 1: Verify if user logged in via Google SSO
+        
+        // Handle Google SSO user registration
         if (provider === "google") {
           console.log("✅ User signed in via Google SSO:", user.email);
-          // ✅ Step 2: Check if this is their first time
-          const influencer = await fetchInfluencerByEmail(user.email);
-          if (!influencer) {
-            // No record found → first-time user
-            console.log("🆕 First-time Google user detected!");
-            await addInfluencer(
-              user.id,
-              user?.user_metadata?.full_name,
-              user.email
-            );
-          } else {
-            console.log("👋 Returning Google user:", user.email);
-
-            // Optional: update last login timestamp
-          }
+          
+          // Defer Supabase calls to avoid deadlock
+          setTimeout(async () => {
+            try {
+              const { data: influencer } = await supabase
+                .from("Influencers")
+                .select("*")
+                .eq("email", user.email)
+                .maybeSingle();
+              
+              if (!influencer) {
+                console.log("🆕 First-time Google user detected!");
+                await supabase.from("Influencers").insert([{
+                  id: user.id,
+                  name: user?.user_metadata?.full_name || "",
+                  email: user.email || "",
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                }]);
+              } else {
+                console.log("👋 Returning Google user:", user.email);
+              }
+            } catch (error) {
+              console.error("Error handling influencer registration:", error);
+            }
+          }, 0);
+          
           if (location?.pathname == "/") {
             navigate("/dashboard");
           }
         } else {
           console.log("User logged in via other provider:", provider);
         }
-        // navigate("/dashboard");
       } else if (event != "INITIAL_SESSION") {
         navigate("/");
       }
@@ -107,6 +121,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         ...state,
+        user: currentUser,
         method: "JWT",
       }}
     >

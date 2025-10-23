@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "./useAuth";
 
 export interface Influencer {
   id: string;
@@ -13,34 +13,10 @@ export interface Influencer {
 const STORAGE_KEY = "influencers_cache";
 
 export function useInfluencers() {
+  const { user: currentUser } = useAuth();
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  // ✅ Fetch current user
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      // Silently handle missing session - this is expected when not logged in
-      if (error && error.name !== "AuthSessionMissingError") {
-        console.error("Error fetching user:", error);
-      }
-      setCurrentUser(user);
-    };
-    fetchUser();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setCurrentUser(session?.user ?? null);
-      }
-    );
-
-    return () => listener.subscription.unsubscribe();
-  }, []);
 
   // ✅ Load from cache
   useEffect(() => {

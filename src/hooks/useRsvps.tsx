@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "./useAuth";
 
 export interface Rsvp {
   id: string;
@@ -14,32 +15,12 @@ export interface Rsvp {
 }
 
 export const useRsvps = () => {
+  const { user } = useAuth();
   const [rsvps, setRsvps] = useState<Rsvp[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUserId(user?.id || null);
-      } catch (err) {
-        if (err instanceof Error && err.message !== "Auth session missing!") {
-          console.error("Error fetching user:", err);
-          setError(err.message);
-        }
-      }
-    };
-
-    fetchUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserId(session?.user?.id || null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  
+  const userId = user?.id || null;
 
   const fetchRsvps = useCallback(async (eventId?: string) => {
     try {

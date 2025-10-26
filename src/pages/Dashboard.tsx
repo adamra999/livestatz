@@ -48,13 +48,14 @@ const Dashboard = () => {
     fetchEventCountByUser,
     eventCount,
   } = useEvents();
-  const { fetchTotalRsvpCount } = useRsvps();
+  const { fetchTotalRsvpCount, fetchRsvpCountByEvent } = useRsvps();
   const { getWeeklyReport } = useWeeklyFanReports();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [totalRsvps, setTotalRsvps] = useState<number>(0);
+  const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
   const [weeklyReport, setWeeklyReport] = useState({
     newFansThisWeek: 0,
     fansAttendedThisWeek: 0,
@@ -97,6 +98,25 @@ const Dashboard = () => {
       loadWeeklyReport();
     }
   }, [user?.id, getWeeklyReport]);
+
+  useEffect(() => {
+    const loadRsvpCounts = async () => {
+      if (events.length === 0) return;
+      
+      const counts: Record<string, number> = {};
+      
+      for (const event of events) {
+        const { count } = await fetchRsvpCountByEvent(event.id);
+        counts[event.id] = count;
+      }
+      
+      setRsvpCounts(counts);
+    };
+    
+    if (user?.id && events.length > 0) {
+      loadRsvpCounts();
+    }
+  }, [user?.id, events, fetchRsvpCountByEvent]);
   const handleClick = () => {
     if (isDesktop) {
       setShowEventForm(true); // open modal
@@ -283,7 +303,7 @@ const Dashboard = () => {
                           title: e.title,
                           date: format(new Date(e.dateTime), "M/d/yyyy"),
                           time: format(new Date(e.dateTime), "h:mm a"),
-                          rsvpCount: 156,
+                          rsvpCount: rsvpCounts[e.id] || 0,
                           platform: e.platform,
                           isPaid: e.isPaid,
                           isLive: true,

@@ -27,6 +27,10 @@ export interface Event {
   influencerId?: string;
   attendeeBenefits?: Json;
   includePerks?: boolean;
+  Influencers?: {
+    name: string;
+    email: string;
+  };
 }
 
 export function useEvents() {
@@ -46,7 +50,7 @@ export function useEvents() {
 
     const { data, error } = await supabase
       .from("Events")
-      .select("*")
+      .select("*, Influencers(name, email)")
       .eq("influencerId", userId)
       .order("createdAt", { ascending: false });
 

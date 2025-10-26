@@ -5,6 +5,7 @@ import { Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
+import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
 
 function EventsView() {
@@ -16,7 +17,10 @@ function EventsView() {
     createEvent,
     fetchEventCountByUser,
     eventCount,
+    userId,
   } = useEvents();
+  const { fetchRsvpCountByEvent } = useRsvps();
+  const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
   const mockEvents = [
     {
       id: "1",
@@ -94,25 +98,40 @@ function EventsView() {
         id: e.id,
         title: e.title,
         date: format(new Date(e.dateTime), "M/d/yyyy"),
-        time: "9:00 AM",
-        rsvpCount: 156,
+        time: format(new Date(e.dateTime), "h:mm a"),
+        rsvpCount: rsvpCounts[e.id] || 0,
         platform: e.platform,
         isPaid: e.isPaid,
-        isLive: true,
+        isLive: false,
         liveLink: e.link,
-
-        description:
-          "Discover how to create delicious meals using seasonal, locally-sourced ingredients.",
-        // date: "8/18/2025",
-        // time: "6:30 PM",
+        description: e.description || "No description available",
         rsvpGoal: 200,
-        price: 19.99,
-        totalViews: 3456,
-        revenue: 1850.75,
-        organizer: "Chef Maria",
+        price: parseFloat(e.ticketPrice || "0"),
+        totalViews: 0,
+        revenue: 0,
+        organizer: e.Influencers?.name || "Unknown",
       };
     }),
   ];
+
+  useEffect(() => {
+    const loadRsvpCounts = async () => {
+      if (events.length === 0) return;
+      
+      const counts: Record<string, number> = {};
+      
+      for (const event of events) {
+        const { count } = await fetchRsvpCountByEvent(event.id);
+        counts[event.id] = count;
+      }
+      
+      setRsvpCounts(counts);
+    };
+    
+    if (userId && events.length > 0) {
+      loadRsvpCounts();
+    }
+  }, [userId, events, fetchRsvpCountByEvent]);
 
   return (
     <div className="space-y-8">

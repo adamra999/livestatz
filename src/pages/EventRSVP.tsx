@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { useFans } from "@/hooks/useFans";
 import { useRsvps } from "@/hooks/useRsvps";
+import { useFanEvents } from "@/hooks/useFanEvents";
 import { z } from "zod";
 
 import {
@@ -96,6 +97,7 @@ export const EventRSVPPage = () => {
   const navigate = useNavigate();
   const { createFan, fans, fetchFans } = useFans();
   const { createRsvp, getRsvpByEventAndFan } = useRsvps();
+  const { createFanEvent } = useFanEvents();
 
   // Validation schema
   const rsvpSchema = z.object({
@@ -275,6 +277,21 @@ export const EventRSVPPage = () => {
         throw new Error(error);
       }
 
+      // Create fan_event entry
+      if (data && event) {
+        const { error: fanEventError } = await createFanEvent({
+          fan_id: currentFan.id,
+          event_id: eventId!,
+          event_name: event.title,
+          ticket_price: event.isPaid ? parseFloat(event.price) : 0,
+          attendance_status: rsvpStatus === "yes" ? "confirmed" : rsvpStatus === "maybe" ? "tentative" : "declined",
+        });
+
+        if (fanEventError) {
+          console.error("Error creating fan event:", fanEventError);
+        }
+      }
+
       toast({
         title: "RSVP Confirmed!",
         description: `Your RSVP status "${rsvpStatus}" has been recorded successfully.`,
@@ -372,27 +389,66 @@ export const EventRSVPPage = () => {
   };
 
   const handleAddFan = async () => {
-    if (!user) return;
+    if (!user || !eventId) return;
     
+    // Validate fan data
+    const fanSchema = z.object({
+      name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+      email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+    });
+
     try {
-      await createFan({
-        id: user.id,
+      const validatedFanData = fanSchema.parse({
         name: fanName,
         email: fanEmail,
       });
 
+      const fanData = await createFan({
+        id: user.id,
+        name: validatedFanData.name,
+        email: validatedFanData.email,
+      });
+
+      if (!fanData) {
+        throw new Error("Failed to create fan record");
+      }
+
+      // Create fan_event entry
+      if (event) {
+        const { error: fanEventError } = await createFanEvent({
+          fan_id: fanData.id,
+          event_id: eventId,
+          event_name: event.title,
+          ticket_price: event.isPaid ? parseFloat(event.price) : 0,
+          attendance_status: "registered",
+        });
+
+        if (fanEventError) {
+          console.error("Error creating fan event:", fanEventError);
+        }
+      }
+
       toast({
         title: "Success!",
-        description: "You have been added to the fans database.",
+        description: "You have been registered for this event.",
       });
 
       setShowAddFanModal(false);
+      await fetchFans();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0]?.message || "Invalid input data.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     }
   };
 

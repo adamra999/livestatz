@@ -28,6 +28,7 @@ import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useAuth } from "@/hooks/useAuth";
 import { useRsvps } from "@/hooks/useRsvps";
+import { useWeeklyFanReports } from "@/hooks/useWeeklyFanReports";
 import { format } from "date-fns";
 
 const Dashboard = () => {
@@ -48,11 +49,17 @@ const Dashboard = () => {
     eventCount,
   } = useEvents();
   const { fetchTotalRsvpCount } = useRsvps();
+  const { getWeeklyReport } = useWeeklyFanReports();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [totalRsvps, setTotalRsvps] = useState<number>(0);
+  const [weeklyReport, setWeeklyReport] = useState({
+    newFansThisWeek: 0,
+    fansAttendedThisWeek: 0,
+    rsvpsGrowthThisWeek: 0,
+  });
 
   const [currentView, setCurrentView] = useState<
     "dashboard" | "calendar" | "analytics" | "events"
@@ -77,6 +84,19 @@ const Dashboard = () => {
       loadRsvpCount();
     }
   }, [user?.id, fetchTotalRsvpCount]);
+
+  useEffect(() => {
+    const loadWeeklyReport = async () => {
+      const { data } = await getWeeklyReport();
+      if (data) {
+        setWeeklyReport(data);
+      }
+    };
+    
+    if (user?.id) {
+      loadWeeklyReport();
+    }
+  }, [user?.id, getWeeklyReport]);
   const handleClick = () => {
     if (isDesktop) {
       setShowEventForm(true); // open modal
@@ -172,7 +192,7 @@ const Dashboard = () => {
                             to="/profile?tab=fans"
                             className="text-primary hover:underline cursor-pointer"
                           >
-                            12 New Fans RSVPed this week
+                            {weeklyReport.newFansThisWeek} New Fans joined this week
                           </Link>
                         </div>
                         <div className="text-sm text-muted-foreground">
@@ -188,11 +208,11 @@ const Dashboard = () => {
                             to="/profile?tab=superfans"
                             className="text-primary hover:underline cursor-pointer"
                           >
-                            3 Superfans joined
+                            {weeklyReport.fansAttendedThisWeek} Fans attended events
                           </Link>
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          Attended 3+ live events
+                          Active participants this week
                         </div>
                       </div>
                     </div>
@@ -202,11 +222,11 @@ const Dashboard = () => {
                           Total RSVP Growth
                         </span>
                         <span className="font-bold text-xl text-primary">
-                          +28%
+                          +{weeklyReport.rsvpsGrowthThisWeek}
                         </span>
                       </div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        vs last week
+                        New RSVPs this week
                       </div>
                     </div>
                   </div>

@@ -132,9 +132,15 @@ export const useRsvps = () => {
     try {
       if (!userId) return { count: 0, error: null };
 
+      // Get current user's email
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user?.email) return { count: 0, error: null };
+
+      // Join rsvps with Events and Influencers to count RSVPs for current user's events
       const { count, error: countError } = await supabase
         .from("rsvps")
-        .select("*", { count: "exact", head: true });
+        .select("*, Events!inner(influencerId, Influencers!inner(email))", { count: "exact", head: true })
+        .eq("Events.Influencers.email", userData.user.email);
 
       if (countError) throw countError;
       return { count: count || 0, error: null };

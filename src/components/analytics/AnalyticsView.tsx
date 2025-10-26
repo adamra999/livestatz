@@ -1,47 +1,150 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Users, DollarSign, TrendingUp, Eye, Heart, MessageCircle, Target, Activity, Clock } from "lucide-react";
-
-// Analytics data for July-August 2024
-const analyticsData = {
-  weeklyEvents: [
-    { week: 'Jul 1-7', events: 3, revenue: 6246, rsvps: 1198 },
-    { week: 'Jul 8-14', events: 3, revenue: 9988, rsvps: 1360 },
-    { week: 'Jul 15-21', events: 2, revenue: 7743, rsvps: 623 },
-    { week: 'Jul 22-28', events: 2, revenue: 13350, rsvps: 823 },
-    { week: 'Jul 29-Aug 4', events: 3, revenue: 16779, rsvps: 1568 },
-    { week: 'Aug 5-11', events: 2, revenue: 2736, rsvps: 1580 },
-    { week: 'Aug 12-18', events: 3, revenue: 6182, rsvps: 1135 },
-    { week: 'Aug 19-25', events: 2, revenue: 20840, rsvps: 1067 },
-    { week: 'Aug 26-Sep 1', events: 2, revenue: 3204, rsvps: 1159 }
-  ],
-  platformStats: [
-    { platform: 'Instagram Live', events: 10, rsvps: 3574, revenue: 24940, color: '#E1306C' },
-    { platform: 'YouTube Live', events: 6, rsvps: 2300, revenue: 41275, color: '#FF0000' },
-    { platform: 'LinkedIn Live', events: 3, rsvps: 2089, revenue: 41245, color: '#0077B5' },
-    { platform: 'TikTok Live', events: 3, rsvps: 1493, revenue: 0, color: '#000000' },
-    { platform: 'Twitch', events: 2, rsvps: 2413, revenue: 0, color: '#9146FF' }
-  ],
-  topEvents: [
-    { title: 'Investment Strategies 2024', rsvps: 692, revenue: 20760, platform: 'YouTube Live', engagement: 95 },
-    { title: 'E-commerce Masterclass', rsvps: 678, revenue: 16950, platform: 'LinkedIn Live', engagement: 88 },
-    { title: 'Business Strategy Session', rsvps: 534, revenue: 13350, platform: 'YouTube Live', engagement: 92 },
-    { title: 'Tech Talk: AI Future', rsvps: 623, revenue: 12460, platform: 'LinkedIn Live', engagement: 87 },
-    { title: 'Cooking with Gordon', rsvps: 892, revenue: 8920, platform: 'Instagram Live', engagement: 94 }
-  ]
-};
+import { useEvents } from "@/hooks/useEvents";
+import { useRsvps } from "@/hooks/useRsvps";
+import { startOfWeek, endOfWeek, format, parseISO } from "date-fns";
 
 export const AnalyticsView = () => {
-  console.log('AnalyticsView: Component rendering...');
-  const totalStats = {
-    totalEvents: 24,
-    totalRSVPs: 9902,
-    totalRevenue: 98088,
-    avgEngagement: 85.2,
-    totalViews: 147856
-  };
+  const { events: dbEvents, loading } = useEvents();
+  const { fetchRsvpCountByEvent } = useRsvps();
+  
+  const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
+  const [analyticsData, setAnalyticsData] = useState<any>(null);
+
+  // Fetch RSVP counts for all events
+  useEffect(() => {
+    const loadRsvpCounts = async () => {
+      if (!dbEvents || dbEvents.length === 0) return;
+      
+      const counts: Record<string, number> = {};
+      await Promise.all(
+        dbEvents.map(async (event) => {
+          const result = await fetchRsvpCountByEvent(event.id);
+          counts[event.id] = result.count;
+        })
+      );
+      setRsvpCounts(counts);
+    };
+
+    loadRsvpCounts();
+  }, [dbEvents, fetchRsvpCountByEvent]);
+
+  // Calculate analytics from real data
+  useEffect(() => {
+    if (!dbEvents || Object.keys(rsvpCounts).length === 0) return;
+
+    // Map events with RSVP counts and revenue
+    const eventsWithStats = dbEvents.map((e) => {
+      const rsvpCount = rsvpCounts[e.id] || 0;
+      const price = e.ticketPrice ? parseFloat(e.ticketPrice) : 0;
+      const revenue = e.isPaid ? rsvpCount * price : 0;
+      
+      return {
+        ...e,
+        rsvps: rsvpCount,
+        revenue: revenue,
+        price: price,
+      };
+    });
+
+    // Group events by week
+    const weeklyMap = new Map<string, { events: number; revenue: number; rsvps: number }>();
+    eventsWithStats.forEach((e) => {
+      const eventDate = parseISO(e.dateTime);
+      const weekStart = startOfWeek(eventDate);
+      const weekEnd = endOfWeek(eventDate);
+      const weekKey = `${format(weekStart, 'MMM d')}-${format(weekEnd, 'd')}`;
+      
+      const existing = weeklyMap.get(weekKey) || { events: 0, revenue: 0, rsvps: 0 };
+      weeklyMap.set(weekKey, {
+        events: existing.events + 1,
+        revenue: existing.revenue + e.revenue,
+        rsvps: existing.rsvps + e.rsvps,
+      });
+    });
+
+    const weeklyEvents = Array.from(weeklyMap.entries()).map(([week, data]) => ({
+      week,
+      ...data,
+    }));
+
+    // Group by platform
+    const platformMap = new Map<string, { events: number; rsvps: number; revenue: number }>();
+    eventsWithStats.forEach((e) => {
+      const existing = platformMap.get(e.platform) || { events: 0, rsvps: 0, revenue: 0 };
+      platformMap.set(e.platform, {
+        events: existing.events + 1,
+        rsvps: existing.rsvps + e.rsvps,
+        revenue: existing.revenue + e.revenue,
+      });
+    });
+
+    const platformColors: Record<string, string> = {
+      'Instagram Live': '#E1306C',
+      'YouTube Live': '#FF0000',
+      'LinkedIn Live': '#0077B5',
+      'TikTok Live': '#000000',
+      'Twitch': '#9146FF',
+    };
+
+    const platformStats = Array.from(platformMap.entries()).map(([platform, data]) => ({
+      platform,
+      ...data,
+      color: platformColors[platform] || '#666666',
+    }));
+
+    // Top events by revenue
+    const topEvents = [...eventsWithStats]
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5)
+      .map((e) => ({
+        title: e.title,
+        rsvps: e.rsvps,
+        revenue: e.revenue,
+        platform: e.platform,
+        engagement: Math.floor(Math.random() * 15) + 80, // Mock engagement for now
+      }));
+
+    setAnalyticsData({
+      weeklyEvents,
+      platformStats,
+      topEvents,
+    });
+  }, [dbEvents, rsvpCounts]);
+
+  const totalStats = analyticsData
+    ? {
+        totalEvents: dbEvents?.length || 0,
+        totalRSVPs: Object.values(rsvpCounts).reduce((sum, count) => sum + count, 0),
+        totalRevenue: dbEvents?.reduce((sum, e) => {
+          const rsvpCount = rsvpCounts[e.id] || 0;
+          const price = e.ticketPrice ? parseFloat(e.ticketPrice) : 0;
+          return sum + (e.isPaid ? rsvpCount * price : 0);
+        }, 0) || 0,
+        avgEngagement: 85.2, // Mock for now
+        totalViews: 147856, // Mock for now
+      }
+    : {
+        totalEvents: 0,
+        totalRSVPs: 0,
+        totalRevenue: 0,
+        avgEngagement: 0,
+        totalViews: 0,
+      };
+
+  if (loading || !analyticsData) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-lg text-muted-foreground">Loading analytics...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

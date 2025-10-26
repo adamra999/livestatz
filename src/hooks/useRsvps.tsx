@@ -128,6 +128,23 @@ export const useRsvps = () => {
     }
   }, []);
 
+  const fetchTotalRsvpCount = useCallback(async () => {
+    try {
+      if (!userId) return { count: 0, error: null };
+
+      const { count, error: countError } = await supabase
+        .from("rsvps")
+        .select("*", { count: "exact", head: true });
+
+      if (countError) throw countError;
+      return { count: count || 0, error: null };
+    } catch (err) {
+      console.error("Error fetching total RSVP count:", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch RSVP count";
+      return { count: 0, error: errorMessage };
+    }
+  }, [userId]);
+
   return {
     rsvps,
     loading,
@@ -138,5 +155,6 @@ export const useRsvps = () => {
     updateRsvp,
     deleteRsvp,
     getRsvpByEventAndFan,
+    fetchTotalRsvpCount,
   };
 };

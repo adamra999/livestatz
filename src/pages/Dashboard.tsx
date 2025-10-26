@@ -27,6 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useAuth } from "@/hooks/useAuth";
+import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
 
 const Dashboard = () => {
@@ -46,10 +47,12 @@ const Dashboard = () => {
     fetchEventCountByUser,
     eventCount,
   } = useEvents();
+  const { fetchTotalRsvpCount } = useRsvps();
   const [showEventForm, setShowEventForm] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [totalRsvps, setTotalRsvps] = useState<number>(0);
 
   const [currentView, setCurrentView] = useState<
     "dashboard" | "calendar" | "analytics" | "events"
@@ -63,9 +66,17 @@ const Dashboard = () => {
       setCurrentView("dashboard");
     }
   }, [searchParams]);
-  // useEffect(() => {
-  //   if (user?.id) fetchEventCountByUser(user?.id);
-  // }, [user?.id, fetchEventCountByUser]);
+
+  useEffect(() => {
+    const loadRsvpCount = async () => {
+      const { count } = await fetchTotalRsvpCount();
+      setTotalRsvps(count);
+    };
+    
+    if (user?.id) {
+      loadRsvpCount();
+    }
+  }, [user?.id, fetchTotalRsvpCount]);
   const handleClick = () => {
     if (isDesktop) {
       setShowEventForm(true); // open modal
@@ -109,7 +120,7 @@ const Dashboard = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center p-4 bg-primary/10 rounded-lg">
                       <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <div className="text-2xl font-bold">2.4K</div>
+                      <div className="text-2xl font-bold">{totalRsvps}</div>
                       <div className="text-sm text-muted-foreground">
                         Total RSVPs
                       </div>

@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useEvents } from "@/hooks/useEvents";
+import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
 
 // Mock event data - in real app, this would come from API
@@ -118,9 +119,11 @@ export default function EventDetail() {
   const { eventId } = useParams();
   const { toast } = useToast();
   const { fetchEventById } = useEvents();
+  const { fetchRsvpCountByEvent } = useRsvps();
   const [copiedLink, setCopiedLink] = useState(false);
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [rsvpCount, setRsvpCount] = useState(0);
 
   // const event = mockEventData; // In real app: fetch event by eventId
 
@@ -129,12 +132,14 @@ export default function EventDetail() {
       if (eventId) {
         setLoading(true);
         const eventData = await fetchEventById(eventId);
-        setEvent({ ...mockEventData, ...eventData });
+        const { count } = await fetchRsvpCountByEvent(eventId);
+        setRsvpCount(count);
+        setEvent({ ...mockEventData, ...eventData, rsvpCount: count });
         setLoading(false);
       }
     };
     loadEvent();
-  }, [eventId, fetchEventById]);
+  }, [eventId, fetchEventById, fetchRsvpCountByEvent]);
 
   if (loading) {
     return (

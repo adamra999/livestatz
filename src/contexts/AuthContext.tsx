@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
         // Check for stored pre-auth path
         const preAuthPath = sessionStorage.getItem("preAuthPath");
         if (location?.pathname == "/" && !location?.pathname.includes("/e/")) {
-          if (preAuthPath) {
+          if (preAuthPath && !location?.pathname.includes("/auth")) {
             sessionStorage.removeItem("preAuthPath");
             navigate(preAuthPath);
           } else {

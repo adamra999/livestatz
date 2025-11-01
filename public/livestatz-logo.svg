@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 560" role="img" aria-labelledby="title desc">
+  <title id="title">LiveStatz logo</title>
+  <desc id="desc">Logo for LiveStatz with a purple-blue wordmark and orange growth arrow. Transparent background.</desc>
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7B5CFF"/>
+      <stop offset="100%" stop-color="#6EA8FF"/>
+    </linearGradient>
+    <linearGradient id="brandGradientVertical" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7B5CFF"/>
+      <stop offset="100%" stop-color="#6EA8FF"/>
+    </linearGradient>
+    <style>
+      .wordmark{font: 700 92px/1.1 Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; fill: url(#brandGradient);}
+      .subtitle{font: 500 32px/1.2 Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; fill: #6b7280;}
+    </style>
+  </defs>
+
+  <!-- Icon (simple person + growth arrow) -->
+  <g transform="translate(480,180)">
+    <!-- circular accent -->
+    <circle cx="-120" cy="-40" r="22" fill="url(#brandGradient)" />
+    <!-- upward curve (purple) -->
+    <path d="M -200,60 C -120,-10 -40,-10 40,-60" fill="none" stroke="url(#brandGradientVertical)" stroke-width="18" stroke-linecap="round"/>
+    <!-- bars (orange) -->
+    <rect x="10" y="-10" width="18" height="70" rx="4" fill="#FF7A1A"/>
+    <rect x="40" y="-40" width="18" height="100" rx="4" fill="#FF7A1A"/>
+    <!-- arrow (orange) -->
+    <path d="M 20,-80 L 85,-145 L 78,-105 L 120,-105 L 120,-145 L 185,-80 L 120,-15 L 120,-55 L 78,-55 L 85,-15 Z" fill="#FF7A1A"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(80,360)">
+    <text class="wordmark">LiveStatz</text>
+  </g>
+
+  <!-- Tagline -->
+  <g transform="translate(82,410)">
+    <text class="subtitle">Social events for influencers</text>
+  </g>
+</svg>

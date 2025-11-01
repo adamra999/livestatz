@@ -99,8 +99,8 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           {/* Brand Logo */}
           <div className="mb-8">
             <img
-              src="/lovable-uploads/new-livestatz-logo.png"
-              alt="LiveStatz - Social Growth"
+              src="/lovable-uploads/livestatz-logo-transparent.png"
+              alt="LiveStatz - Social Media and PR Agency"
               className="h-48 w-auto mx-auto mb-8"
             />
           </div>

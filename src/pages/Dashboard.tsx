@@ -80,7 +80,7 @@ const Dashboard = () => {
       const { count } = await fetchTotalRsvpCount();
       setTotalRsvps(count);
     };
-    
+
     if (user?.id) {
       loadRsvpCount();
     }
@@ -93,7 +93,7 @@ const Dashboard = () => {
         setWeeklyReport(data);
       }
     };
-    
+
     if (user?.id) {
       loadWeeklyReport();
     }
@@ -102,17 +102,17 @@ const Dashboard = () => {
   useEffect(() => {
     const loadRsvpCounts = async () => {
       if (events.length === 0) return;
-      
+
       const counts: Record<string, number> = {};
-      
+
       for (const event of events) {
         const { count } = await fetchRsvpCountByEvent(event.id);
         counts[event.id] = count;
       }
-      
+
       setRsvpCounts(counts);
     };
-    
+
     if (user?.id && events.length > 0) {
       loadRsvpCounts();
     }
@@ -150,7 +150,7 @@ const Dashboard = () => {
                     </div>
                     <Badge
                       variant="outline"
-                      className="bg-primary text-primary-foreground"
+                      className="bg-primary text-primary-foreground min-w-[72px]"
                     >
                       Pro Plan
                     </Badge>
@@ -174,7 +174,7 @@ const Dashboard = () => {
                         Live Events
                       </div>
                     </div>
-                    <div className="text-center p-4 bg-secondary/10 rounded-lg">
+                    {/* <div className="text-center p-4 bg-secondary/10 rounded-lg">
                       <TrendingUp className="h-8 w-8 text-secondary-foreground mx-auto mb-2" />
                       <div className="text-2xl font-bold">78%</div>
                       <div className="text-sm text-muted-foreground">
@@ -187,68 +187,7 @@ const Dashboard = () => {
                       <div className="text-sm text-muted-foreground">
                         Revenue
                       </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Weekly Fan Growth */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    🔥 Weekly Fan Growth
-                  </CardTitle>
-                  <CardDescription>
-                    Your fan growth metrics this week
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">🎉</div>
-                      <div>
-                        <div className="font-semibold">
-                          <Link
-                            to="/profile?tab=fans"
-                            className="text-primary hover:underline cursor-pointer"
-                          >
-                            {weeklyReport.newFansThisWeek} New Fans joined this week
-                          </Link>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Growing your community!
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">💜</div>
-                      <div>
-                        <div className="font-semibold">
-                          <Link
-                            to="/profile?tab=superfans"
-                            className="text-primary hover:underline cursor-pointer"
-                          >
-                            {weeklyReport.fansAttendedThisWeek} Fans attended events
-                          </Link>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Active participants this week
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-primary">
-                          Total RSVP Growth
-                        </span>
-                        <span className="font-bold text-xl text-primary">
-                          +{weeklyReport.rsvpsGrowthThisWeek}
-                        </span>
-                      </div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        New RSVPs this week
-                      </div>
-                    </div>
+                    </div> */}
                   </div>
                 </CardContent>
               </Card>
@@ -339,10 +278,10 @@ const Dashboard = () => {
                     <Zap className="mr-2 h-4 w-4" />
                     Create Live Event
                   </Button>
-                  <Button className="w-full" variant="outline">
+                  {/* <Button className="w-full" variant="outline">
                     <Calendar className="mr-2 h-4 w-4" />
                     Schedule Content
-                  </Button>
+                  </Button> */}
                   <Button
                     className="w-full"
                     variant="outline"
@@ -385,7 +324,7 @@ const Dashboard = () => {
                         ></div>
                       </div>
                     </div>
-                    <div>
+                    {/* <div>
                       <div className="flex justify-between text-sm mb-1">
                         <span>Revenue Growth</span>
                         <span>156%</span>
@@ -395,6 +334,67 @@ const Dashboard = () => {
                           className="bg-accent h-2 rounded-full"
                           style={{ width: "100%" }}
                         ></div>
+                      </div>
+                    </div> */}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Weekly Fan Growth */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    🔥 Weekly Fan Growth
+                  </CardTitle>
+                  <CardDescription>
+                    Your fan growth metrics this week
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">🎉</div>
+                      <div>
+                        <div className="font-semibold">
+                          <Link
+                            to="/profile?tab=fans"
+                            className="text-primary hover:underline cursor-pointer"
+                          >
+                            {weeklyReport.newFansThisWeek} New Fans joined this week
+                          </Link>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Growing your community!
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">💜</div>
+                      <div>
+                        <div className="font-semibold">
+                          <Link
+                            to="/profile?tab=superfans"
+                            className="text-primary hover:underline cursor-pointer"
+                          >
+                            {weeklyReport.fansAttendedThisWeek} Fans attended events
+                          </Link>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Active participants this week
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-primary/5 rounded-lg border border-primary/10">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-primary">
+                          Total RSVP Growth
+                        </span>
+                        <span className="font-bold text-xl text-primary">
+                          +{weeklyReport.rsvpsGrowthThisWeek}
+                        </span>
+                      </div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        New RSVPs this week
                       </div>
                     </div>
                   </div>
@@ -546,21 +546,19 @@ const Dashboard = () => {
                 <label className="text-sm font-medium">Event Type</label>
                 <div className="flex items-center space-x-4">
                   <span
-                    className={`text-sm font-medium transition-colors ${
-                      !formData.isPaid
+                    className={`text-sm font-medium transition-colors ${!formData.isPaid
                         ? "text-green-600"
                         : "text-muted-foreground"
-                    }`}
+                      }`}
                   >
                     🆓 Free
                   </span>
                   <button
                     type="button"
-                    className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg ${
-                      formData.isPaid
+                    className={`relative inline-flex h-8 w-16 items-center rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg ${formData.isPaid
                         ? "bg-gradient-to-r from-yellow-400 to-orange-500 shadow-yellow-300"
                         : "bg-gradient-to-r from-gray-300 to-gray-400 shadow-gray-200"
-                    }`}
+                      }`}
                     onClick={() =>
                       setFormData({
                         ...formData,
@@ -571,17 +569,15 @@ const Dashboard = () => {
                     }
                   >
                     <span
-                      className={`inline-block h-6 w-6 transform rounded-full bg-white transition-all duration-300 shadow-md ${
-                        formData.isPaid ? "translate-x-9" : "translate-x-1"
-                      }`}
+                      className={`inline-block h-6 w-6 transform rounded-full bg-white transition-all duration-300 shadow-md ${formData.isPaid ? "translate-x-9" : "translate-x-1"
+                        }`}
                     />
                   </button>
                   <span
-                    className={`text-sm font-medium transition-colors ${
-                      formData.isPaid
+                    className={`text-sm font-medium transition-colors ${formData.isPaid
                         ? "text-yellow-600"
                         : "text-muted-foreground"
-                    }`}
+                      }`}
                   >
                     💰 Paid
                   </span>

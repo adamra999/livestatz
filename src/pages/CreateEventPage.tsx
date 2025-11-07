@@ -27,8 +27,8 @@ export default function CreateEventPage() {
 
   const validateUrl = (url: string): boolean => {
     if (!url) {
-      setUrlError("");
-      return true; // Empty is valid (optional field)
+      setUrlError("Event URL is required");
+      return false;
     }
 
     try {
@@ -46,7 +46,7 @@ export default function CreateEventPage() {
   };
 
   const handleCreateEvent = async () => {
-    if (!formData.title || !formData.dateTime) {
+    if (!formData.title || !formData.dateTime || !formData.eventUrl) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -55,10 +55,10 @@ export default function CreateEventPage() {
       return;
     }
 
-    if (formData.eventUrl && !validateUrl(formData.eventUrl)) {
+    if (!validateUrl(formData.eventUrl)) {
       toast({
         title: "Invalid URL",
-        description: "Please enter a valid event URL or leave it empty to use the default",
+        description: "Please enter a valid event URL",
         variant: "destructive",
       });
       return;
@@ -145,21 +145,7 @@ export default function CreateEventPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1">
-              Event Description
-            </label>
-            <textarea
-              className="w-full p-3 border rounded-lg bg-background h-28 resize-none"
-              placeholder="What will you be sharing with your audience?"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Event URL
+              Event URL *
             </label>
             <input
               type="url"
@@ -181,6 +167,20 @@ export default function CreateEventPage() {
             {!urlError && formData.eventUrl && (
               <p className="text-sm text-muted-foreground mt-1">✓ Valid URL</p>
             )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Event Description
+            </label>
+            <textarea
+              className="w-full p-3 border rounded-lg bg-background h-28 resize-none"
+              placeholder="What will you be sharing with your audience?"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+            />
           </div>
         </section>
 

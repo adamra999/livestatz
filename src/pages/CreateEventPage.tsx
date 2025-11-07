@@ -290,7 +290,14 @@ export default function CreateEventPage() {
         </section>
 
         {/* Submit */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+        <div className="flex flex-col sm:flex-row-reverse gap-3 pt-4">
+          <Button
+            onClick={handleCreateEvent}
+            className="flex-1 py-3"
+            disabled={isCreating}
+          >
+            {isCreating ? "Creating..." : "Create Event"}
+          </Button>
           <Button
             onClick={() => navigate(-1)}
             variant="outline"
@@ -298,13 +305,6 @@ export default function CreateEventPage() {
             disabled={isCreating}
           >
             Cancel
-          </Button>
-          <Button
-            onClick={handleCreateEvent}
-            className="flex-1 py-3"
-            disabled={isCreating}
-          >
-            {isCreating ? "Creating..." : "Create Event"}
           </Button>
         </div>
       </main>

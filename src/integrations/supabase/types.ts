@@ -80,6 +80,7 @@ export type Database = {
           price: string | null
           selectedFanGroups: Json | null
           tags: Json | null
+          targetAudience: number | null
           title: string
           updatedAt: string
           url: string
@@ -104,6 +105,7 @@ export type Database = {
           price?: string | null
           selectedFanGroups?: Json | null
           tags?: Json | null
+          targetAudience?: number | null
           title: string
           updatedAt: string
           url: string
@@ -128,6 +130,7 @@ export type Database = {
           price?: string | null
           selectedFanGroups?: Json | null
           tags?: Json | null
+          targetAudience?: number | null
           title?: string
           updatedAt?: string
           url?: string
@@ -583,10 +586,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_event_owner: {
-        Args: { event_uuid: string }
-        Returns: boolean
-      }
+      is_event_owner: { Args: { event_uuid: string }; Returns: boolean }
     }
     Enums: {
       enum_users_role: "fan" | "influencer" | "admin"

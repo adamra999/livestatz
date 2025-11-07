@@ -16,6 +16,7 @@ export default function CreateEventPage() {
     dateTime: "",
     description: "",
     eventUrl: "",
+    targetAudience: 50,
     isPaid: false,
     price: "",
     attendeeBenefits: [] as string[],
@@ -179,6 +180,21 @@ export default function CreateEventPage() {
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Target Audience
+            </label>
+            <input
+              type="number"
+              className="w-full p-3 border rounded-lg bg-background"
+              placeholder="50"
+              value={formData.targetAudience}
+              onChange={(e) =>
+                setFormData({ ...formData, targetAudience: parseInt(e.target.value) || 50 })
               }
             />
           </div>

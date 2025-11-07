@@ -85,7 +85,7 @@ const App = () => {
               />
               <Route
                 path="/events/create-event"
-                element={<CreateEventPage />}
+                element={<Layout><CreateEventPage /></Layout>}
               />
 
               <Route

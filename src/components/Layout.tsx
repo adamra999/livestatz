@@ -5,6 +5,12 @@ import livestatzLogo from "@/assets/livestatz-logo.svg";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface LayoutProps {
   children: ReactNode;
@@ -30,14 +36,23 @@ const Layout = ({ children }: LayoutProps) => {
               <span className="font-semibold text-white">LiveStatz</span>
             </div>
             {showBackButton && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/dashboard")}
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => navigate("/dashboard")}
+                      className="text-white hover:bg-white/10 hover:text-white"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Back to Dashboard</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
             {!showBackButton && <div className="w-10"></div>}
           </header>

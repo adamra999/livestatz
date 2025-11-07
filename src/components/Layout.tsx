@@ -4,7 +4,7 @@ import { AppSidebar } from "./AppSidebar";
 import livestatzLogo from "@/assets/livestatz-logo.svg";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,6 +12,9 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const showBackButton = ['/events', '/calendar', '/analytics'].includes(location.pathname);
 
   return (
     <SidebarProvider>
@@ -21,6 +24,12 @@ const Layout = ({ children }: LayoutProps) => {
           <header className="h-12 flex items-center justify-between border-b bg-gradient-primary text-white px-4">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="text-white hover:text-white/90" />
+            </div>
+            <div className="flex items-center gap-2">
+              <img src={livestatzLogo} alt="LiveStatz" className="h-6 w-6" />
+              <span className="font-semibold text-white">LiveStatz</span>
+            </div>
+            {showBackButton && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -29,12 +38,8 @@ const Layout = ({ children }: LayoutProps) => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <img src={livestatzLogo} alt="LiveStatz" className="h-6 w-6" />
-              <span className="font-semibold text-white">LiveStatz</span>
-            </div>
-            <div className="w-16"></div>
+            )}
+            {!showBackButton && <div className="w-10"></div>}
           </header>
           <div className="p-4">
             {children}

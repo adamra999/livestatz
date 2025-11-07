@@ -119,7 +119,7 @@ export default function Auth() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <img src={livestatzLogo} alt="LiveStatz" className="h-12 w-auto" />
+            <img src={livestatzLogo} alt="LiveStatz" className="h-16 w-auto animate-fade-in" />
           </div>
           <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
           <CardDescription>

@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useInfluencers } from "@/hooks/useInfluencers";
+import livestatzLogo from "@/assets/livestatz-logo.svg";
 
 export default function Auth() {
   const { addInfluencer, currentUser } = useInfluencers();
@@ -117,6 +118,9 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <img src={livestatzLogo} alt="LiveStatz" className="h-12 w-auto" />
+          </div>
           <CardTitle className="text-2xl font-bold">Welcome</CardTitle>
           <CardDescription>
             Sign in to your account or create a new one

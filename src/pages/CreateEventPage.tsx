@@ -14,6 +14,7 @@ export default function CreateEventPage() {
     platform: "Instagram Live",
     dateTime: "",
     description: "",
+    eventUrl: "",
     isPaid: false,
     price: "",
     attendeeBenefits: [] as string[],
@@ -122,6 +123,21 @@ export default function CreateEventPage() {
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Event URL
+            </label>
+            <input
+              type="url"
+              className="w-full p-3 border rounded-lg bg-background"
+              placeholder="https://example.com/your-event"
+              value={formData.eventUrl}
+              onChange={(e) =>
+                setFormData({ ...formData, eventUrl: e.target.value })
               }
             />
           </div>

@@ -106,7 +106,7 @@ export function useEvents() {
   // 🔹 Create new event
   const createEvent = useCallback(
     async (
-      eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link">
+      eventData: Omit<Event, "id" | "createdAt" | "updatedAt" | "url" | "link"> & { eventUrl?: string }
     ) => {
       if (!userId) {
         setError("User not authenticated");
@@ -114,14 +114,17 @@ export function useEvents() {
       }
 
       const eventId = crypto.randomUUID();
-      const eventUrl = `https://livestatz.com/e/${eventId}`;
+      const defaultUrl = `https://livestatz.com/e/${eventId}`;
+      const eventUrl = eventData.eventUrl || defaultUrl;
       const now = new Date().toISOString();
+
+      const { eventUrl: _, ...dataWithoutEventUrl } = eventData;
 
       const { data, error } = await supabase
         .from("Events")
         .insert([
           {
-            ...eventData,
+            ...dataWithoutEventUrl,
             id: eventId,
             createdAt: now,
             updatedAt: now,

@@ -8,6 +8,7 @@ export default function CreateEventPage() {
   const navigate = useNavigate();
   const { createEvent } = useEvents();
   const [isCreating, setIsCreating] = useState(false);
+  const [urlError, setUrlError] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -24,11 +25,40 @@ export default function CreateEventPage() {
     offerWithSubscription: false,
   });
 
+  const validateUrl = (url: string): boolean => {
+    if (!url) {
+      setUrlError("");
+      return true; // Empty is valid (optional field)
+    }
+
+    try {
+      const urlObj = new URL(url);
+      if (!urlObj.protocol.match(/^https?:$/)) {
+        setUrlError("URL must start with http:// or https://");
+        return false;
+      }
+      setUrlError("");
+      return true;
+    } catch {
+      setUrlError("Please enter a valid URL (e.g., https://example.com/event)");
+      return false;
+    }
+  };
+
   const handleCreateEvent = async () => {
     if (!formData.title || !formData.dateTime) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.eventUrl && !validateUrl(formData.eventUrl)) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid event URL or leave it empty to use the default",
         variant: "destructive",
       });
       return;
@@ -133,13 +163,24 @@ export default function CreateEventPage() {
             </label>
             <input
               type="url"
-              className="w-full p-3 border rounded-lg bg-background"
+              className={`w-full p-3 border rounded-lg bg-background ${
+                urlError ? "border-destructive focus:ring-destructive" : ""
+              }`}
               placeholder="https://example.com/your-event"
               value={formData.eventUrl}
-              onChange={(e) =>
-                setFormData({ ...formData, eventUrl: e.target.value })
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData({ ...formData, eventUrl: value });
+                validateUrl(value);
+              }}
+              onBlur={(e) => validateUrl(e.target.value)}
             />
+            {urlError && (
+              <p className="text-sm text-destructive mt-1">{urlError}</p>
+            )}
+            {!urlError && formData.eventUrl && (
+              <p className="text-sm text-muted-foreground mt-1">✓ Valid URL</p>
+            )}
           </div>
         </section>
 

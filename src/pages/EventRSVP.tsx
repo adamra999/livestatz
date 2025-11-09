@@ -483,13 +483,15 @@ export const EventRSVPPage = () => {
       return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
     };
 
+    const meetingLink = event.link ? `\n\nMeeting Link: ${event.link}` : '';
+    
     const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
       event.title
     )}&dates=${formatDate(startDate)}/${formatDate(
       endDate
     )}&details=${encodeURIComponent(
-      event.description
-    )}&location=${encodeURIComponent(event.location)}`;
+      event.description + meetingLink
+    )}&location=${encodeURIComponent(event.location || event.platform)}`;
 
     window.open(calendarUrl, "_blank");
   };

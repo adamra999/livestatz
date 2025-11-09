@@ -21,6 +21,7 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
   const showBackButton = ['/events', '/calendar', '/analytics'].includes(location.pathname);
+  const isEventRSVPPage = location.pathname.startsWith('/e/');
 
   return (
     <SidebarProvider>
@@ -29,7 +30,7 @@ const Layout = ({ children }: LayoutProps) => {
         <main className="flex-1">
           <header className="h-12 flex items-center justify-between border-b bg-gradient-primary text-white px-4">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="text-white hover:text-white/90" />
+              {!isEventRSVPPage && <SidebarTrigger className="text-white hover:text-white/90" />}
             </div>
             <div className="flex items-center gap-2">
               <img src={livestatzLogo} alt="LiveStatz" className="h-6 w-6" />

@@ -529,14 +529,14 @@ export const EventRSVPPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Welcome Section - Only for signed-in users */}
         {user && (
           <Card className="bg-gradient-card border-0 shadow-creator mb-6">
-            <CardHeader>
+            <CardHeader className="py-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-2xl">
+                  <CardTitle className="text-2xl ">
                     Welcome back,{" "}
                     {user?.user_metadata?.full_name
                       ? user?.user_metadata?.full_name

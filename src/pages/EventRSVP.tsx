@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -529,8 +529,28 @@ export const EventRSVPPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-
       <div className="container mx-auto px-4 py-8 max-w-2xl">
+        {/* Welcome Section - Only for signed-in users */}
+        {user && (
+          <Card className="bg-gradient-card border-0 shadow-creator mb-6">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl">
+                    Welcome back,{" "}
+                    {user?.user_metadata?.full_name
+                      ? user?.user_metadata?.full_name
+                      : "Creator"}
+                    ! 🚀
+                  </CardTitle>
+                  <CardDescription>
+                    You're viewing this event RSVP page
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+        )}
         {/* Event Details */}
         <Card className="mb-8">
           <CardHeader>

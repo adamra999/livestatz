@@ -529,19 +529,6 @@ export const EventRSVPPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center">
-          <Link to="/" className="flex items-center space-x-2">
-            <ArrowLeft className="h-5 w-5" />
-            <img
-              src="/lovable-uploads/new-livestatz-logo.png"
-              alt="LiveStatz"
-              className="h-18 w-auto"
-            />
-          </Link>
-        </div>
-      </div>
 
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         {/* Event Details */}

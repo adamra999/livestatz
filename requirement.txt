@@ -43,4 +43,6 @@ http://localhost:8080/e/4440e2f6-34a3-49bf-966e-af4f9dfeb83e
 
 
 
-http://localhost:8080/e/0a8a8a1c-fcbf-47a4-a64e-32fa1229fdf3
+http://localhost:8080/e/0a8a8a1c-fcbf-47a4-a64e-
+
+http://localhost:8080/events/success/6debd63f-2a33-46de-9757-bbe689dfb541

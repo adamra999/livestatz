@@ -199,7 +199,7 @@ function EventSuccessPage() {
             Close
           </Button>
           <Button
-            onClick={() => navigate("/events/new")}
+            onClick={() => navigate("/events/create-event")}
             className="w-full sm:w-auto"
           >
             Create Another Event

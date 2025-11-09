@@ -81,7 +81,7 @@ const App = () => {
               <Route path="/auth" element={<Auth />} />
               <Route
                 path="/events/success/:eventId"
-                element={<EventSuccessPage />}
+                element={<Layout><EventSuccessPage /></Layout>}
               />
               <Route
                 path="/events/create-event"

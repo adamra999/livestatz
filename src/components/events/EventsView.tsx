@@ -19,6 +19,7 @@ function EventsView() {
     eventCount,
     userId,
   } = useEvents();
+  const navigate = useNavigate();
   const { fetchRsvpCountByEvent } = useRsvps();
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
   const mockEvents = [
@@ -142,7 +143,9 @@ function EventsView() {
             Manage and track your live events
           </p>
         </div>
-        <Button onClick={() => setShowEventForm(true)}>
+        <Button 
+            onClick={() => navigate("/events/create-event")}
+        >
           <Zap className="h-4 w-4 mr-2" />
           Create New Event
         </Button>

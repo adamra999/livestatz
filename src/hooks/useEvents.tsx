@@ -115,7 +115,7 @@ export function useEvents() {
 
       const eventId = crypto.randomUUID();
       const defaultUrl = `https://livestatz.com/e/${eventId}`;
-      const eventUrl = eventData.eventUrl || defaultUrl;
+      const eventUrl = eventData.eventUrl;
       const now = new Date().toISOString();
 
       const { eventUrl: _, ...dataWithoutEventUrl } = eventData;
@@ -128,7 +128,7 @@ export function useEvents() {
             id: eventId,
             createdAt: now,
             updatedAt: now,
-            url: eventUrl,
+            url: defaultUrl,
             link: eventUrl,
             influencerId: userId,
           },

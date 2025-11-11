@@ -95,7 +95,7 @@ export const EventRSVPPage = () => {
   const [fanName, setFanName] = useState("");
   const [fanEmail, setFanEmail] = useState("");
   const navigate = useNavigate();
-  const { createFan, fans, fetchFans } = useFans();
+  const { createFan, fans, fetchFans,loading: fansLoading } = useFans();
   const { createRsvp, getRsvpByEventAndFan } = useRsvps();
   const { createFanEvent } = useFanEvents();
 
@@ -122,16 +122,18 @@ export const EventRSVPPage = () => {
 
   // Check if current user is in fans table
   useEffect(() => {
-    if (user && fans && fans?.length == 0) {
+    if (user && fans && fans?.length >= 0) {
       const userInFans = fans.find((fan) => fan.user_id === user.id);
-      if (!userInFans) {
+      if (!userInFans && !fansLoading) {
         // User is authenticated but not in fans table
         setFanName(user.user_metadata?.full_name || "");
         setFanEmail(user.email || "");
         setShowAddFanModal(true);
+      }else{
+        setShowAddFanModal(false);
       }
     }
-  }, [user, fans]);
+  }, [user, fans,fansLoading]);
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

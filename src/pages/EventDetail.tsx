@@ -240,7 +240,7 @@ export default function EventDetail() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Crown className="h-4 w-4" />
-                        <span>by {event.organizer}</span>
+                        <span>by {event.Influencers?.name || "Unknown"}</span>
                       </div>
                     </div>
                   </div>

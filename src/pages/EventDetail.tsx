@@ -232,11 +232,11 @@ export default function EventDetail() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Calendar className="h-4 w-4" />
-                        <span>{event.date}</span>
+                        <span>{format(new Date(event.dateTime), "MMM d, yyyy")}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Clock className="h-4 w-4" />
-                        <span>{event.time}</span>
+                        <span>{format(new Date(event.dateTime), "h:mm a")}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Crown className="h-4 w-4" />

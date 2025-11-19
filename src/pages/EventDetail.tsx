@@ -311,11 +311,9 @@ export default function EventDetail() {
 
             {/* Tabbed Content */}
             <Tabs defaultValue="analytics" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="analytics">📈 Analytics</TabsTrigger>
                 <TabsTrigger value="rsvps">👥 RSVPs</TabsTrigger>
-                <TabsTrigger value="hype">📣 Hype Content</TabsTrigger>
-                <TabsTrigger value="monetization">💸 Revenue</TabsTrigger>
               </TabsList>
 
               {/* Live Analytics Tab */}
@@ -441,145 +439,6 @@ export default function EventDetail() {
                       </div>
                     </div>
                   ))}
-                </div>
-              </TabsContent>
-
-              {/* Hype Content Tab */}
-              <TabsContent value="hype" className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">
-                    Hype Content Tracker
-                  </h3>
-                  <div className="space-y-4">
-                    {event.hypeContent.map((content, i) => (
-                      <Card key={i}>
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                              <div className="flex flex-col">
-                                <div className="font-medium">
-                                  {content.type}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  {content.date}
-                                </div>
-                              </div>
-                              {content.hasCTA && (
-                                <Badge
-                                  variant="outline"
-                                  className="text-green-600 border-green-600"
-                                >
-                                  ✓ CTA Included
-                                </Badge>
-                              )}
-                            </div>
-
-                            <div className="flex items-center space-x-6 text-sm">
-                              <div className="text-center">
-                                <div className="font-medium">
-                                  {content.views.toLocaleString()}
-                                </div>
-                                <div className="text-muted-foreground">
-                                  Views
-                                </div>
-                              </div>
-                              <div className="text-center">
-                                <div className="font-medium">
-                                  {content.likes}
-                                </div>
-                                <div className="text-muted-foreground">
-                                  Likes
-                                </div>
-                              </div>
-                              <div className="text-center">
-                                <div className="font-medium">
-                                  {content.shares}
-                                </div>
-                                <div className="text-muted-foreground">
-                                  Shares
-                                </div>
-                              </div>
-                              <Button variant="ghost" size="sm" asChild>
-                                <a
-                                  href={content.link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="h-4 w-4" />
-                                </a>
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Monetization Tab */}
-              <TabsContent value="monetization" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Revenue Breakdown</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between">
-                        <span>Ticket Sales</span>
-                        <span className="font-medium">
-                          ${event.monetization.ticketRevenue}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Tips & Donations</span>
-                        <span className="font-medium">
-                          ${event.monetization.tipRevenue}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Merchandise</span>
-                        <span className="font-medium">
-                          ${event.monetization.merchRevenue}
-                        </span>
-                      </div>
-                      <div className="border-t pt-2 flex justify-between font-semibold">
-                        <span>Total Revenue</span>
-                        <span>
-                          $
-                          {(
-                            event.monetization.ticketRevenue +
-                            event.monetization.tipRevenue +
-                            event.monetization.merchRevenue
-                          ).toFixed(2)}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Performance Metrics</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between">
-                        <span>Click-through Rate</span>
-                        <span className="font-medium">
-                          {event.monetization.clickThroughRate}%
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Conversion Rate</span>
-                        <span className="font-medium">8.2%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Payout Status</span>
-                        <Badge variant="secondary">
-                          {event.monetization.payoutStatus}
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
                 </div>
               </TabsContent>
             </Tabs>

@@ -119,11 +119,12 @@ export default function EventDetail() {
   const { eventId } = useParams();
   const { toast } = useToast();
   const { fetchEventById } = useEvents();
-  const { fetchRsvpCountByEvent } = useRsvps();
+  const { fetchRsvpCountByEvent, fetchRsvpsWithFanDetails } = useRsvps();
   const [copiedLink, setCopiedLink] = useState(false);
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [rsvpCount, setRsvpCount] = useState(0);
+  const [rsvpsList, setRsvpsList] = useState<any[]>([]);
 
   // const event = mockEventData; // In real app: fetch event by eventId
 
@@ -133,13 +134,15 @@ export default function EventDetail() {
         setLoading(true);
         const eventData = await fetchEventById(eventId);
         const { count } = await fetchRsvpCountByEvent(eventId);
+        const { data: rsvpsData } = await fetchRsvpsWithFanDetails(eventId);
         setRsvpCount(count);
+        setRsvpsList(rsvpsData);
         setEvent({ ...mockEventData, ...eventData, rsvpCount: count });
         setLoading(false);
       }
     };
     loadEvent();
-  }, [eventId, fetchEventById, fetchRsvpCountByEvent]);
+  }, [eventId, fetchEventById, fetchRsvpCountByEvent, fetchRsvpsWithFanDetails]);
 
   if (loading) {
     return (
@@ -416,29 +419,46 @@ export default function EventDetail() {
                 </div>
 
                 <div className="space-y-2">
-                  {event.rsvps.map((rsvp, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <div>
-                        <div className="font-medium">{rsvp.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {rsvp.email}
+                  {rsvpsList.length > 0 ? (
+                    rsvpsList.map((rsvp) => (
+                      <div
+                        key={rsvp.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
+                        <div className="flex items-center space-x-3">
+                          {rsvp.fans?.avatar_url && (
+                            <img
+                              src={rsvp.fans.avatar_url}
+                              alt={rsvp.fans.name}
+                              className="w-10 h-10 rounded-full"
+                            />
+                          )}
+                          <div>
+                            <div className="font-medium">{rsvp.fans?.name || "Unknown"}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {rsvp.fans?.email || "No email"}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <div className="text-sm text-muted-foreground">
+                            {format(new Date(rsvp.created_at), "MMM d, yyyy")}
+                          </div>
+                          <Badge
+                            variant={
+                              rsvp.status === "confirmed" ? "default" : "secondary"
+                            }
+                          >
+                            {rsvp.status}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <Badge variant="outline">{rsvp.source}</Badge>
-                        <Badge
-                          variant={
-                            rsvp.rsvpType === "Yes" ? "default" : "secondary"
-                          }
-                        >
-                          {rsvp.rsvpType}
-                        </Badge>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No RSVPs yet
                     </div>
-                  ))}
+                  )}
                 </div>
               </TabsContent>
             </Tabs>

@@ -167,6 +167,33 @@ export const useRsvps = () => {
     }
   }, []);
 
+  const fetchRsvpsWithFanDetails = useCallback(async (eventId: string) => {
+    try {
+      const { data, error: fetchError } = await supabase
+        .from("rsvps")
+        .select(`
+          *,
+          fans (
+            id,
+            name,
+            email,
+            avatar_url,
+            phone,
+            location
+          )
+        `)
+        .eq("event_id", eventId)
+        .order("created_at", { ascending: false });
+
+      if (fetchError) throw fetchError;
+      return { data: data || [], error: null };
+    } catch (err) {
+      console.error("Error fetching RSVPs with fan details:", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch RSVPs";
+      return { data: [], error: errorMessage };
+    }
+  }, []);
+
   return {
     rsvps,
     loading,
@@ -179,5 +206,6 @@ export const useRsvps = () => {
     getRsvpByEventAndFan,
     fetchTotalRsvpCount,
     fetchRsvpCountByEvent,
+    fetchRsvpsWithFanDetails,
   };
 };

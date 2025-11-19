@@ -442,31 +442,6 @@ export default function EventDetail() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Post-Event Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full" variant="default">
-                  <Play className="mr-2 h-4 w-4" />
-                  Create New Event
-                </Button>
-                <Button className="w-full" variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Report
-                </Button>
-                <Button className="w-full" variant="outline">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Thank You Message
-                </Button>
-                <Button className="w-full" variant="outline">
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Leave Notes
-                </Button>
-              </CardContent>
-            </Card>
-
             {/* Event Status */}
             <Card>
               <CardHeader>

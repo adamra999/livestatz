@@ -476,13 +476,13 @@ export default function EventDetail() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm">Status</span>
-                    <Badge variant={event.isLive ? "destructive" : "secondary"}>
-                      {event.isLive ? "Live" : "Scheduled"}
+                    <Badge variant={new Date(event.dateTime) < new Date() ? "default" : "secondary"}>
+                      {new Date(event.dateTime) < new Date() ? "Past Event" : "Scheduled"}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">Attendance Rate</span>
-                    <span className="text-sm font-medium">78%</span>
+                    <span className="text-sm">RSVPs</span>
+                    <span className="text-sm font-medium">{rsvpCount}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Platform</span>

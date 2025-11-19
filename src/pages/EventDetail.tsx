@@ -168,7 +168,7 @@ export default function EventDetail() {
   }
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(event.liveLink);
+    await navigator.clipboard.writeText(event.url);
     setCopiedLink(true);
     toast({
       title: "Link copied!",

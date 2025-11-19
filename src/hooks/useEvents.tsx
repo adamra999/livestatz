@@ -69,7 +69,7 @@ export function useEvents() {
 
       const { data, error } = await supabase
         .from("Events")
-        .select("*")
+        .select("*, Influencers(name, email)")
         .eq("id", id)
         .maybeSingle();
 

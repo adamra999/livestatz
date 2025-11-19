@@ -388,10 +388,6 @@ export default function EventDetail() {
                   </div>
                   <div className="flex space-x-2">
                     <Button variant="outline" size="sm">
-                      <Download className="h-4 w-4 mr-2" />
-                      Export CSV
-                    </Button>
-                    <Button variant="outline" size="sm">
                       <Mail className="h-4 w-4 mr-2" />
                       Send Reminder
                     </Button>

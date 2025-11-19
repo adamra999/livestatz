@@ -273,14 +273,6 @@ export default function EventDetail() {
                     <div className="text-xs text-muted-foreground">of Goal</div>
                   </div>
 
-                  <div className="text-center p-3 bg-accent/10 rounded-lg">
-                    <DollarSign className="h-6 w-6 text-accent-foreground mx-auto mb-1" />
-                    <div className="text-xl font-bold">
-                      ${event.monetization.ticketRevenue.toLocaleString()}
-                    </div>
-                    <div className="text-xs text-muted-foreground">Revenue</div>
-                  </div>
-
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <Sparkles className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
                     <div className="text-xl font-bold">
@@ -378,18 +370,6 @@ export default function EventDetail() {
                       </div>
                       <div className="text-sm text-muted-foreground">
                         New Followers
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <DollarSign className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
-                      <div className="text-2xl font-bold">
-                        ${event.analytics.revenue.toLocaleString()}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Total Revenue
                       </div>
                     </CardContent>
                   </Card>

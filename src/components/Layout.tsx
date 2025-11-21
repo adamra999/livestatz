@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import livestatzLogo from "@/assets/livestatz-logo.svg";
@@ -31,9 +31,32 @@ const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   
   const showBackButton = ['/events', '/calendar', '/analytics'].includes(location.pathname);
   const isEventRSVPPage = location.pathname.startsWith('/e/');
+
+  useEffect(() => {
+    if (user) {
+      loadProfileAvatar();
+    }
+  }, [user]);
+
+  const loadProfileAvatar = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single();
+
+    if (data?.avatar_url) {
+      setAvatarUrl(data.avatar_url);
+    } else {
+      setAvatarUrl(user.user_metadata?.avatar_url || null);
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -86,17 +109,17 @@ const Layout = ({ children }: LayoutProps) => {
               
               {user && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2 text-white hover:bg-white/10 hover:text-white">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.user_metadata?.avatar_url} />
-                        <AvatarFallback className="bg-white/20 text-white">
-                          {getUserInitials()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="hidden md:inline-block">{getUserDisplayName()}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 text-white hover:bg-white/10 hover:text-white">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={avatarUrl || undefined} />
+                      <AvatarFallback className="bg-white/20 text-white">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden md:inline-block">{getUserDisplayName()}</span>
+                  </Button>
+                </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-popover">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />

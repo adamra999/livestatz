@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import livestatzLogo from "@/assets/livestatz-logo.svg";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut, User } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Tooltip,
@@ -11,6 +11,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,9 +30,25 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   
   const showBackButton = ['/events', '/calendar', '/analytics'].includes(location.pathname);
   const isEventRSVPPage = location.pathname.startsWith('/e/');
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  const getUserInitials = () => {
+    if (!user) return "U";
+    const name = user.user_metadata?.full_name || user.email || "";
+    return name.charAt(0).toUpperCase();
+  };
+
+  const getUserDisplayName = () => {
+    return user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
+  };
 
   return (
     <SidebarProvider>
@@ -36,26 +63,54 @@ const Layout = ({ children }: LayoutProps) => {
               <img src={livestatzLogo} alt="LiveStatz" className="h-6 w-6" />
               <span className="font-semibold text-white">LiveStatz</span>
             </div>
-            {showBackButton && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => navigate("/dashboard")}
-                      className="text-white hover:bg-white/10 hover:text-white"
-                    >
-                      <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Back to Dashboard</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-            {!showBackButton && <div className="w-10"></div>}
+            <div className="flex items-center gap-2">
+              {showBackButton && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => navigate("/dashboard")}
+                        className="text-white hover:bg-white/10 hover:text-white"
+                      >
+                        <ArrowLeft className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Back to Dashboard</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 text-white hover:bg-white/10 hover:text-white">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.user_metadata?.avatar_url} />
+                      <AvatarFallback className="bg-white/20 text-white">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden md:inline-block">{getUserDisplayName()}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-popover">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </header>
           <div className="p-4">
             {children}

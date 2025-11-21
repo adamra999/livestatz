@@ -32,6 +32,7 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const { user } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
   
   const showBackButton = ['/events', '/calendar', '/analytics'].includes(location.pathname);
   const isEventRSVPPage = location.pathname.startsWith('/e/');
@@ -47,14 +48,16 @@ const Layout = ({ children }: LayoutProps) => {
 
     const { data } = await supabase
       .from("profiles")
-      .select("avatar_url")
+      .select("avatar_url, username")
       .eq("id", user.id)
       .single();
 
-    if (data?.avatar_url) {
-      setAvatarUrl(data.avatar_url);
+    if (data) {
+      setAvatarUrl(data.avatar_url || user.user_metadata?.avatar_url || null);
+      setUsername(data.username || null);
     } else {
       setAvatarUrl(user.user_metadata?.avatar_url || null);
+      setUsername(null);
     }
   };
 
@@ -70,7 +73,7 @@ const Layout = ({ children }: LayoutProps) => {
   };
 
   const getUserDisplayName = () => {
-    return user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
+    return username || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
   };
 
   return (

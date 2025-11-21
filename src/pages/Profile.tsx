@@ -18,6 +18,7 @@ const Profile = () => {
     email: "",
     avatar_url: "",
     phone: "",
+    username: "",
   });
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const Profile = () => {
         email: data.email || user.email || "",
         avatar_url: data.avatar_url || "",
         phone: data.phone || "",
+        username: data.username || "",
       });
     } else {
       setProfile({
@@ -53,6 +55,7 @@ const Profile = () => {
         email: user.email || "",
         avatar_url: user.user_metadata?.avatar_url || "",
         phone: user.user_metadata?.phone || "",
+        username: "",
       });
     }
   };
@@ -116,6 +119,7 @@ const Profile = () => {
           full_name: profile.full_name,
           email: profile.email,
           phone: profile.phone,
+          username: profile.username,
           avatar_url: profile.avatar_url,
           updated_at: new Date().toISOString(),
         });
@@ -203,6 +207,17 @@ const Profile = () => {
                   value={profile.full_name}
                   onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
                   placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="username">Handle</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={profile.username}
+                  onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                  placeholder="@yourhandle"
                 />
               </div>
 

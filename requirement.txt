@@ -46,3 +46,18 @@ http://localhost:8080/e/4440e2f6-34a3-49bf-966e-af4f9dfeb83e
 http://localhost:8080/e/0a8a8a1c-fcbf-47a4-a64e-
 
 http://localhost:8080/events/success/6debd63f-2a33-46de-9757-bbe689dfb541
+
+
+
+issue # 01 remove https from  Event URL *
+issue # 02 Target Audience blanck
+add profile icon and name
+add new button Promote Live  => media share
+export csv of fans
+Organizer name on fan page
+
+issue # 5 Where is the influencer name listed?
+There should be a field for Handle that should be listed
+CreatorHandle
+That is what should be listed on Organizer name
+We may need to change what is shown from the name  to the handle - let’s say an influencers name is James smith, but their social profile handle is “BigJim” - BigJim is the handle that should be shown not the name

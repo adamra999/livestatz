@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { Upload, Loader2 } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState({
@@ -257,7 +259,7 @@ const Profile = () => {
                 "Save Changes"
               )}
             </Button>
-            <Button variant="outline" onClick={loadProfile} disabled={loading}>
+            <Button variant="outline" onClick={() => navigate(-1)} disabled={loading}>
               Cancel
             </Button>
           </div>

@@ -87,6 +87,10 @@ const App = () => {
                 path="/events/create-event"
                 element={<Layout><CreateEventPage /></Layout>}
               />
+              <Route
+                path="/events/edit/:eventId"
+                element={<Layout><CreateEventPage /></Layout>}
+              />
 
               <Route
                 path="/e/:eventId"

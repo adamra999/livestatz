@@ -19,6 +19,7 @@ import {
   TrendingUp,
   Zap,
   Trash2,
+  Edit,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -43,9 +44,10 @@ interface EventCardProps {
   };
   variant?: "default" | "compact";
   onDelete?: (eventId: string) => void;
+  onEdit?: (eventId: string) => void;
 }
 
-export function EventCard({ event, variant = "default", onDelete }: EventCardProps) {
+export function EventCard({ event, variant = "default", onDelete, onEdit }: EventCardProps) {
   const { toast } = useToast();
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -229,6 +231,17 @@ export function EventCard({ event, variant = "default", onDelete }: EventCardPro
                   <Copy className="h-4 w-4 mr-2" />
                 )}
                 {copiedLink ? "Copied!" : "Copy Link"}
+              </Button>
+            )}
+            
+            {onEdit && (
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => onEdit(event.id)}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
               </Button>
             )}
             

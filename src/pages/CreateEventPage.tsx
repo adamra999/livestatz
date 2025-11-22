@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useEvents } from "@/hooks/useEvents";
 
-export default function CreateEventPage() {
+interface CreateEventPageProps {
+  onClose?: () => void;
+  embedded?: boolean;
+}
+
+export default function CreateEventPage({ onClose, embedded = false }: CreateEventPageProps) {
   const navigate = useNavigate();
   const { createEvent } = useEvents();
   const [isCreating, setIsCreating] = useState(false);
@@ -85,10 +90,18 @@ export default function CreateEventPage() {
     }
   };
 
+  const handleCancel = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className={`${embedded ? '' : 'min-h-screen'} bg-background text-foreground flex flex-col`}>
       {/* Header */}
-      <header className="p-4 border-b bg-card sticky top-0 z-10">
+      <header className={`p-4 border-b bg-card ${embedded ? '' : 'sticky top-0 z-10'}`}>
         <h1 className="text-xl font-semibold text-center">Create Live Event</h1>
       </header>
 
@@ -315,7 +328,7 @@ export default function CreateEventPage() {
             {isCreating ? "Creating..." : "Create Event"}
           </Button>
           <Button
-            onClick={() => navigate(-1)}
+            onClick={handleCancel}
             variant="outline"
             className="flex-1 py-3"
             disabled={isCreating}

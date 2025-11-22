@@ -5,6 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Calendar,
   Clock,
   Users,
@@ -20,6 +27,7 @@ import {
   Zap,
   Trash2,
   Edit,
+  MoreVertical,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -214,52 +222,16 @@ export function EventCard({ event, variant = "default", onDelete, onEdit }: Even
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-2">
-            <Link to={`/events/${event.id}`}>
-              <Button size="sm" variant="default">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                View Details
-              </Button>
-            </Link>
-
-            {event.liveLink && (
-              <Button size="sm" variant="outline" onClick={copyLink}>
-                {copiedLink ? (
-                  <Check className="h-4 w-4 mr-2" />
-                ) : (
-                  <Copy className="h-4 w-4 mr-2" />
-                )}
-                {copiedLink ? "Copied!" : "Copy Link"}
-              </Button>
-            )}
-            
-            {onEdit && (
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => onEdit(event.id)}
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit
-              </Button>
-            )}
-            
-            {onDelete && (
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={() => onDelete(event.id)}
-                className="text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete
-              </Button>
-            )}
-          </div>
+        <div className="flex items-center justify-between gap-2">
+          <Link to={`/events/${event.id}`} className="flex-1">
+            <Button size="sm" variant="default" className="w-full">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              View Details
+            </Button>
+          </Link>
 
           {event.isLive && (
-            <Button size="sm" variant="secondary" asChild>
+            <Button size="sm" variant="secondary" asChild className="flex-1">
               <a
                 href={event.liveLink}
                 target="_blank"
@@ -270,6 +242,51 @@ export function EventCard({ event, variant = "default", onDelete, onEdit }: Even
               </a>
             </Button>
           )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="outline">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {event.liveLink && (
+                <>
+                  <DropdownMenuItem onClick={copyLink}>
+                    {copiedLink ? (
+                      <>
+                        <Check className="h-4 w-4 mr-2" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy Link
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              
+              {onEdit && (
+                <DropdownMenuItem onClick={() => onEdit(event.id)}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Event
+                </DropdownMenuItem>
+              )}
+              
+              {onDelete && (
+                <DropdownMenuItem 
+                  onClick={() => onDelete(event.id)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Event
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardContent>
     </Card>

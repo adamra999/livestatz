@@ -30,6 +30,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRsvps } from "@/hooks/useRsvps";
 import { useWeeklyFanReports } from "@/hooks/useWeeklyFanReports";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -61,6 +62,7 @@ const Dashboard = () => {
     fansAttendedThisWeek: 0,
     rsvpsGrowthThisWeek: 0,
   });
+  const [username, setUsername] = useState<string | null>(null);
 
   const [currentView, setCurrentView] = useState<
     "dashboard" | "calendar" | "analytics" | "events"
@@ -117,6 +119,24 @@ const Dashboard = () => {
       loadRsvpCounts();
     }
   }, [user?.id, events, fetchRsvpCountByEvent]);
+
+  useEffect(() => {
+    const loadUsername = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user.id)
+        .single();
+      
+      if (data?.username) {
+        setUsername(data.username);
+      }
+    };
+
+    loadUsername();
+  }, [user?.id]);
   const handleClick = () => {
     if (isDesktop) {
       setShowEventForm(true); // open modal
@@ -139,9 +159,7 @@ const Dashboard = () => {
                     <div>
                       <CardTitle className="text-2xl">
                         Welcome back,{" "}
-                        {user?.user_metadata?.full_name
-                          ? user?.user_metadata?.full_name
-                          : "Creator"}
+                        {username || user?.user_metadata?.full_name || "Creator"}
                         ! 🚀
                       </CardTitle>
                       <CardDescription>

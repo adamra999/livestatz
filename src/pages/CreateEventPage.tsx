@@ -38,8 +38,16 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
       return false;
     }
 
+    // Auto-prepend https:// if no protocol is provided
+    let urlToValidate = url.trim();
+    if (!urlToValidate.match(/^https?:\/\//i)) {
+      urlToValidate = `https://${urlToValidate}`;
+      // Update the form data with the corrected URL
+      setFormData(prev => ({ ...prev, eventUrl: urlToValidate }));
+    }
+
     try {
-      const urlObj = new URL(url);
+      const urlObj = new URL(urlToValidate);
       if (!urlObj.protocol.match(/^https?:$/)) {
         setUrlError("URL must start with http:// or https://");
         return false;
@@ -47,7 +55,7 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
       setUrlError("");
       return true;
     } catch {
-      setUrlError("Please enter a valid URL (e.g., https://example.com/event)");
+      setUrlError("Please enter a valid URL (e.g., example.com/event)");
       return false;
     }
   };
@@ -175,12 +183,11 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
               className={`w-full p-3 border rounded-lg bg-background ${
                 urlError ? "border-destructive focus:ring-destructive" : ""
               }`}
-              placeholder="https://example.com/your-event"
+              placeholder="example.com/your-event"
               value={formData.eventUrl}
               onChange={(e) => {
                 const value = e.target.value;
                 setFormData({ ...formData, eventUrl: value });
-                validateUrl(value);
               }}
               onBlur={(e) => validateUrl(e.target.value)}
             />

@@ -212,6 +212,48 @@ export default function EventDetail() {
     setShowShareDialog(true);
   };
 
+  const exportToCSV = () => {
+    if (rsvpsList.length === 0) {
+      toast({
+        title: "No data to export",
+        description: "There are no RSVPs to export yet",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create CSV content
+    const headers = ["Name", "Email", "Phone", "Status", "RSVP Date"];
+    const rows = rsvpsList.map((rsvp) => [
+      rsvp.fans?.name || "Unknown",
+      rsvp.fans?.email || "No email",
+      rsvp.fans?.phone || "N/A",
+      rsvp.status,
+      format(new Date(rsvp.created_at), "MMM d, yyyy h:mm a"),
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+    ].join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${event.title}-rsvps-${format(new Date(), "yyyy-MM-dd")}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export successful",
+      description: "RSVPs have been exported to CSV",
+    });
+  };
+
   const rsvpProgress = (event.rsvpCount / event.rsvpGoal) * 100;
 
   return (
@@ -439,10 +481,16 @@ export default function EventDetail() {
                       {event.rsvpCount} total RSVPs • {Math.round(rsvpProgress)}% of goal
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Reminder
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={exportToCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Send Reminder
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

@@ -171,6 +171,10 @@ function EventsView() {
     }
   };
 
+  const handleEditClick = (eventId: string) => {
+    navigate(`/events/edit/${eventId}`);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -190,7 +194,12 @@ function EventsView() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {mockEvents.map((event) => (
-          <EventCard key={event.id} event={event} onDelete={handleDeleteClick} />
+          <EventCard 
+            key={event.id} 
+            event={event} 
+            onDelete={handleDeleteClick}
+            onEdit={handleEditClick}
+          />
         ))}
       </div>
 

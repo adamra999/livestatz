@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useEvents } from "@/hooks/useEvents";
+import { format } from "date-fns";
 
 interface CreateEventPageProps {
   onClose?: () => void;
@@ -12,9 +13,12 @@ interface CreateEventPageProps {
 
 export default function CreateEventPage({ onClose, embedded = false, onSuccess }: CreateEventPageProps) {
   const navigate = useNavigate();
-  const { createEvent } = useEvents();
+  const { eventId } = useParams();
+  const { createEvent, updateEvent, fetchEventById } = useEvents();
   const [isCreating, setIsCreating] = useState(false);
   const [urlError, setUrlError] = useState("");
+  const [isLoading, setIsLoading] = useState(!!eventId);
+  const isEditMode = !!eventId;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -31,6 +35,45 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
     perkDescription: "",
     offerWithSubscription: false,
   });
+
+  useEffect(() => {
+    if (eventId) {
+      loadEventData();
+    }
+  }, [eventId]);
+
+  const loadEventData = async () => {
+    try {
+      setIsLoading(true);
+      const event = await fetchEventById(eventId!);
+      if (event) {
+        setFormData({
+          title: event.title || "",
+          platform: event.platform || "Instagram Live",
+          dateTime: event.dateTime ? format(new Date(event.dateTime), "yyyy-MM-dd'T'HH:mm") : "",
+          description: event.description || "",
+          eventUrl: event.link || "",
+          targetAudience: null,
+          isPaid: event.isPaid || false,
+          price: event.ticketPrice || "",
+          attendeeBenefits: (event.attendeeBenefits as string[]) || [],
+          includeReplay: event.includeReplay || false,
+          includePerks: event.includePerks || false,
+          perkDescription: event.perkDescription || "",
+          offerWithSubscription: event.offerWithSubscription || false,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error loading event",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      navigate("/events");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const validateUrl = (url: string): boolean => {
     if (!url) {
@@ -81,24 +124,31 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
 
     setIsCreating(true);
     try {
-      const response = await createEvent({ ...formData });
-      toast({
-        title: "Event Created!",
-        description:
-          "Your live event has been successfully created. Redirecting to RSVP page...",
-      });
-      
-      if (embedded && onSuccess) {
-        // When embedded in dialog, notify parent and close
-        onSuccess(response);
-        onClose?.();
+      if (isEditMode) {
+        await updateEvent(eventId!, { ...formData });
+        toast({
+          title: "Event Updated!",
+          description: "Your event has been successfully updated.",
+        });
+        navigate(`/events/${eventId}`);
       } else {
-        // When standalone page, navigate
-        navigate(`/events/success/${response?.id}`);
+        const response = await createEvent({ ...formData });
+        toast({
+          title: "Event Created!",
+          description:
+            "Your live event has been successfully created. Redirecting to RSVP page...",
+        });
+        
+        if (embedded && onSuccess) {
+          onSuccess(response);
+          onClose?.();
+        } else {
+          navigate(`/events/success/${response?.id}`);
+        }
       }
     } catch (error) {
       toast({
-        title: "Error creating event",
+        title: isEditMode ? "Error updating event" : "Error creating event",
         description: (error as Error).message,
         variant: "destructive",
       });
@@ -115,11 +165,21 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading event data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={`${embedded ? '' : 'min-h-screen'} bg-background text-foreground flex flex-col`}>
       {/* Header */}
       <header className={`p-4 border-b bg-card ${embedded ? '' : 'sticky top-0 z-10'}`}>
-        <h1 className="text-xl font-semibold text-center">Create Live Event</h1>
+        <h1 className="text-xl font-semibold text-center">
+          {isEditMode ? 'Edit Event' : 'Create Live Event'}
+        </h1>
       </header>
 
       {/* Form */}
@@ -341,7 +401,10 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
             className="flex-1 py-3"
             disabled={isCreating}
           >
-            {isCreating ? "Creating..." : "Create Event"}
+            {isCreating 
+              ? (isEditMode ? "Updating..." : "Creating...") 
+              : (isEditMode ? "Update Event" : "Create Event")
+            }
           </Button>
           <Button
             onClick={handleCancel}

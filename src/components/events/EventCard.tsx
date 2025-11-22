@@ -18,6 +18,7 @@ import {
   ExternalLink,
   TrendingUp,
   Zap,
+  Trash2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -41,9 +42,10 @@ interface EventCardProps {
     organizer?: string;
   };
   variant?: "default" | "compact";
+  onDelete?: (eventId: string) => void;
 }
 
-export function EventCard({ event, variant = "default" }: EventCardProps) {
+export function EventCard({ event, variant = "default", onDelete }: EventCardProps) {
   const { toast } = useToast();
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -227,6 +229,18 @@ export function EventCard({ event, variant = "default" }: EventCardProps) {
                   <Copy className="h-4 w-4 mr-2" />
                 )}
                 {copiedLink ? "Copied!" : "Copy Link"}
+              </Button>
+            )}
+            
+            {onDelete && (
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => onDelete(event.id)}
+                className="text-destructive hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
               </Button>
             )}
           </div>

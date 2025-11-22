@@ -7,6 +7,16 @@ import { EventCard } from "@/components/events/EventCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 function EventsView() {
   const [showEventForm, setShowEventForm] = useState(false);
@@ -18,10 +28,13 @@ function EventsView() {
     fetchEventCountByUser,
     eventCount,
     userId,
+    deleteEvent,
   } = useEvents();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { fetchRsvpCountByEvent } = useRsvps();
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
+  const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
   const mockEvents = [
     // {
     //   id: "1",
@@ -134,6 +147,30 @@ function EventsView() {
     }
   }, [userId, events, fetchRsvpCountByEvent]);
 
+  const handleDeleteClick = (eventId: string) => {
+    setDeleteEventId(eventId);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteEventId) return;
+    
+    try {
+      await deleteEvent(deleteEventId);
+      toast({
+        title: "Event deleted",
+        description: "The event has been successfully deleted",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete event",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteEventId(null);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -153,9 +190,26 @@ function EventsView() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {mockEvents.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <EventCard key={event.id} event={event} onDelete={handleDeleteClick} />
         ))}
       </div>
+
+      <AlertDialog open={!!deleteEventId} onOpenChange={() => setDeleteEventId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this event and all associated RSVPs. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

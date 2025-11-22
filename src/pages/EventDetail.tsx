@@ -225,13 +225,15 @@ export default function EventDetail() {
               <h1 className="text-xl font-semibold">{event.title}</h1>
             </div>
             <div className="flex items-center space-x-2">
-              <Button
-                onClick={() => setShowEventForm(true)}
-                size="sm"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Create New Event
-              </Button>
+              {isDesktop && (
+                <Button
+                  onClick={() => setShowEventForm(true)}
+                  size="sm"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Event
+                </Button>
+              )}
               {event.isLive && (
                 <Badge variant="destructive" className="animate-pulse">
                   🔴 LIVE

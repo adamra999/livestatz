@@ -233,9 +233,15 @@ export function EventCard({ event, variant = "default", onDelete, onEdit }: Even
           {event.liveLink && (
             <Button size="sm" variant="outline" onClick={copyLink}>
               {copiedLink ? (
-                <Check className="h-4 w-4" />
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  Copied!
+                </>
               ) : (
-                <Copy className="h-4 w-4" />
+                <>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy Link
+                </>
               )}
             </Button>
           )}

@@ -206,6 +206,28 @@ export default function EventDetail() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: event.title,
+          text: `Check out this event: ${event.title}`,
+          url: event.url,
+        });
+      } catch (error) {
+        // User cancelled or error occurred
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+          // Fallback to copy link
+          copyLink();
+        }
+      }
+    } else {
+      // Fallback to copy link if Web Share API is not supported
+      copyLink();
+    }
+  };
+
   const rsvpProgress = (event.rsvpCount / event.rsvpGoal) * 100;
 
   return (
@@ -603,6 +625,17 @@ export default function EventDetail() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Floating Share Button (Mobile Only) */}
+      {!isDesktop && (
+        <button
+          onClick={handleShare}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center active:scale-95"
+          aria-label="Share event"
+        >
+          <Share2 className="h-6 w-6" />
+        </button>
+      )}
     </div>
   );
 }

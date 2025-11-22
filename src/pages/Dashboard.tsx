@@ -420,8 +420,17 @@ const Dashboard = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Success Page */}
-      {showSuccessPage && createdEvent && <EventSuccessPage />}
+      {/* Success Page Dialog */}
+      <Dialog open={showSuccessPage && !!createdEvent} onOpenChange={(open) => {
+        if (!open) {
+          setShowSuccessPage(false);
+          setCreatedEvent(null);
+        }
+      }}>
+        <DialogContent className="max-w-[90vw] md:max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          {createdEvent && <EventSuccessPage />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 
@@ -471,9 +480,8 @@ const Dashboard = () => {
     };
 
     return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div className="bg-card rounded-xl max-w-4xl w-full p-8 max-h-[90vh] overflow-y-auto">
-          <div className="text-center mb-8">
+      <div className="p-4">
+        <div className="text-center mb-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-green-600" />
             </div>
@@ -608,9 +616,8 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
-      </div>
-    );
-  }
-};
-
-export default Dashboard;
+      );
+    }
+  };
+  
+  export default Dashboard;

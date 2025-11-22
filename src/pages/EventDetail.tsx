@@ -213,18 +213,18 @@ export default function EventDetail() {
       {/* Header */}
       <div className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
               <Link to="/">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
+                <Button variant="ghost" size="sm" className="shrink-0">
+                  <ArrowLeft className="h-4 w-4 md:mr-2" />
+                  <span className="hidden sm:inline">Back to Dashboard</span>
                 </Button>
               </Link>
-              <div className="h-6 w-px bg-border" />
-              <h1 className="text-xl font-semibold">{event.title}</h1>
+              <div className="hidden md:block h-6 w-px bg-border shrink-0" />
+              <h1 className="text-base md:text-xl font-semibold truncate">{event.title}</h1>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2 flex-wrap">
               {isDesktop && (
                 <Button
                   onClick={() => setShowEventForm(true)}
@@ -296,24 +296,24 @@ export default function EventDetail() {
               </CardHeader>
 
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="text-center p-3 bg-primary/10 rounded-lg">
-                    <Users className="h-6 w-6 text-primary mx-auto mb-1" />
-                    <div className="text-xl font-bold">{event.rsvpCount}</div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+                  <div className="text-center p-3 md:p-4 bg-primary/10 rounded-lg">
+                    <Users className="h-5 w-5 md:h-6 md:w-6 text-primary mx-auto mb-1" />
+                    <div className="text-lg md:text-xl font-bold">{event.rsvpCount}</div>
                     <div className="text-xs text-muted-foreground">RSVPs</div>
                   </div>
 
-                  <div className="text-center p-3 bg-secondary/10 rounded-lg">
-                    <Target className="h-6 w-6 text-secondary-foreground mx-auto mb-1" />
-                    <div className="text-xl font-bold">
+                  <div className="text-center p-3 md:p-4 bg-secondary/10 rounded-lg">
+                    <Target className="h-5 w-5 md:h-6 md:w-6 text-secondary-foreground mx-auto mb-1" />
+                    <div className="text-lg md:text-xl font-bold">
                       {Math.round(rsvpProgress)}%
                     </div>
                     <div className="text-xs text-muted-foreground">of Goal</div>
                   </div>
 
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <Sparkles className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
-                    <div className="text-xl font-bold">
+                  <div className="text-center p-3 md:p-4 bg-muted rounded-lg col-span-2 md:col-span-1">
+                    <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground mx-auto mb-1" />
+                    <div className="text-lg md:text-xl font-bold">
                       {event.monetizationEnabled ? "Yes" : "No"}
                     </div>
                     <div className="text-xs text-muted-foreground">
@@ -344,14 +344,18 @@ export default function EventDetail() {
 
             {/* Tabbed Content */}
             <Tabs defaultValue="analytics" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="analytics">📈 Analytics</TabsTrigger>
-                <TabsTrigger value="rsvps">👥 RSVPs</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 h-auto">
+                <TabsTrigger value="analytics" className="text-sm md:text-base py-2">
+                  <span className="hidden sm:inline">📈 </span>Analytics
+                </TabsTrigger>
+                <TabsTrigger value="rsvps" className="text-sm md:text-base py-2">
+                  <span className="hidden sm:inline">👥 </span>RSVPs
+                </TabsTrigger>
               </TabsList>
 
               {/* Live Analytics Tab */}
               <TabsContent value="analytics" className="space-y-6">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                   <Card>
                     <CardContent className="p-4 text-center">
                       <Eye className="h-8 w-8 text-primary mx-auto mb-2" />
@@ -416,20 +420,17 @@ export default function EventDetail() {
 
               {/* RSVP Management Tab */}
               <TabsContent value="rsvps" className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold">RSVP Management</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {event.rsvpCount} total RSVPs • {Math.round(rsvpProgress)}
-                      % of goal reached
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base md:text-lg font-semibold">RSVP Management</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground">
+                      {event.rsvpCount} total RSVPs • {Math.round(rsvpProgress)}% of goal
                     </p>
                   </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Send Reminder
-                    </Button>
-                  </div>
+                  <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Reminder
+                  </Button>
                 </div>
 
                 <div className="space-y-2">
@@ -437,31 +438,32 @@ export default function EventDetail() {
                     rsvpsList.map((rsvp) => (
                       <div
                         key={rsvp.id}
-                        className="flex items-center justify-between p-3 border rounded-lg"
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 border rounded-lg"
                       >
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
                           {rsvp.fans?.avatar_url && (
                             <img
                               src={rsvp.fans.avatar_url}
                               alt={rsvp.fans.name}
-                              className="w-10 h-10 rounded-full"
+                              className="w-10 h-10 rounded-full shrink-0"
                             />
                           )}
-                          <div>
-                            <div className="font-medium">{rsvp.fans?.name || "Unknown"}</div>
-                            <div className="text-sm text-muted-foreground">
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium truncate">{rsvp.fans?.name || "Unknown"}</div>
+                            <div className="text-sm text-muted-foreground truncate">
                               {rsvp.fans?.email || "No email"}
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="text-sm text-muted-foreground">
+                        <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-3">
+                          <div className="text-xs sm:text-sm text-muted-foreground">
                             {format(new Date(rsvp.created_at), "MMM d, yyyy")}
                           </div>
                           <Badge
                             variant={
                               rsvp.status === "confirmed" ? "default" : "secondary"
                             }
+                            className="shrink-0"
                           >
                             {rsvp.status}
                           </Badge>
@@ -479,27 +481,27 @@ export default function EventDetail() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-4">
             {/* Event Status */}
             <Card>
               <CardHeader>
-                <CardTitle>Event Status</CardTitle>
+                <CardTitle className="text-base md:text-lg">Event Status</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center gap-2">
                     <span className="text-sm">Status</span>
                     <Badge variant={new Date(event.dateTime) < new Date() ? "default" : "secondary"}>
                       {new Date(event.dateTime) < new Date() ? "Past Event" : "Scheduled"}
                     </Badge>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center gap-2">
                     <span className="text-sm">RSVPs</span>
                     <span className="text-sm font-medium">{rsvpCount}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center gap-2">
                     <span className="text-sm">Platform</span>
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-medium truncate max-w-[150px]">
                       {event.platform}
                     </span>
                   </div>

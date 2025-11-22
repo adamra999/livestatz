@@ -43,6 +43,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import CreateEventPage from "./CreateEventPage";
 import { Plus } from "lucide-react";
+import { ShareDialog } from "@/components/events/ShareDialog";
 
 // Mock event data - in real app, this would come from API
 const mockEventData = {
@@ -134,6 +135,7 @@ export default function EventDetail() {
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   const [createdEvent, setCreatedEvent] = useState<any>(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
@@ -206,26 +208,8 @@ export default function EventDetail() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event.title,
-          text: `Check out this event: ${event.title}`,
-          url: event.url,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-        if ((error as Error).name !== 'AbortError') {
-          console.error('Error sharing:', error);
-          // Fallback to copy link
-          copyLink();
-        }
-      }
-    } else {
-      // Fallback to copy link if Web Share API is not supported
-      copyLink();
-    }
+  const handleShare = () => {
+    setShowShareDialog(true);
   };
 
   const rsvpProgress = (event.rsvpCount / event.rsvpGoal) * 100;
@@ -636,6 +620,17 @@ export default function EventDetail() {
           <Share2 className="h-6 w-6" />
         </button>
       )}
+
+      {/* Share Dialog */}
+      <ShareDialog
+        open={showShareDialog}
+        onOpenChange={setShowShareDialog}
+        event={{
+          title: event.title,
+          url: event.url,
+          dateTime: event.dateTime,
+        }}
+      />
     </div>
   );
 }

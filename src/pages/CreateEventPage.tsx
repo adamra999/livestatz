@@ -7,9 +7,10 @@ import { useEvents } from "@/hooks/useEvents";
 interface CreateEventPageProps {
   onClose?: () => void;
   embedded?: boolean;
+  onSuccess?: (event: any) => void;
 }
 
-export default function CreateEventPage({ onClose, embedded = false }: CreateEventPageProps) {
+export default function CreateEventPage({ onClose, embedded = false, onSuccess }: CreateEventPageProps) {
   const navigate = useNavigate();
   const { createEvent } = useEvents();
   const [isCreating, setIsCreating] = useState(false);
@@ -78,7 +79,15 @@ export default function CreateEventPage({ onClose, embedded = false }: CreateEve
         description:
           "Your live event has been successfully created. Redirecting to RSVP page...",
       });
-      navigate(`/events/success/${response?.id}`);
+      
+      if (embedded && onSuccess) {
+        // When embedded in dialog, notify parent and close
+        onSuccess(response);
+        onClose?.();
+      } else {
+        // When standalone page, navigate
+        navigate(`/events/success/${response?.id}`);
+      }
     } catch (error) {
       toast({
         title: "Error creating event",

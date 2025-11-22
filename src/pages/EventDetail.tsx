@@ -336,14 +336,20 @@ export default function EventDetail() {
                     <Progress value={rsvpProgress} className="w-full md:w-48" />
                   </div>
 
-                  <Button onClick={copyLink} variant="outline" className="w-full md:w-auto">
-                    {copiedLink ? (
-                      <Check className="h-4 w-4 mr-2" />
-                    ) : (
-                      <Copy className="h-4 w-4 mr-2" />
-                    )}
-                    {copiedLink ? "Copied!" : "Copy Link"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button onClick={copyLink} variant="outline" className="flex-1 md:flex-none">
+                      {copiedLink ? (
+                        <Check className="h-4 w-4 mr-2" />
+                      ) : (
+                        <Copy className="h-4 w-4 mr-2" />
+                      )}
+                      {copiedLink ? "Copied!" : "Copy Link"}
+                    </Button>
+                    <Button onClick={handleShare} variant="outline" className="flex-1 md:flex-none">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

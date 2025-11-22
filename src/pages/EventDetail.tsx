@@ -39,6 +39,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useEvents } from "@/hooks/useEvents";
 import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 // Mock event data - in real app, this would come from API
 const mockEventData = {
@@ -125,6 +126,7 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
   const [rsvpCount, setRsvpCount] = useState(0);
   const [rsvpsList, setRsvpsList] = useState<any[]>([]);
+  const [organizerUsername, setOrganizerUsername] = useState<string | null>(null);
 
   // const event = mockEventData; // In real app: fetch event by eventId
 
@@ -138,6 +140,20 @@ export default function EventDetail() {
         setRsvpCount(count);
         setRsvpsList(rsvpsData);
         setEvent({ ...mockEventData, ...eventData, rsvpCount: count });
+        
+        // Fetch organizer username from profiles
+        if (eventData?.influencerId) {
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("username")
+            .eq("id", eventData.influencerId)
+            .single();
+          
+          if (profileData?.username) {
+            setOrganizerUsername(profileData.username);
+          }
+        }
+        
         setLoading(false);
       }
     };
@@ -240,7 +256,7 @@ export default function EventDetail() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Crown className="h-4 w-4" />
-                        <span>by {event.Influencers?.name || "Unknown"}</span>
+                        <span>by {organizerUsername || event.Influencers?.name || "Unknown"}</span>
                       </div>
                     </div>
                   </div>

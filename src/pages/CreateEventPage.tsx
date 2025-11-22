@@ -22,7 +22,7 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
     dateTime: "",
     description: "",
     eventUrl: "",
-    targetAudience: 50,
+    targetAudience: null as number | null,
     isPaid: false,
     price: "",
     attendeeBenefits: [] as string[],
@@ -220,10 +220,10 @@ export default function CreateEventPage({ onClose, embedded = false, onSuccess }
             <input
               type="number"
               className="w-full p-3 border rounded-lg bg-background"
-              placeholder="50"
-              value={formData.targetAudience}
+              placeholder="Enter expected number of attendees"
+              value={formData.targetAudience ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, targetAudience: parseInt(e.target.value) || 50 })
+                setFormData({ ...formData, targetAudience: e.target.value ? parseInt(e.target.value) : null })
               }
             />
           </div>

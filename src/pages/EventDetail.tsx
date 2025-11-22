@@ -40,6 +40,9 @@ import { useEvents } from "@/hooks/useEvents";
 import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import CreateEventPage from "./CreateEventPage";
+import { Plus } from "lucide-react";
 
 // Mock event data - in real app, this would come from API
 const mockEventData = {
@@ -127,6 +130,16 @@ export default function EventDetail() {
   const [rsvpCount, setRsvpCount] = useState(0);
   const [rsvpsList, setRsvpsList] = useState<any[]>([]);
   const [organizerUsername, setOrganizerUsername] = useState<string | null>(null);
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [showSuccessPage, setShowSuccessPage] = useState(false);
+  const [createdEvent, setCreatedEvent] = useState<any>(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // const event = mockEventData; // In real app: fetch event by eventId
 
@@ -212,6 +225,13 @@ export default function EventDetail() {
               <h1 className="text-xl font-semibold">{event.title}</h1>
             </div>
             <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => setShowEventForm(true)}
+                size="sm"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create New Event
+              </Button>
               {event.isLive && (
                 <Badge variant="destructive" className="animate-pulse">
                   🔴 LIVE
@@ -487,6 +507,98 @@ export default function EventDetail() {
           </div>
         </div>
       </div>
+
+      {/* Create Event Dialog */}
+      <Dialog open={showEventForm} onOpenChange={setShowEventForm}>
+        <DialogContent className="max-w-[90vw] w-full max-h-[90vh] md:max-w-md p-0 overflow-y-auto">
+          <CreateEventPage 
+            onClose={() => setShowEventForm(false)} 
+            embedded={true}
+            onSuccess={(event) => {
+              setCreatedEvent(event);
+              setShowSuccessPage(true);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Page Dialog */}
+      <Dialog open={showSuccessPage && !!createdEvent} onOpenChange={(open) => {
+        if (!open) {
+          setShowSuccessPage(false);
+          setCreatedEvent(null);
+        }
+      }}>
+        <DialogContent className="max-w-[90vw] md:max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          {createdEvent && (
+            <div className="p-4">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-green-600" />
+                </div>
+                <h2 className="text-3xl font-bold mb-2">
+                  Event Created Successfully!
+                </h2>
+                <p className="text-muted-foreground">
+                  Your live event is ready to share with your audience
+                </p>
+              </div>
+
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 mb-8">
+                <h3 className="font-semibold mb-3">Your Event Link</h3>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={createdEvent.url}
+                    readOnly
+                    className="flex-1 p-3 border rounded-lg bg-background font-mono text-sm"
+                  />
+                  <Button
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(createdEvent.url);
+                      toast({
+                        title: "Copied!",
+                        description: "Event link copied to clipboard",
+                      });
+                    }}
+                    variant="outline"
+                    className="px-4"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex gap-4 justify-center">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowSuccessPage(false);
+                    setCreatedEvent(null);
+                  }}
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    setShowSuccessPage(false);
+                    setCreatedEvent(null);
+                    setShowEventForm(true);
+                  }}
+                >
+                  Create Another Event
+                </Button>
+                <Link to={`/e/${createdEvent.id}`}>
+                  <Button variant="outline">
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Preview Event Page
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

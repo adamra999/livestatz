@@ -222,7 +222,7 @@ export function EventCard({ event, variant = "default", onDelete, onEdit }: Even
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
           <Link to={`/events/${event.id}`} className="flex-1">
             <Button size="sm" variant="default" className="w-full">
               <TrendingUp className="h-4 w-4 mr-2" />
@@ -230,8 +230,18 @@ export function EventCard({ event, variant = "default", onDelete, onEdit }: Even
             </Button>
           </Link>
 
+          {event.liveLink && (
+            <Button size="sm" variant="outline" onClick={copyLink}>
+              {copiedLink ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+
           {event.isLive && (
-            <Button size="sm" variant="secondary" asChild className="flex-1">
+            <Button size="sm" variant="secondary" asChild>
               <a
                 href={event.liveLink}
                 target="_blank"
@@ -243,50 +253,35 @@ export function EventCard({ event, variant = "default", onDelete, onEdit }: Even
             </Button>
           )}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {event.liveLink && (
-                <>
-                  <DropdownMenuItem onClick={copyLink}>
-                    {copiedLink ? (
-                      <>
-                        <Check className="h-4 w-4 mr-2" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4 mr-2" />
-                        Copy Link
-                      </>
-                    )}
+          {(onEdit || onDelete) && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="outline">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {onEdit && (
+                  <DropdownMenuItem onClick={() => onEdit(event.id)}>
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit Event
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                </>
-              )}
-              
-              {onEdit && (
-                <DropdownMenuItem onClick={() => onEdit(event.id)}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Event
-                </DropdownMenuItem>
-              )}
-              
-              {onDelete && (
-                <DropdownMenuItem 
-                  onClick={() => onDelete(event.id)}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Event
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                )}
+                
+                {onEdit && onDelete && <DropdownMenuSeparator />}
+                
+                {onDelete && (
+                  <DropdownMenuItem 
+                    onClick={() => onDelete(event.id)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete Event
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </CardContent>
     </Card>

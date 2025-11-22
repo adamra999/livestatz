@@ -322,15 +322,15 @@ export default function EventDetail() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex-1">
                     <div className="text-sm text-muted-foreground mb-1">
                       RSVP Progress
                     </div>
-                    <Progress value={rsvpProgress} className="w-48" />
+                    <Progress value={rsvpProgress} className="w-full md:w-48" />
                   </div>
 
-                  <Button onClick={copyLink} variant="outline">
+                  <Button onClick={copyLink} variant="outline" className="w-full md:w-auto">
                     {copiedLink ? (
                       <Check className="h-4 w-4 mr-2" />
                     ) : (

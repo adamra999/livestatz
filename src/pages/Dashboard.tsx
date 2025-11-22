@@ -415,7 +415,7 @@ const Dashboard = () => {
 
       {/* Create Event Dialog - Mobile Version on Desktop */}
       <Dialog open={showEventForm} onOpenChange={setShowEventForm}>
-        <DialogContent className="max-w-[90vw] w-full max-h-[90vh] h-full md:max-w-md md:h-auto p-0 overflow-hidden">
+        <DialogContent className="max-w-[90vw] w-full max-h-[90vh] md:max-w-md p-0 overflow-y-auto">
           <CreateEventPage onClose={() => setShowEventForm(false)} embedded={true} />
         </DialogContent>
       </Dialog>

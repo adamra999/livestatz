@@ -49,15 +49,326 @@ http://localhost:8080/events/success/6debd63f-2a33-46de-9757-bbe689dfb541
 
 
 
-issue # 01 remove https from  Event URL *
-issue # 02 Target Audience blanck
-add profile icon and name
-add new button Promote Live  => media share
-export csv of fans
-Organizer name on fan page
+issue # 01 remove https from  Event URL * - done
 
-issue # 5 Where is the influencer name listed?
-There should be a field for Handle that should be listed
-CreatorHandle
+issue # 02 Target Audience blanck - done
+
+issue # 03 add profile icon and name  - done
+
+issue # 04 how do I logout of a user  - done
+
+issue # 05 add new button Promote Live  => media share - done
+
+issue # 06 export csv of fans -done
+
+issue # 7 Where is the influencer name listed?here should be a field for Handle that should be listed CreatorHandle
 That is what should be listed on Organizer name
 We may need to change what is shown from the name  to the handle - let’s say an influencers name is James smith, but their social profile handle is “BigJim” - BigJim is the handle that should be shown not the name
+Organizer name on fan page -done
+
+issue # 8 The “create new event” creation on the dashboard page doesnt work, it only works on the events page - is that correct?
+on the emails being collected and showed on the rsvp, can those emails be exported as csv?
+
+
+issue # 9 one more - how do I delete an event? -done
+
+issue # 10 also edit an event after it’s created? - done
+
+issue # 11 Pls show the Organizer name - and or Social Media Channel name on RSVP page
+
+issue # 12 Can the link be: livestatz.com/{creatorHandle}/{eventName}
+
+issue # 13 can the rsvp page be branded with a logo or image?  See this example: https://luma.com/interfaithopenhouse - the example is the clouds image
+
+issue # 14 There are two things I want to review with you Rashid.
+1.  Can the Creator on first login specify all their social media handles?  Creator Onboarding: Platform Profiles
+
+During signup or first event creation:
+
+Fields to collect:
+
+Instagram handle or profile link
+
+TikTok link
+
+YouTube channel URL
+
+Twitch link
+
+Facebook page link
+
+Custom RTMP key (optional)
+
+-------------------------------------------------
+CREATOR PROFILE SETTINGS
+-------------------------------------------------
+
+[HEADER]
+Profile Settings
+Manage your account details and connected platforms.
+
+-------------------------------------------------
+SECTION: BASIC INFO
+-------------------------------------------------
+Name: [_____________________]
+Email: [_____________________]
+Profile Image: [ Change Photo ]
+
+Bio (optional):
+[ Add a short description about yourself. ]
+[____________________________________________]
+
+Save Changes  [Button]
+
+-------------------------------------------------
+SECTION: CONNECTED PLATFORMS
+-------------------------------------------------
+Title: Connected Platforms
+Subtitle: Add your social links so LiveStatz can auto-fill event details.
+
+INSTAGRAM
+[ icon ] Instagram Handle / URL:
+instagram.com/ [__________]   (Edit)
+[Save] [Disconnect]
+
+TIKTOK
+[ icon ] TikTok Profile URL:
+tiktok.com/@ [______________]
+[Save] [Disconnect]
+
+YOUTUBE
+[ icon ] YouTube Channel URL:
+youtube.com/@ [______________]
+(Optional) Scheduled Live Link Prefix:
+[________________________________]
+[Save] [Disconnect]
+
+TWITCH
+[ icon ] Twitch Channel:
+twitch.tv/ [__________________]
+[Save] [Disconnect]
+
+FACEBOOK LIVE
+[ icon ] Facebook Page URL:
+facebook.com/ [_______________]
+[Save] [Disconnect]
+
+CUSTOM RTMP (Advanced)
+RTMP Server URL:
+[________________________________]
+
+Stream Key:
+[________________________________]
+[Save]
+
+-------------------------------------------------
+SECTION: EVENTS & AUTOMATION
+-------------------------------------------------
+Default Platforms for New Events:
+☑ Instagram Live
+☐ TikTok Live
+☑ YouTube Live
+☐ Twitch
+☐ Facebook Live
+
+Reminder Defaults:
+☑ 24-hour reminder
+☑ 1-hour reminder
+☑ “We’re Live!” instant alert
+
+Calendar Options:
+☑ Auto-send calendar invite after RSVP
+☐ Ask each time
+
+[ Save Settings ]
+
+-------------------------------------------------
+SECTION: SECURITY
+-------------------------------------------------
+Password: [ Change Password ]
+2-Factor Authentication: [ Enable / Disable ]
+
+-------------------------------------------------
+SECTION: DELETE ACCOUNT
+-------------------------------------------------
+[ Delete My Account ]
+(Warning: This cannot be undone.)
+
+-------------------------------------------------
+END OF PAGE
+-------------------------------------------------
+
+issue # 15
+If we have that information from the Influencer then we can modify the Event Creation Modal to be like this:
+
+  -------------------------------------------------
+PAGE 1 — EVENT DETAILS
+-------------------------------------------------
+
+[HEADER]
+Create New Event
+
+Event Title:
+[________________________________]
+
+Description (optional):
+[________________________________]
+[________________________________]
+
+Date:
+[  Select Date  ]
+
+Start Time:
+[  Select Time  ]
+
+Duration (optional):
+[  e.g., 60 min  ]
+
+Cover Image:
+[ Upload Image ]   (recommended)
+
+[ Next → ]
+
+
+-------------------------------------------------
+PAGE 2 — CHOOSE LIVE PLATFORMS
+-------------------------------------------------
+
+[HEADER]
+Where will you go live?
+
+Select one or multiple platforms:
+
+☑ Instagram Live
+☐ TikTok Live
+☑ YouTube Live
+☐ Twitch
+☐ Facebook Live
+☐ Custom RTMP
+
+[ Auto-filled platform details appear when selected ]
+
+---------------------------------
+IF INSTAGRAM SELECTED (auto-expanded):
+Instagram Profile (auto-filled):
+instagram.com/theartist
+[ Edit ]   [ Remove ]
+
+
+---------------------------------
+IF TIKTOK SELECTED:
+TikTok Profile:
+tiktok.com/@theartist
+[ Edit ]   [ Remove ]
+
+(Optional) Upload the scheduled live link:
+[__________________________________]
+
+
+---------------------------------
+IF YOUTUBE SELECTED:
+YouTube Channel (auto-filled):
+youtube.com/@theartist
+[ Edit ]   [ Remove ]
+
+(Optional) Scheduled Live Link:
+[__________________________________]
+
+
+---------------------------------
+IF CUSTOM RTMP SELECTED:
+RTMP Server URL:
+[__________________________________]
+
+Stream Key:
+[__________________________________]
+
+
+[ Next → ]
+
+
+-------------------------------------------------
+PAGE 3 — RSVP & REMINDERS
+-------------------------------------------------
+
+RSVP SETTINGS:
+Max Attendees:
+( ) No limit
+( ) Limit to: [____]
+
+Should fans receive reminders?
+☑ 24-hour reminder
+☑ 1-hour reminder
+☑ “We’re Live!” alert with correct platform link
+
+Calendar Options:
+( ) Auto-send calendar invite
+( ) Ask fan before sending
+( ) Do not send invites
+
+Require Email to RSVP?
+☑ Yes
+☐ No (Name only)
+
+Visibility:
+( ) Public (anyone can RSVP)
+( ) Followers only
+( ) Private (invite-only)
+
+[ Next → ]
+
+
+-------------------------------------------------
+PAGE 4 — MONETIZATION (OPTIONAL)
+-------------------------------------------------
+
+Enable Paid RSVPs?
+☐ Yes, this event is paid.
+Ticket Price: $ [____]
+
+Accept Tips/Donations?
+☐ Yes (show tip options on RSVP page)
+
+Payment Handle:
+[ Cash App / PayPal / Venmo dropdown ]
+Handle: [________________]
+
+[ Next → ]
+
+
+-------------------------------------------------
+PAGE 5 — REVIEW & PUBLISH
+-------------------------------------------------
+
+[HEADER]
+Review Your Event
+
+Event Title: [Autofilled]
+Date & Time: [Autofilled]
+Platforms Selected:
+- Instagram (link)
+- YouTube (link)
+[ Edit Platforms ]
+
+RSVP Settings:
+- Reminders enabled
+- Calendar invites: auto-send
+- Email required
+
+Ticketing:
+- Free event (or price listed)
+
+[ Edit Anything ]
+
+[ PUBLISH EVENT ]   (primary button)
+
+Success Message:
+🎉 Your Event Is Live!
+Share your RSVP link:
+[ Copy Link ]   [ Share to Instagram ]   [ Share to WhatsApp ]
+
+-------------------------------------------------
+END OF FLOW
+-------------------------------------------------
+
+

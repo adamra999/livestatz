@@ -10,7 +10,7 @@ import EventDetail from "./pages/EventDetail";
 import LinkBioBuilder from "./pages/LinkBioBuilder";
 import BioPage from "./pages/BioPage";
 import ContentManager from "./pages/ContentManager";
-import Profile from "./pages/Profile";
+import Profile from "./pages/Profile/index";
 import FanDatabase from "./pages/FanDatabase";
 import Interactions from "./pages/Interactions";
 import Rewards from "./pages/Rewards";

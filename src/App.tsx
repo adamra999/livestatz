@@ -11,6 +11,7 @@ import LinkBioBuilder from "./pages/LinkBioBuilder";
 import BioPage from "./pages/BioPage";
 import ContentManager from "./pages/ContentManager";
 import Profile from "./pages/Profile/index";
+import CreatorSettings from "./pages/Profile/CreatorSettings";
 import FanDatabase from "./pages/FanDatabase";
 import Interactions from "./pages/Interactions";
 import Rewards from "./pages/Rewards";
@@ -129,6 +130,14 @@ const App = () => {
                 element={
                   <Layout>
                     <Profile />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/profile/creator-settings"
+                element={
+                  <Layout>
+                    <CreatorSettings />
                   </Layout>
                 }
               />

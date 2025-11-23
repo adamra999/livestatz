@@ -69,27 +69,38 @@ export const useEventForm = (embedded = false, onSuccess?: (event: any) => void,
       const event = await fetchEventById(eventId);
       if (event) {
         const dateTime = event.dateTime ? format(new Date(event.dateTime), "yyyy-MM-dd'T'HH:mm") : "";
+        const eventData = event as any; // Type assertion for new fields until types are regenerated
+        
         setFormData({
+          // Event Details
           title: event.title || "",
           description: event.description || "",
           dateTime: dateTime,
           startTime: dateTime ? dateTime.split("T")[1] : "",
-          duration: "",
-          coverImage: "",
-          selectedPlatforms: [],
-          maxAttendees: null,
-          hasMaxAttendees: false,
-          reminder24h: true,
-          reminder1h: true,
-          reminderLive: true,
-          calendarOption: "auto",
-          requireEmail: true,
-          visibility: "public",
+          duration: eventData.duration || "",
+          coverImage: eventData.coverImage || "",
+          
+          // Platforms
+          selectedPlatforms: eventData.selectedPlatforms || [],
+          
+          // RSVP Settings
+          maxAttendees: eventData.maxAttendees || null,
+          hasMaxAttendees: eventData.hasMaxAttendees || false,
+          reminder24h: eventData.reminder24h ?? true,
+          reminder1h: eventData.reminder1h ?? true,
+          reminderLive: eventData.reminderLive ?? true,
+          calendarOption: eventData.calendarOption || "auto",
+          requireEmail: eventData.requireEmail ?? true,
+          visibility: eventData.visibility || "public",
+          
+          // Monetization
           isPaid: event.isPaid || false,
-          price: event.ticketPrice || "",
-          acceptTips: false,
-          paymentMethod: "",
-          paymentHandle: "",
+          price: eventData.price || event.ticketPrice || "",
+          acceptTips: eventData.acceptTips || false,
+          paymentMethod: eventData.paymentMethod || "",
+          paymentHandle: eventData.paymentHandle || "",
+          
+          // Legacy fields
           platform: event.platform || "Instagram Live",
           eventUrl: event.link || "",
           targetAudience: null,
@@ -161,58 +172,50 @@ export const useEventForm = (embedded = false, onSuccess?: (event: any) => void,
 
     setIsCreating(true);
     try {
-      // Map new form data to existing database schema
+      // Use the first platform's profile URL as the main event URL for backward compatibility
       const eventUrl = formData.selectedPlatforms[0]?.profileUrl || 
                        formData.selectedPlatforms[0]?.scheduledLink || 
                        "https://example.com/live";
 
-      // Store monetization info in description or use existing fields
-      let enhancedDescription = formData.description;
-      if (formData.acceptTips && formData.paymentHandle) {
-        enhancedDescription += `\n\nTips accepted via ${formData.paymentMethod}: ${formData.paymentHandle}`;
-      }
-
-      // Map to existing database fields only
+      // Map all form fields to database columns
       const eventData = {
+        // Basic info
         title: formData.title,
-        platform: formData.selectedPlatforms.map(p => p.platform).join(", "),
+        description: formData.description,
         dateTime: formData.dateTime,
-        description: enhancedDescription,
+        platform: formData.selectedPlatforms.map(p => p.platform).join(", "),
+        link: eventUrl,
         eventUrl: eventUrl,
-        link: eventUrl, // Some parts of the code use 'link' instead of 'eventUrl'
+        
+        // New wizard fields
+        coverImage: formData.coverImage || null,
+        duration: formData.duration || null,
+        selectedPlatforms: formData.selectedPlatforms,
+        
+        // RSVP settings
+        maxAttendees: formData.maxAttendees,
+        hasMaxAttendees: formData.hasMaxAttendees,
+        reminder24h: formData.reminder24h,
+        reminder1h: formData.reminder1h,
+        reminderLive: formData.reminderLive,
+        calendarOption: formData.calendarOption,
+        requireEmail: formData.requireEmail,
+        visibility: formData.visibility,
+        
+        // Monetization
         isPaid: formData.isPaid,
         price: formData.price || null,
+        acceptTips: formData.acceptTips,
+        paymentMethod: formData.paymentMethod || null,
+        paymentHandle: formData.paymentHandle || null,
+        
+        // Legacy fields
         targetAudience: formData.targetAudience,
         attendeeBenefits: formData.attendeeBenefits,
         includeReplay: formData.includeReplay,
         includePerks: formData.includePerks,
         perkDescription: formData.perkDescription,
         offerWithSubscription: formData.offerWithSubscription,
-        // Store additional wizard data in tags field as JSON
-        tags: [
-          ...((formData as any).tags || []),
-          {
-            type: "wizard_data",
-            coverImage: formData.coverImage,
-            duration: formData.duration,
-            platforms: formData.selectedPlatforms,
-            rsvp: {
-              maxAttendees: formData.maxAttendees,
-              hasMaxAttendees: formData.hasMaxAttendees,
-              reminder24h: formData.reminder24h,
-              reminder1h: formData.reminder1h,
-              reminderLive: formData.reminderLive,
-              calendarOption: formData.calendarOption,
-              requireEmail: formData.requireEmail,
-              visibility: formData.visibility,
-            },
-            monetization: {
-              acceptTips: formData.acceptTips,
-              paymentMethod: formData.paymentMethod,
-              paymentHandle: formData.paymentHandle,
-            },
-          },
-        ],
       };
 
       if (isEditMode && eventId) {

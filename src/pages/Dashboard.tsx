@@ -32,7 +32,7 @@ import { useWeeklyFanReports } from "@/hooks/useWeeklyFanReports";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import CreateEventPage from "./CreateEventPage";
+import CreateEventPage from "./Events/CreateEventPage";
 
 const Dashboard = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);

@@ -20,7 +20,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import EventSuccessPage from "./pages/EventSuccessPage";
-import CreateEventPage from "./pages/CreateEventPage";
+import CreateEventPage from "./pages/Events/CreateEventPage";
 import EventsView from "./components/events/EventsView";
 import { CalendarView } from "@/components/calendar/CalendarView";
 import { AnalyticsView } from "@/components/analytics/AnalyticsView";

@@ -41,7 +41,7 @@ import { useRsvps } from "@/hooks/useRsvps";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import CreateEventPage from "./CreateEventPage";
+import CreateEventPage from "./Events/CreateEventPage";
 import { Plus } from "lucide-react";
 import { ShareDialog } from "@/components/events/ShareDialog";
 

@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Stepper } from "@/components/ui/stepper";
-import { BasicInfoSection } from "./components/BasicInfoSection";
+import { BasicInfoSection, type BasicInfoSectionRef } from "./components/BasicInfoSection";
 import { ConnectedPlatformsSection } from "./components/ConnectedPlatformsSection";
 import { EventsAutomationSection } from "./components/EventsAutomationSection";
 import { SecuritySection } from "./components/SecuritySection";
 import { DeleteAccountSection } from "./components/DeleteAccountSection";
 import { useCreatorSettings } from "./hooks/useCreatorSettings";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 const STEPS = [
   "Basic Info",
@@ -22,8 +23,40 @@ const CreatorSettings = () => {
   const navigate = useNavigate();
   const creatorSettings = useCreatorSettings();
   const [currentStep, setCurrentStep] = useState(0);
+  const basicInfoRef = useRef<BasicInfoSectionRef>(null);
+
+  const validateCurrentStep = (): boolean => {
+    switch (currentStep) {
+      case 0: // Basic Info
+        if (basicInfoRef.current) {
+          return basicInfoRef.current.validate();
+        }
+        return false;
+      case 1: // Platforms
+        const hasAtLeastOnePlatform = Object.values(creatorSettings.platforms).some(
+          (value) => value && value.trim() !== ""
+        );
+        if (!hasAtLeastOnePlatform) {
+          toast.error("Please connect at least one platform to continue");
+          return false;
+        }
+        return true;
+      case 2: // Automation - optional, always valid
+        return true;
+      case 3: // Security - optional, always valid
+        return true;
+      case 4: // Account - no validation needed
+        return true;
+      default:
+        return true;
+    }
+  };
 
   const handleNext = () => {
+    if (!validateCurrentStep()) {
+      return;
+    }
+    
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
     }
@@ -56,7 +89,7 @@ const CreatorSettings = () => {
 
       {/* Step Content */}
       <div className="min-h-[400px]">
-        {currentStep === 0 && <BasicInfoSection />}
+        {currentStep === 0 && <BasicInfoSection ref={basicInfoRef} />}
         
         {currentStep === 1 && (
           <ConnectedPlatformsSection 

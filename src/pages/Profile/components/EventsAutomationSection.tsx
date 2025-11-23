@@ -1,48 +1,24 @@
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import type { AutomationSettings } from "../hooks/useCreatorSettings";
 
-interface AutomationSettings {
-  defaultPlatforms: {
-    instagram: boolean;
-    tiktok: boolean;
-    youtube: boolean;
-    twitch: boolean;
-    facebook: boolean;
-  };
-  reminders: {
-    twentyFour: boolean;
-    oneHour: boolean;
-    liveAlert: boolean;
-  };
-  calendar: {
-    autoSend: boolean;
-  };
+interface EventsAutomationSectionProps {
+  settings: AutomationSettings;
+  setSettings: React.Dispatch<React.SetStateAction<AutomationSettings>>;
+  saveSettings: (settings: Partial<AutomationSettings>) => Promise<void>;
+  loading: boolean;
 }
 
-export const EventsAutomationSection = () => {
-  const [settings, setSettings] = useState<AutomationSettings>({
-    defaultPlatforms: {
-      instagram: true,
-      tiktok: false,
-      youtube: true,
-      twitch: false,
-      facebook: false,
-    },
-    reminders: {
-      twentyFour: true,
-      oneHour: true,
-      liveAlert: true,
-    },
-    calendar: {
-      autoSend: true,
-    },
-  });
-
-  const handleSave = () => {
-    toast.success("Automation settings saved!");
+export const EventsAutomationSection = ({
+  settings,
+  setSettings,
+  saveSettings,
+  loading,
+}: EventsAutomationSectionProps) => {
+  const handleSave = async () => {
+    await saveSettings(settings);
   };
 
   return (
@@ -222,7 +198,16 @@ export const EventsAutomationSection = () => {
           </div>
         </div>
 
-        <Button onClick={handleSave}>Save Settings</Button>
+        <Button onClick={handleSave} disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Saving...
+            </>
+          ) : (
+            "Save Settings"
+          )}
+        </Button>
       </div>
     </div>
   );

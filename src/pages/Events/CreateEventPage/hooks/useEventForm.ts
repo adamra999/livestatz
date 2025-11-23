@@ -161,15 +161,58 @@ export const useEventForm = (embedded = false, onSuccess?: (event: any) => void,
 
     setIsCreating(true);
     try {
-      // Use the first platform's profile URL as the main event URL for backward compatibility
+      // Map new form data to existing database schema
       const eventUrl = formData.selectedPlatforms[0]?.profileUrl || 
                        formData.selectedPlatforms[0]?.scheduledLink || 
                        "https://example.com/live";
 
+      // Store monetization info in description or use existing fields
+      let enhancedDescription = formData.description;
+      if (formData.acceptTips && formData.paymentHandle) {
+        enhancedDescription += `\n\nTips accepted via ${formData.paymentMethod}: ${formData.paymentHandle}`;
+      }
+
+      // Map to existing database fields only
       const eventData = {
-        ...formData,
-        eventUrl,
+        title: formData.title,
         platform: formData.selectedPlatforms.map(p => p.platform).join(", "),
+        dateTime: formData.dateTime,
+        description: enhancedDescription,
+        eventUrl: eventUrl,
+        link: eventUrl, // Some parts of the code use 'link' instead of 'eventUrl'
+        isPaid: formData.isPaid,
+        price: formData.price || null,
+        targetAudience: formData.targetAudience,
+        attendeeBenefits: formData.attendeeBenefits,
+        includeReplay: formData.includeReplay,
+        includePerks: formData.includePerks,
+        perkDescription: formData.perkDescription,
+        offerWithSubscription: formData.offerWithSubscription,
+        // Store additional wizard data in tags field as JSON
+        tags: [
+          ...((formData as any).tags || []),
+          {
+            type: "wizard_data",
+            coverImage: formData.coverImage,
+            duration: formData.duration,
+            platforms: formData.selectedPlatforms,
+            rsvp: {
+              maxAttendees: formData.maxAttendees,
+              hasMaxAttendees: formData.hasMaxAttendees,
+              reminder24h: formData.reminder24h,
+              reminder1h: formData.reminder1h,
+              reminderLive: formData.reminderLive,
+              calendarOption: formData.calendarOption,
+              requireEmail: formData.requireEmail,
+              visibility: formData.visibility,
+            },
+            monetization: {
+              acceptTips: formData.acceptTips,
+              paymentMethod: formData.paymentMethod,
+              paymentHandle: formData.paymentHandle,
+            },
+          },
+        ],
       };
 
       if (isEditMode && eventId) {

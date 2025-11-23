@@ -72,6 +72,10 @@ const CreatorSettings = () => {
     navigate(-1);
   };
 
+  const handleStepClick = (stepIndex: number) => {
+    setCurrentStep(stepIndex);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       {/* Header */}
@@ -84,7 +88,7 @@ const CreatorSettings = () => {
 
       {/* Stepper */}
       <div className="mb-12">
-        <Stepper steps={STEPS} currentStep={currentStep} />
+        <Stepper steps={STEPS} currentStep={currentStep} onStepClick={handleStepClick} />
       </div>
 
       {/* Step Content */}

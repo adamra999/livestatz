@@ -1,23 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
 import { toast } from "sonner";
 
-export const SecuritySection = () => {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+interface SecuritySectionProps {
+  twoFactorEnabled: boolean;
+  save2FA: (enabled: boolean) => Promise<void>;
+  loading: boolean;
+}
 
+export const SecuritySection = ({
+  twoFactorEnabled,
+  save2FA,
+  loading,
+}: SecuritySectionProps) => {
   const handleChangePassword = () => {
     toast.info("Password change feature coming soon!");
   };
 
-  const handleToggle2FA = () => {
-    setTwoFactorEnabled(!twoFactorEnabled);
-    toast.success(
-      twoFactorEnabled
-        ? "2-Factor Authentication disabled"
-        : "2-Factor Authentication enabled"
-    );
+  const handleToggle2FA = async (checked: boolean) => {
+    await save2FA(checked);
   };
 
   return (
@@ -45,6 +47,7 @@ export const SecuritySection = () => {
               id="2fa"
               checked={twoFactorEnabled}
               onCheckedChange={handleToggle2FA}
+              disabled={loading}
             />
           </div>
         </div>

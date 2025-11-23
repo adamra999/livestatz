@@ -1,39 +1,30 @@
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Instagram, Youtube, Twitch, Facebook } from "lucide-react";
-import { toast } from "sonner";
+import { Instagram, Youtube, Twitch, Facebook, Loader2 } from "lucide-react";
+import type { PlatformConnections } from "../hooks/useCreatorSettings";
 
-interface PlatformData {
-  instagram: string;
-  tiktok: string;
-  youtube: string;
-  youtubePrefix: string;
-  twitch: string;
-  facebook: string;
-  rtmpServer: string;
-  streamKey: string;
+interface ConnectedPlatformsSectionProps {
+  platforms: PlatformConnections;
+  setPlatforms: React.Dispatch<React.SetStateAction<PlatformConnections>>;
+  savePlatforms: (platforms: Partial<PlatformConnections>) => Promise<void>;
+  disconnectPlatform: (platform: keyof PlatformConnections) => Promise<void>;
+  loading: boolean;
 }
 
-export const ConnectedPlatformsSection = () => {
-  const [platforms, setPlatforms] = useState<PlatformData>({
-    instagram: "",
-    tiktok: "",
-    youtube: "",
-    youtubePrefix: "",
-    twitch: "",
-    facebook: "",
-    rtmpServer: "",
-    streamKey: "",
-  });
-
-  const handleSave = (platform: string) => {
-    toast.success(`${platform} settings saved!`);
+export const ConnectedPlatformsSection = ({
+  platforms,
+  setPlatforms,
+  savePlatforms,
+  disconnectPlatform,
+  loading,
+}: ConnectedPlatformsSectionProps) => {
+  const handleSave = async (platform: string, data: Partial<PlatformConnections>) => {
+    await savePlatforms(data);
   };
 
-  const handleDisconnect = (platform: string) => {
-    toast.success(`${platform} disconnected!`);
+  const handleDisconnect = async (platform: keyof PlatformConnections) => {
+    await disconnectPlatform(platform);
   };
 
   return (
@@ -69,8 +60,21 @@ export const ConnectedPlatformsSection = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => handleSave("Instagram")}>Save</Button>
-              <Button size="sm" variant="outline" onClick={() => handleDisconnect("Instagram")}>Disconnect</Button>
+              <Button 
+                size="sm" 
+                onClick={() => handleSave("Instagram", { instagram: platforms.instagram })}
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => handleDisconnect("instagram")}
+                disabled={loading}
+              >
+                Disconnect
+              </Button>
             </div>
           </div>
         </div>
@@ -98,8 +102,21 @@ export const ConnectedPlatformsSection = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => handleSave("TikTok")}>Save</Button>
-              <Button size="sm" variant="outline" onClick={() => handleDisconnect("TikTok")}>Disconnect</Button>
+              <Button 
+                size="sm" 
+                onClick={() => handleSave("TikTok", { tiktok: platforms.tiktok })}
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => handleDisconnect("tiktok")}
+                disabled={loading}
+              >
+                Disconnect
+              </Button>
             </div>
           </div>
         </div>
@@ -137,8 +154,24 @@ export const ConnectedPlatformsSection = () => {
               />
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => handleSave("YouTube")}>Save</Button>
-              <Button size="sm" variant="outline" onClick={() => handleDisconnect("YouTube")}>Disconnect</Button>
+              <Button 
+                size="sm" 
+                onClick={() => handleSave("YouTube", { 
+                  youtube: platforms.youtube,
+                  youtubePrefix: platforms.youtubePrefix 
+                })}
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => handleDisconnect("youtube")}
+                disabled={loading}
+              >
+                Disconnect
+              </Button>
             </div>
           </div>
         </div>
@@ -166,8 +199,21 @@ export const ConnectedPlatformsSection = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => handleSave("Twitch")}>Save</Button>
-              <Button size="sm" variant="outline" onClick={() => handleDisconnect("Twitch")}>Disconnect</Button>
+              <Button 
+                size="sm" 
+                onClick={() => handleSave("Twitch", { twitch: platforms.twitch })}
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => handleDisconnect("twitch")}
+                disabled={loading}
+              >
+                Disconnect
+              </Button>
             </div>
           </div>
         </div>
@@ -195,8 +241,21 @@ export const ConnectedPlatformsSection = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => handleSave("Facebook")}>Save</Button>
-              <Button size="sm" variant="outline" onClick={() => handleDisconnect("Facebook")}>Disconnect</Button>
+              <Button 
+                size="sm" 
+                onClick={() => handleSave("Facebook", { facebook: platforms.facebook })}
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => handleDisconnect("facebook")}
+                disabled={loading}
+              >
+                Disconnect
+              </Button>
             </div>
           </div>
         </div>
@@ -228,7 +287,16 @@ export const ConnectedPlatformsSection = () => {
                 className="mt-2"
               />
             </div>
-            <Button size="sm" onClick={() => handleSave("RTMP")}>Save</Button>
+            <Button 
+              size="sm" 
+              onClick={() => handleSave("RTMP", { 
+                rtmpServer: platforms.rtmpServer,
+                streamKey: platforms.streamKey 
+              })}
+              disabled={loading}
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+            </Button>
           </div>
         </div>
       </div>

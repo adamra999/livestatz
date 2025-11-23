@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -7,9 +6,11 @@ import { ConnectedPlatformsSection } from "./components/ConnectedPlatformsSectio
 import { EventsAutomationSection } from "./components/EventsAutomationSection";
 import { SecuritySection } from "./components/SecuritySection";
 import { DeleteAccountSection } from "./components/DeleteAccountSection";
+import { useCreatorSettings } from "./hooks/useCreatorSettings";
 
 const CreatorSettings = () => {
   const navigate = useNavigate();
+  const creatorSettings = useCreatorSettings();
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -28,17 +29,32 @@ const CreatorSettings = () => {
         <Separator />
 
         {/* Connected Platforms Section */}
-        <ConnectedPlatformsSection />
+        <ConnectedPlatformsSection 
+          platforms={creatorSettings.platforms}
+          setPlatforms={creatorSettings.setPlatforms}
+          savePlatforms={creatorSettings.savePlatforms}
+          disconnectPlatform={creatorSettings.disconnectPlatform}
+          loading={creatorSettings.loading}
+        />
 
         <Separator />
 
         {/* Events & Automation Section */}
-        <EventsAutomationSection />
+        <EventsAutomationSection 
+          settings={creatorSettings.automation}
+          setSettings={creatorSettings.setAutomation}
+          saveSettings={creatorSettings.saveAutomation}
+          loading={creatorSettings.loading}
+        />
 
         <Separator />
 
         {/* Security Section */}
-        <SecuritySection />
+        <SecuritySection 
+          twoFactorEnabled={creatorSettings.twoFactorEnabled}
+          save2FA={creatorSettings.save2FA}
+          loading={creatorSettings.loading}
+        />
 
         <Separator />
 

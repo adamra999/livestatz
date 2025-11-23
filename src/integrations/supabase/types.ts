@@ -61,11 +61,16 @@ export type Database = {
       }
       Events: {
         Row: {
+          acceptTips: boolean | null
           accessDescription: string | null
           attendeeBenefits: Json | null
+          calendarOption: Database["public"]["Enums"]["calendar_option"] | null
+          coverImage: string | null
           createdAt: string
           dateTime: string
           description: string | null
+          duration: string | null
+          hasMaxAttendees: boolean | null
           id: string
           includePerks: boolean | null
           includeReplay: boolean | null
@@ -74,23 +79,37 @@ export type Database = {
           isPaid: boolean | null
           isPublic: boolean | null
           link: string
+          maxAttendees: number | null
           offerWithSubscription: boolean | null
+          paymentHandle: string | null
+          paymentMethod: string | null
           perkDescription: string | null
           platform: string
           price: string | null
+          reminder1h: boolean | null
+          reminder24h: boolean | null
+          reminderLive: boolean | null
+          requireEmail: boolean | null
           selectedFanGroups: Json | null
+          selectedPlatforms: Json | null
           tags: Json | null
           targetAudience: number | null
           title: string
           updatedAt: string
           url: string
+          visibility: Database["public"]["Enums"]["event_visibility"] | null
         }
         Insert: {
+          acceptTips?: boolean | null
           accessDescription?: string | null
           attendeeBenefits?: Json | null
+          calendarOption?: Database["public"]["Enums"]["calendar_option"] | null
+          coverImage?: string | null
           createdAt: string
           dateTime: string
           description?: string | null
+          duration?: string | null
+          hasMaxAttendees?: boolean | null
           id: string
           includePerks?: boolean | null
           includeReplay?: boolean | null
@@ -99,23 +118,37 @@ export type Database = {
           isPaid?: boolean | null
           isPublic?: boolean | null
           link: string
+          maxAttendees?: number | null
           offerWithSubscription?: boolean | null
+          paymentHandle?: string | null
+          paymentMethod?: string | null
           perkDescription?: string | null
           platform: string
           price?: string | null
+          reminder1h?: boolean | null
+          reminder24h?: boolean | null
+          reminderLive?: boolean | null
+          requireEmail?: boolean | null
           selectedFanGroups?: Json | null
+          selectedPlatforms?: Json | null
           tags?: Json | null
           targetAudience?: number | null
           title: string
           updatedAt: string
           url: string
+          visibility?: Database["public"]["Enums"]["event_visibility"] | null
         }
         Update: {
+          acceptTips?: boolean | null
           accessDescription?: string | null
           attendeeBenefits?: Json | null
+          calendarOption?: Database["public"]["Enums"]["calendar_option"] | null
+          coverImage?: string | null
           createdAt?: string
           dateTime?: string
           description?: string | null
+          duration?: string | null
+          hasMaxAttendees?: boolean | null
           id?: string
           includePerks?: boolean | null
           includeReplay?: boolean | null
@@ -124,16 +157,25 @@ export type Database = {
           isPaid?: boolean | null
           isPublic?: boolean | null
           link?: string
+          maxAttendees?: number | null
           offerWithSubscription?: boolean | null
+          paymentHandle?: string | null
+          paymentMethod?: string | null
           perkDescription?: string | null
           platform?: string
           price?: string | null
+          reminder1h?: boolean | null
+          reminder24h?: boolean | null
+          reminderLive?: boolean | null
+          requireEmail?: boolean | null
           selectedFanGroups?: Json | null
+          selectedPlatforms?: Json | null
           tags?: Json | null
           targetAudience?: number | null
           title?: string
           updatedAt?: string
           url?: string
+          visibility?: Database["public"]["Enums"]["event_visibility"] | null
         }
         Relationships: [
           {
@@ -589,7 +631,9 @@ export type Database = {
       is_event_owner: { Args: { event_uuid: string }; Returns: boolean }
     }
     Enums: {
+      calendar_option: "auto" | "ask" | "none"
       enum_users_role: "fan" | "influencer" | "admin"
+      event_visibility: "public" | "followers" | "private"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -717,7 +761,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      calendar_option: ["auto", "ask", "none"],
       enum_users_role: ["fan", "influencer", "admin"],
+      event_visibility: ["public", "followers", "private"],
     },
   },
 } as const

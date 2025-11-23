@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,7 +9,11 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
-export const BasicInfoSection = () => {
+export interface BasicInfoSectionRef {
+  validate: () => boolean;
+}
+
+export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -19,6 +23,38 @@ export const BasicInfoSection = () => {
     avatarUrl: "",
     bio: "",
   });
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      if (data && !error) {
+        setFormData((prev) => ({
+          ...prev,
+          name: data.full_name || "",
+          avatarUrl: data.avatar_url || "",
+        }));
+      }
+    };
+
+    loadProfile();
+  }, [user]);
+
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      if (!formData.name || formData.name.trim() === "") {
+        toast.error("Please enter your name to continue");
+        return false;
+      }
+      return true;
+    },
+  }));
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -52,10 +88,25 @@ export const BasicInfoSection = () => {
 
   const handleSave = async () => {
     if (!user) return;
+    
+    if (!formData.name || formData.name.trim() === "") {
+      toast.error("Name is required");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Save logic here
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: formData.name,
+          avatar_url: formData.avatarUrl,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -158,4 +209,6 @@ export const BasicInfoSection = () => {
       </div>
     </div>
   );
-};
+});
+
+BasicInfoSection.displayName = "BasicInfoSection";

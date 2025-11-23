@@ -52,6 +52,16 @@ export const ReviewSection = ({ formData, onEditStep }: ReviewSectionProps) => {
               <span className="font-medium">{formData.duration}</span>
             </div>
           )}
+          {formData.coverImage && (
+            <div className="mt-3">
+              <span className="text-muted-foreground block mb-2">Cover Image:</span>
+              <img
+                src={formData.coverImage}
+                alt="Event cover"
+                className="rounded-lg border border-border max-h-32 object-cover"
+              />
+            </div>
+          )}
         </div>
       </Card>
 

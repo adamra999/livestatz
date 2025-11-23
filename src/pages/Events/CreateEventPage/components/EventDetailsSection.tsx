@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { Calendar } from "lucide-react";
 import type { EventFormData } from "../types";
 import { forwardRef, useImperativeHandle } from "react";
@@ -118,29 +119,15 @@ export const EventDetailsSection = forwardRef<StepValidationRef, EventDetailsSec
           />
         </div>
 
-        <div>
-          <Label htmlFor="coverImage" className="text-foreground">
-            Cover Image (recommended)
-          </Label>
-          <Input
-            id="coverImage"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                // For now, just store the file name. In a real app, you'd upload to storage
-                onFieldChange("coverImage", file.name);
-              }
-            }}
-            className="mt-2"
-          />
-          {formData.coverImage && (
-            <p className="text-sm text-muted-foreground mt-1">
-              Selected: {formData.coverImage}
-            </p>
-          )}
-        </div>
+        <ImageUpload
+          value={formData.coverImage}
+          onChange={(url) => onFieldChange("coverImage", url)}
+          onRemove={() => onFieldChange("coverImage", "")}
+          label="Cover Image (recommended)"
+          maxSizeMB={5}
+          maxWidth={1920}
+          maxHeight={1080}
+        />
       </div>
     );
   }

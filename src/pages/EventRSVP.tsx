@@ -14,6 +14,8 @@ import { useEvents } from "@/hooks/useEvents";
 import { useFans } from "@/hooks/useFans";
 import { useRsvps } from "@/hooks/useRsvps";
 import { useFanEvents } from "@/hooks/useFanEvents";
+import { useCalendarInvite } from "@/hooks/useCalendarInvite";
+import { CalendarInviteDialog } from "@/components/calendar/CalendarInviteDialog";
 import { z } from "zod";
 
 import {
@@ -98,6 +100,34 @@ export const EventRSVPPage = () => {
   const { createFan, fans, fetchFans,loading: fansLoading } = useFans();
   const { createRsvp, getRsvpByEventAndFan } = useRsvps();
   const { createFanEvent } = useFanEvents();
+
+  // Calendar invite integration
+  const currentFan = fans.find((fan) => fan.user_id === user?.id);
+  const calendarEvent = event ? {
+    title: event.title,
+    description: event.description,
+    location: event.location || event.platform,
+    startTime: new Date(event.dateTime),
+    endTime: event.duration 
+      ? new Date(new Date(event.dateTime).getTime() + parseInt(event.duration) * 60000)
+      : undefined,
+    url: event.link || event.eventUrl,
+    organizer: event.organizer ? {
+      name: event.organizer,
+      email: event.organizerEmail || "events@livestatz.app",
+    } : undefined,
+  } : null;
+
+  const {
+    showDialog: showCalendarDialog,
+    setShowDialog: setShowCalendarDialog,
+    handleCalendarInvite,
+  } = useCalendarInvite({
+    event: calendarEvent!,
+    fanEmail: currentFan?.email,
+    fanName: currentFan?.name,
+    calendarOption: (event as any)?.calendarOption || "ask",
+  });
 
   // Validation schema
   const rsvpSchema = z.object({
@@ -300,6 +330,11 @@ export const EventRSVPPage = () => {
       });
 
       setShowConfirmation(true);
+
+      // Trigger calendar invite based on event settings
+      if (rsvpStatus === "yes" && calendarEvent) {
+        handleCalendarInvite();
+      }
     } catch (error: any) {
       console.error("Error creating RSVP:", error);
       
@@ -476,26 +511,8 @@ export const EventRSVPPage = () => {
     }
   };
   const addToCalendar = () => {
-    if (!event) return;
-
-    const startDate = new Date(event.dateTime);
-    const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000); // 2 hours later
-
-    const formatDate = (date: Date) => {
-      return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    };
-
-    const meetingLink = event.link ? `\n\nMeeting Link: ${event.link}` : '';
-    
-    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      event.title
-    )}&dates=${formatDate(startDate)}/${formatDate(
-      endDate
-    )}&details=${encodeURIComponent(
-      event.description + meetingLink
-    )}&location=${encodeURIComponent(event.location || event.platform)}`;
-
-    window.open(calendarUrl, "_blank");
+    if (!event || !calendarEvent) return;
+    setShowCalendarDialog(true);
   };
 
   if (loading) {
@@ -990,6 +1007,23 @@ export const EventRSVPPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Calendar Invite Dialog */}
+      {calendarEvent && (
+        <CalendarInviteDialog
+          open={showCalendarDialog}
+          onOpenChange={setShowCalendarDialog}
+          event={calendarEvent}
+          fanEmail={currentFan?.email}
+          fanName={currentFan?.name}
+          onConfirm={() => {
+            toast({
+              title: "Calendar event added",
+              description: "The event has been added to your calendar",
+            });
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -6,9 +6,16 @@ interface StepperProps {
   steps: string[];
   currentStep: number;
   className?: string;
+  onStepClick?: (stepIndex: number) => void;
 }
 
-export const Stepper = ({ steps, currentStep, className }: StepperProps) => {
+export const Stepper = ({ steps, currentStep, className, onStepClick }: StepperProps) => {
+  const handleStepClick = (index: number) => {
+    // Only allow clicking on completed steps
+    if (index < currentStep && onStepClick) {
+      onStepClick(index);
+    }
+  };
   return (
     <div className={cn("w-full", className)}>
       <div className="flex items-center justify-between">
@@ -22,10 +29,11 @@ export const Stepper = ({ steps, currentStep, className }: StepperProps) => {
               <div className="flex flex-col items-center flex-1">
                 {/* Step Circle */}
                 <div
+                  onClick={() => handleStepClick(index)}
                   className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300",
                     isCompleted &&
-                      "bg-primary text-primary-foreground shadow-[var(--shadow-creator)]",
+                      "bg-primary text-primary-foreground shadow-[var(--shadow-creator)] cursor-pointer hover:scale-110",
                     isCurrent &&
                       "bg-primary text-primary-foreground ring-4 ring-primary/20 shadow-[var(--shadow-creator)]",
                     isUpcoming && "bg-muted text-muted-foreground"

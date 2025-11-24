@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2, Settings } from "lucide-react";
 import { useProfileSettings } from "./useProfileSettings";
@@ -7,6 +7,8 @@ import { ProfileForm } from "./components/ProfileForm";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromRSVP = location.state?.fromRSVP;
   const {
     profile,
     loading,
@@ -23,28 +25,30 @@ const Profile = () => {
         <h1 className="text-3xl font-bold mb-8">Profile Settings</h1>
 
         <div className="space-y-6">
-          {/* Creator Settings Link */}
-          <div className="bg-gradient-primary rounded-lg p-6 border border-primary/20 shadow-creator">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Settings className="h-6 w-6 text-primary-foreground" />
-                <div>
-                  <h3 className="text-lg font-semibold text-primary-foreground">
-                    Creator Settings
-                  </h3>
-                  <p className="text-sm text-primary-foreground/90">
-                    Manage platforms, automation & security
-                  </p>
+          {/* Creator Settings Link - Hidden when coming from RSVP page */}
+          {!fromRSVP && (
+            <div className="bg-gradient-primary rounded-lg p-6 border border-primary/20 shadow-creator">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Settings className="h-6 w-6 text-primary-foreground" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary-foreground">
+                      Creator Settings
+                    </h3>
+                    <p className="text-sm text-primary-foreground/90">
+                      Manage platforms, automation & security
+                    </p>
+                  </div>
                 </div>
+                <Button
+                  variant="secondary"
+                  onClick={() => navigate("/profile/creator-settings")}
+                >
+                  Open Settings
+                </Button>
               </div>
-              <Button
-                variant="secondary"
-                onClick={() => navigate("/profile/creator-settings")}
-              >
-                Open Settings
-              </Button>
             </div>
-          </div>
+          )}
 
           <div className="bg-card rounded-lg p-6 border">
             <h2 className="text-xl font-semibold mb-4">Account Information</h2>

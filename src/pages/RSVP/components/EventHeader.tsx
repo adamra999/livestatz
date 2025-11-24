@@ -110,7 +110,7 @@ export const EventHeader = ({ event }: EventHeaderProps) => {
                 <DropdownMenuContent align="end" className="w-56 bg-popover">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <DropdownMenuItem onClick={() => navigate("/profile", { state: { fromRSVP: true } })}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>

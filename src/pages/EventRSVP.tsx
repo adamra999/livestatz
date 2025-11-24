@@ -145,7 +145,16 @@ export const EventRSVPPage = () => {
       if (eventId) {
         setLoading(true);
         const eventData = await fetchEventById(eventId);
-        setEvent({ ...mockEvents, ...eventData });
+        if (eventData) {
+          // Merge mock data for missing fields, but preserve creator info from DB
+          setEvent({ 
+            ...mockEvents[eventId as keyof typeof mockEvents], 
+            ...eventData,
+            // Ensure creator info from DB is preserved
+            creatorHandle: eventData.creatorHandle,
+            creatorName: eventData.creatorName,
+          });
+        }
         setLoading(false);
       }
     };

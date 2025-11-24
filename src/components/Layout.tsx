@@ -76,6 +76,15 @@ const Layout = ({ children }: LayoutProps) => {
     return username || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
   };
 
+  // If user is not authenticated, show simplified layout without navigation
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        {children}
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -110,34 +119,32 @@ const Layout = ({ children }: LayoutProps) => {
                 </TooltipProvider>
               )}
               
-              {user && (
-                <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 text-white hover:bg-white/10 hover:text-white">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={avatarUrl || undefined} />
-                      <AvatarFallback className="bg-white/20 text-white">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="hidden md:inline-block">{getUserDisplayName()}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-popover">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate("/profile")}>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Sign out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+              <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 text-white hover:bg-white/10 hover:text-white">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={avatarUrl || undefined} />
+                    <AvatarFallback className="bg-white/20 text-white">
+                      {getUserInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden md:inline-block">{getUserDisplayName()}</span>
+                </Button>
+              </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-popover">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </header>
           <div className="p-4">

@@ -36,6 +36,7 @@ const Layout = ({ children }: LayoutProps) => {
   
   const showBackButton = ['/events', '/calendar', '/analytics'].includes(location.pathname);
   const isEventRSVPPage = location.pathname.startsWith('/e/');
+  const isProfileFromRSVP = location.pathname === '/profile' && location.state?.fromRSVP;
 
   useEffect(() => {
     if (user) {
@@ -76,8 +77,8 @@ const Layout = ({ children }: LayoutProps) => {
     return username || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
   };
 
-  // If user is not authenticated or on RSVP page, show simplified layout without navigation
-  if (!user || isEventRSVPPage) {
+  // If user is not authenticated or on RSVP page or profile from RSVP, show simplified layout without navigation
+  if (!user || isEventRSVPPage || isProfileFromRSVP) {
     return (
       <div className="min-h-screen flex flex-col">
         {children}

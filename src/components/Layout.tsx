@@ -76,8 +76,8 @@ const Layout = ({ children }: LayoutProps) => {
     return username || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
   };
 
-  // If user is not authenticated, show simplified layout without navigation
-  if (!user) {
+  // If user is not authenticated or on RSVP page, show simplified layout without navigation
+  if (!user || isEventRSVPPage) {
     return (
       <div className="min-h-screen flex flex-col">
         {children}

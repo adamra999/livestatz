@@ -31,6 +31,8 @@ export interface Event {
     name: string;
     email: string;
   };
+  creatorHandle?: string;
+  creatorName?: string;
 }
 
 export function useEvents() {
@@ -73,9 +75,32 @@ export function useEvents() {
         .eq("id", id)
         .maybeSingle();
 
-      if (error) setError(error.message);
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return null;
+      }
+
+      // Fetch creator profile info (username/handle) if influencer exists
+      let eventWithCreator = data as Event | null;
+      if (data && data.Influencers?.email) {
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("username, full_name")
+          .eq("email", data.Influencers.email)
+          .maybeSingle();
+
+        if (profileData) {
+          eventWithCreator = {
+            ...data,
+            creatorHandle: profileData.username || undefined,
+            creatorName: profileData.full_name || data.Influencers.name,
+          } as Event;
+        }
+      }
+
       setLoading(false);
-      return data as Event | null;
+      return eventWithCreator;
     },
     []
   );

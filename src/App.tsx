@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
-import { EventRSVPPage } from "./pages/EventRSVP";
+import { EventRSVPPage } from "./pages/RSVP";
 import EventDetail from "./pages/EventDetail";
 import LinkBioBuilder from "./pages/LinkBioBuilder";
 import BioPage from "./pages/BioPage";

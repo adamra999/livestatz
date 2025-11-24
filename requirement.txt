@@ -13,6 +13,8 @@ https://claude.ai/chat/9a69dfc8-b7fe-4be6-9b0a-0b2bc9f0decf?artifactId=remixed-3
 Database :
 https://supabase.com/dashboard/project/rwtjswrlbxcjjzfhjusr
 
+secret key for calender integration : re_7Me5t8dF_GasTUPtU2DmuAmjs4eopoCsU
+https://resend.com/domains/52ce32ec-695e-4882-83f5-f2af87358113
 
 Google SSO Integration
 Client ID : 992148870695-jecfdfd7p1jvnnh2rcnas32cmad5t79u.apps.googleusercontent.com
@@ -372,3 +374,6 @@ END OF FLOW
 -------------------------------------------------
 
 
+
+
+https://livestatz.com/e/119e424f-0603-4184-a0c5-37943c08c928

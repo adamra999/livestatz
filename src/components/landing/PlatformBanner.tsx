@@ -2,7 +2,7 @@ import instagramLogo from "@/assets/platform-logos/instagram.png";
 import youtubeLogo from "@/assets/platform-logos/youtube.png";
 import tiktokLogo from "@/assets/platform-logos/tiktok.svg";
 import twitchLogo from "@/assets/platform-logos/twitch.png";
-import zoomLogo from "@/assets/platform-logos/zoom.png";
+import zoomLogo from "@/assets/platform-logos/zoom.jpg";
 
 export const PlatformBanner = () => {
   const platforms = [

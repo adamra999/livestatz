@@ -2,11 +2,11 @@ import { Video, Youtube, Music2, Tv, MonitorPlay } from "lucide-react";
 
 export const PlatformBanner = () => {
   const platforms = [
-    { name: "Instagram", logo: "/platform-logos/instagram.png" },
-    { name: "YouTube", logo: "/platform-logos/youtube.png" },
-    { name: "TikTok", logo: "/platform-logos/tiktok.png" },
-    { name: "Twitch", logo: "/platform-logos/twitch.png" },
-    { name: "Zoom", logo: "/platform-logos/zoom.png" },
+    { name: "Instagram", logo: "platform-logos/instagram.png" },
+    { name: "YouTube", logo: "platform-logos/youtube.png" },
+    { name: "TikTok", logo: "platform-logos/tiktok.png" },
+    { name: "Twitch", logo: "platform-logos/twitch.png" },
+    { name: "Zoom", logo: "platform-logos/zoom.png" },
   ];
 
   return (

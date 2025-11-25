@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 import { HeroSection } from "@/components/landing/HeroSection";
+import { PlatformBanner } from "@/components/landing/PlatformBanner";
 import { ProblemSection } from "@/components/landing/ProblemSection";
 import { ValuePropositionSection } from "@/components/landing/ValuePropositionSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
@@ -44,6 +45,7 @@ const Index = () => {
           setProfile(user);
         }}
       />
+      <PlatformBanner />
       <ProblemSection />
       <ValuePropositionSection />
       <HowItWorksSection />

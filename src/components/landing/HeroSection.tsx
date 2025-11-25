@@ -20,7 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useProfile, Profile } from "@/hooks/useProfile";
 import { v4 as uuidv4 } from "uuid";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import LiveStatzLogo from "@/assets/livestatz-logo.svg";
+import LiveStatzLogo from "@/assets/livestatz-logo-new.png";
 
 interface HeroSectionProps {
   onGetStarted: (profile: Profile) => void;

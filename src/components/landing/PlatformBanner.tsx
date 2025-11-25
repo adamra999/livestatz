@@ -29,7 +29,7 @@ export const PlatformBanner = () => {
               <img
                 src={platform.logo}
                 alt={`${platform.name} logo`}
-                className="h-16 w-24 object-contain"
+                className={platform.name === "TikTok" ? "h-24 w-36 object-contain" : "h-16 w-24 object-contain"}
               />
             </div>
           ))}

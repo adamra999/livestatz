@@ -1,12 +1,16 @@
-import { Video, Youtube, Music2, Tv, MonitorPlay } from "lucide-react";
+import instagramLogo from "@/assets/platform-logos/instagram.png";
+import youtubeLogo from "@/assets/platform-logos/youtube.png";
+import tiktokLogo from "@/assets/platform-logos/tiktok.png";
+import twitchLogo from "@/assets/platform-logos/twitch.png";
+import zoomLogo from "@/assets/platform-logos/zoom.png";
 
 export const PlatformBanner = () => {
   const platforms = [
-    { name: "Instagram", logo: "platform-logos/instagram.png" },
-    { name: "YouTube", logo: "platform-logos/youtube.png" },
-    { name: "TikTok", logo: "platform-logos/tiktok.png" },
-    { name: "Twitch", logo: "platform-logos/twitch.png" },
-    { name: "Zoom", logo: "platform-logos/zoom.png" },
+    { name: "Instagram", logo: instagramLogo },
+    { name: "YouTube", logo: youtubeLogo },
+    { name: "TikTok", logo: tiktokLogo },
+    { name: "Twitch", logo: twitchLogo },
+    { name: "Zoom", logo: zoomLogo },
   ];
 
   return (
@@ -25,7 +29,7 @@ export const PlatformBanner = () => {
               <img
                 src={platform.logo}
                 alt={`${platform.name} logo`}
-                className="h-16 w-16 object-contain"
+                className="h-16 w-24 object-contain"
               />
             </div>
           ))}

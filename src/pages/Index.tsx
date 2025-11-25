@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { HeroSection } from "@/components/landing/HeroSection";
 import { ProblemSection } from "@/components/landing/ProblemSection";
+import { ValuePropositionSection } from "@/components/landing/ValuePropositionSection";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { StatsSection } from "@/components/landing/StatsSection";
 import { CalendarView } from "@/components/calendar/CalendarView";
@@ -42,6 +43,7 @@ const Index = () => {
         }}
       />
       <ProblemSection />
+      <ValuePropositionSection />
       <div id="features">
         <FeatureGrid />
       </div>

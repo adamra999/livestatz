@@ -48,7 +48,7 @@ export const ProblemSection = () => {
             Creators lose <span className="font-bold text-primary">60–80%</span> of
             potential viewers simply because their fans don't know when they're
             going live.{" "}
-            <span className="font-bold text-foreground">Livestatz fixes that.</span>
+            <span className="font-bold text-foreground">LiveStatz fixes that.</span>
           </p>
         </div>
       </div>

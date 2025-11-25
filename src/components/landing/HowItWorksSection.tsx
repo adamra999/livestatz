@@ -43,7 +43,7 @@ export const HowItWorksSection = () => {
     <section className="py-24 px-6 bg-muted/30">
       <div className="container mx-auto max-w-5xl">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-foreground">
-          How Livestatz Works
+          How LiveStatz Works
         </h2>
 
         <div className="space-y-8">

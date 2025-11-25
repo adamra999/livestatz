@@ -102,7 +102,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             <img
               src={LiveStatzLogo}
               alt="LiveStatz logo — Social events for influencers"
-              className="h-64 w-auto mx-auto mb-8"
+              className="h-80 w-auto mx-auto mb-8"
             />
           </div>
 

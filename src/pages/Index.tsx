@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 import { HeroSection } from "@/components/landing/HeroSection";
+import { ProblemSection } from "@/components/landing/ProblemSection";
 import { FeatureGrid } from "@/components/landing/FeatureGrid";
 import { StatsSection } from "@/components/landing/StatsSection";
 import { CalendarView } from "@/components/calendar/CalendarView";
@@ -40,6 +41,7 @@ const Index = () => {
           setProfile(user);
         }}
       />
+      <ProblemSection />
       <div id="features">
         <FeatureGrid />
       </div>

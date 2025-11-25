@@ -40,7 +40,9 @@ const Index = () => {
           setProfile(user);
         }}
       />
-      <FeatureGrid />
+      <div id="features">
+        <FeatureGrid />
+      </div>
       <StatsSection />
 
       {/* Simple CTA Section */}

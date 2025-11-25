@@ -112,12 +112,15 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-foreground">
-            One platform{" "}
+            Turn Your Followers Into{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              for all your events
-            </span>{" "}
-            - meetups, drops, collabs, and livestreams.
+              Attendees
+            </span>
           </h1>
+
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            The easiest way to collect RSVPs, send reminders, and understand what your audience wants.
+          </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <Button
@@ -125,12 +128,22 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
               className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 py-4 h-auto font-medium shadow-creator"
               onClick={StartBuildingCommunity}
             >
-              Start Building Your Community
+              Get Early Access
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-base px-8 py-4 h-auto font-medium"
+              onClick={() => {
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              See How It Works
             </Button>
           </div>
 
           <div className="text-sm text-muted-foreground mb-12">
-            No credit card required
+            No complex setup. Works with Instagram, YouTube, Zoom, TikTok and more.
           </div>
 
           {/* App Preview */}

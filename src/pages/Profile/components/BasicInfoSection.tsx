@@ -32,15 +32,17 @@ export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => 
     isLoadingRef.current = true;
     const { data, error } = await supabase
       .from("profiles")
-      .select("full_name, avatar_url")
+      .select("full_name, avatar_url, metadata")
       .eq("id", user.id)
       .single();
 
     if (data && !error) {
+      const metadata = data.metadata as any;
       setFormData((prev) => ({
         ...prev,
         name: data.full_name || "",
         avatarUrl: data.avatar_url || "",
+        bio: metadata?.bio || "",
       }));
     }
     loadedUserIdRef.current = user.id;
@@ -105,6 +107,15 @@ export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => 
     setLoading(true);
 
     try {
+      // First fetch existing metadata to preserve other fields
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("metadata")
+        .eq("id", user.id)
+        .single();
+
+      const existingMetadata = (existingProfile?.metadata as any) || {};
+
       const { error } = await supabase
         .from("profiles")
         .upsert({
@@ -112,6 +123,10 @@ export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => 
           full_name: formData.name,
           avatar_url: formData.avatarUrl,
           email: user.email,
+          metadata: {
+            ...existingMetadata,
+            bio: formData.bio,
+          },
         }, {
           onConflict: 'id'
         });

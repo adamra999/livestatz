@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -73,11 +73,14 @@ export const useCreatorSettings = () => {
   const [platforms, setPlatforms] = useState<PlatformConnections>(defaultPlatforms);
   const [automation, setAutomation] = useState<AutomationSettings>(defaultAutomation);
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const isLoadingRef = useRef(false);
+  const loadedUserIdRef = useRef<string | null>(null);
 
   // Load creator settings from profile metadata
   const loadSettings = useCallback(async () => {
-    if (!user) return;
+    if (!user?.id || isLoadingRef.current || loadedUserIdRef.current === user.id) return;
 
+    isLoadingRef.current = true;
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -105,16 +108,20 @@ export const useCreatorSettings = () => {
           setTwoFactorEnabled(metadata.twoFactorEnabled);
         }
       }
+      loadedUserIdRef.current = user.id;
     } catch (error) {
       console.error("Error loading creator settings:", error);
+    } finally {
+      isLoadingRef.current = false;
     }
-  }, [user]);
+  }, [user?.id]); // Only depend on user.id to prevent unnecessary recreations
 
   useEffect(() => {
-    if (user) {
+    if (user?.id && loadedUserIdRef.current !== user.id) {
       loadSettings();
     }
-  }, [user, loadSettings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]); // Only depend on user.id to prevent multiple calls
 
   // Save platforms
   const savePlatforms = useCallback(

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,14 +26,8 @@ export const EventHeader = ({ event }: EventHeaderProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      loadProfileAvatar();
-    }
-  }, [user]);
-
-  const loadProfileAvatar = async () => {
-    if (!user) return;
+  const loadProfileAvatar = useCallback(async () => {
+    if (!user?.id) return;
 
     const { data } = await supabase
       .from("profiles")
@@ -48,7 +42,13 @@ export const EventHeader = ({ event }: EventHeaderProps) => {
       setAvatarUrl(user.user_metadata?.avatar_url || null);
       setUsername(null);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadProfileAvatar();
+    }
+  }, [user?.id, loadProfileAvatar]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

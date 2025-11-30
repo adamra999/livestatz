@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState, useEffect, useCallback } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import livestatzLogo from "@/assets/livestatz-logo.svg";
@@ -38,14 +38,8 @@ const Layout = ({ children }: LayoutProps) => {
   const isEventRSVPPage = location.pathname.startsWith('/e/');
   const isProfileFromRSVP = location.pathname === '/profile' && location.state?.fromRSVP;
 
-  useEffect(() => {
-    if (user) {
-      loadProfileAvatar();
-    }
-  }, [user]);
-
-  const loadProfileAvatar = async () => {
-    if (!user) return;
+  const loadProfileAvatar = useCallback(async () => {
+    if (!user?.id) return;
 
     const { data } = await supabase
       .from("profiles")
@@ -60,7 +54,13 @@ const Layout = ({ children }: LayoutProps) => {
       setAvatarUrl(user.user_metadata?.avatar_url || null);
       setUsername(null);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadProfileAvatar();
+    }
+  }, [user?.id, loadProfileAvatar]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { useEventForm } from "./hooks/useEventForm";
 import { EventDetailsSection, StepValidationRef } from "./components/EventDetailsSection";
 import { PlatformsSection } from "./components/PlatformsSection";
@@ -7,10 +7,17 @@ import { RSVPSection } from "./components/RSVPSection";
 import { MonetizationSection } from "./components/MonetizationSection";
 import { ReviewSection } from "./components/ReviewSection";
 import { Stepper } from "@/components/ui/stepper";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { CreateEventPageProps } from "./types";
 import { useState, useRef } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useCreatorSettings } from "@/pages/Profile/hooks/useCreatorSettings";
+import { generateSampleEventData, SAMPLE_EVENTS } from "./utils/sampleData";
 
 const STEPS = [
   "Event Details",
@@ -36,6 +43,7 @@ export default function CreateEventPage({
     updateFormField,
     handleCreateEvent,
     handleCancel,
+    loadSampleData,
   } = useEventForm(embedded, onSuccess, onClose);
 
   const { platforms: creatorPlatforms } = useCreatorSettings();
@@ -112,9 +120,38 @@ export default function CreateEventPage({
           embedded ? "" : "sticky top-0 z-10"
         }`}
       >
-        <h1 className="text-xl font-semibold text-center mb-4">
-          {isEditMode ? "Edit Event" : "Create New Event"}
-        </h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-semibold">
+            {isEditMode ? "Edit Event" : "Create New Event"}
+          </h1>
+          {!isEditMode && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Load Sample Data
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => loadSampleData(SAMPLE_EVENTS.default())}>
+                  Default Event
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => loadSampleData(SAMPLE_EVENTS.free())}>
+                  Free Community Event
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => loadSampleData(SAMPLE_EVENTS.paid())}>
+                  Paid Masterclass
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => loadSampleData(SAMPLE_EVENTS.private())}>
+                  Private VIP Event
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => loadSampleData(SAMPLE_EVENTS.multiPlatform())}>
+                  Multi-Platform Event
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
         <Stepper
           steps={STEPS}
           currentStep={currentStep}

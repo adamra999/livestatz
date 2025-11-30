@@ -266,6 +266,14 @@ export const useEventForm = (embedded = false, onSuccess?: (event: any) => void,
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
+  const loadSampleData = useCallback((sampleData: EventFormData) => {
+    setFormData(sampleData);
+    toast({
+      title: "Sample data loaded",
+      description: "Form has been populated with sample data. You can edit any fields as needed.",
+    });
+  }, [toast]);
+
   return {
     formData,
     isCreating,
@@ -276,6 +284,7 @@ export const useEventForm = (embedded = false, onSuccess?: (event: any) => void,
     validateUrl,
     handleCreateEvent,
     handleCancel,
+    loadSampleData,
   };
 };
 

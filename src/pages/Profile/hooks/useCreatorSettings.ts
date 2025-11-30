@@ -127,15 +127,18 @@ export const useCreatorSettings = () => {
         
         const { error } = await supabase
           .from("profiles")
-          .update({
+          .upsert({
+            id: user.id,
+            email: user.email,
             metadata: {
               platforms: newPlatforms,
               automation,
               twoFactorEnabled,
             } as any,
             updated_at: new Date().toISOString(),
-          })
-          .eq("id", user.id);
+          }, {
+            onConflict: 'id'
+          });
 
         if (error) throw error;
 
@@ -162,15 +165,18 @@ export const useCreatorSettings = () => {
         
         const { error } = await supabase
           .from("profiles")
-          .update({
+          .upsert({
+            id: user.id,
+            email: user.email,
             metadata: {
               platforms,
               automation: newAutomation,
               twoFactorEnabled,
             } as any,
             updated_at: new Date().toISOString(),
-          })
-          .eq("id", user.id);
+          }, {
+            onConflict: 'id'
+          });
 
         if (error) throw error;
 
@@ -195,15 +201,18 @@ export const useCreatorSettings = () => {
       try {
         const { error } = await supabase
           .from("profiles")
-          .update({
+          .upsert({
+            id: user.id,
+            email: user.email,
             metadata: {
               platforms,
               automation,
               twoFactorEnabled: enabled,
             } as any,
             updated_at: new Date().toISOString(),
-          })
-          .eq("id", user.id);
+          }, {
+            onConflict: 'id'
+          });
 
         if (error) throw error;
 

@@ -148,7 +148,7 @@ const Layout = ({ children }: LayoutProps) => {
               </DropdownMenu>
             </div>
           </header>
-          <div className="p-4">
+          <div className="px-6 py-4">
             {children}
           </div>
         </main>

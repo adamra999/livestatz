@@ -11,7 +11,16 @@ interface EventDetailsCardProps {
 
 export const EventDetailsCard = ({ event }: EventDetailsCardProps) => {
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 overflow-hidden">
+      {event.coverImage && (
+        <div className="w-full h-64 overflow-hidden">
+          <img
+            src={event.coverImage}
+            alt={event.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
       <CardHeader>
         <div className="space-y-4">
           <div>

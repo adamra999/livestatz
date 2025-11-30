@@ -132,12 +132,22 @@ export const useCreatorSettings = () => {
       try {
         const newPlatforms = { ...platforms, ...updatedPlatforms };
         
+        // Fetch existing metadata to preserve other fields like bio
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("metadata")
+          .eq("id", user.id)
+          .single();
+
+        const existingMetadata = (existingProfile?.metadata as any) || {};
+        
         const { error } = await supabase
           .from("profiles")
           .upsert({
             id: user.id,
             email: user.email,
             metadata: {
+              ...existingMetadata,
               platforms: newPlatforms,
               automation,
               twoFactorEnabled,
@@ -170,12 +180,22 @@ export const useCreatorSettings = () => {
       try {
         const newAutomation = { ...automation, ...updatedAutomation };
         
+        // Fetch existing metadata to preserve other fields like bio
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("metadata")
+          .eq("id", user.id)
+          .single();
+
+        const existingMetadata = (existingProfile?.metadata as any) || {};
+        
         const { error } = await supabase
           .from("profiles")
           .upsert({
             id: user.id,
             email: user.email,
             metadata: {
+              ...existingMetadata,
               platforms,
               automation: newAutomation,
               twoFactorEnabled,
@@ -206,12 +226,22 @@ export const useCreatorSettings = () => {
 
       setLoading(true);
       try {
+        // Fetch existing metadata to preserve other fields like bio
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("metadata")
+          .eq("id", user.id)
+          .single();
+
+        const existingMetadata = (existingProfile?.metadata as any) || {};
+        
         const { error } = await supabase
           .from("profiles")
           .upsert({
             id: user.id,
             email: user.email,
             metadata: {
+              ...existingMetadata,
               platforms,
               automation,
               twoFactorEnabled: enabled,

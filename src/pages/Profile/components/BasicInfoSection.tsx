@@ -99,11 +99,14 @@ export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => 
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({
+        .upsert({
+          id: user.id,
           full_name: formData.name,
           avatar_url: formData.avatarUrl,
-        })
-        .eq("id", user.id);
+          email: user.email,
+        }, {
+          onConflict: 'id'
+        });
 
       if (error) throw error;
 

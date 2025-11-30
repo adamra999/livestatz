@@ -8,7 +8,7 @@ import { EventsAutomationSection } from "./components/EventsAutomationSection";
 import { SecuritySection } from "./components/SecuritySection";
 import { DeleteAccountSection } from "./components/DeleteAccountSection";
 import { useCreatorSettings } from "./hooks/useCreatorSettings";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { toast } from "sonner";
 
 const STEPS = [
@@ -79,11 +79,21 @@ const CreatorSettings = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Profile Settings</h1>
-        <p className="text-muted-foreground">
-          Complete your profile setup by following these steps.
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Profile Settings</h1>
+          <p className="text-muted-foreground">
+            Complete your profile setup by following these steps.
+          </p>
+        </div>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => navigate(-1)}
+          className="shrink-0"
+        >
+          <X className="h-5 w-5" />
+        </Button>
       </div>
 
       {/* Stepper */}

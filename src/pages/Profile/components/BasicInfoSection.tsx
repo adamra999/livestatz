@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, forwardRef, useEffect } from "react";
+import { useState, useImperativeHandle, forwardRef, useEffect, useCallback, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +17,8 @@ export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => 
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const isLoadingRef = useRef(false);
+  const loadedUserIdRef = useRef<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: user?.email || "",
@@ -24,27 +26,33 @@ export const BasicInfoSection = forwardRef<BasicInfoSectionRef>((props, ref) => 
     bio: "",
   });
 
+  const loadProfile = useCallback(async () => {
+    if (!user?.id || isLoadingRef.current || loadedUserIdRef.current === user.id) return;
+
+    isLoadingRef.current = true;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url")
+      .eq("id", user.id)
+      .single();
+
+    if (data && !error) {
+      setFormData((prev) => ({
+        ...prev,
+        name: data.full_name || "",
+        avatarUrl: data.avatar_url || "",
+      }));
+    }
+    loadedUserIdRef.current = user.id;
+    isLoadingRef.current = false;
+  }, [user?.id]);
+
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("full_name, avatar_url")
-        .eq("id", user.id)
-        .single();
-
-      if (data && !error) {
-        setFormData((prev) => ({
-          ...prev,
-          name: data.full_name || "",
-          avatarUrl: data.avatar_url || "",
-        }));
-      }
-    };
-
-    loadProfile();
-  }, [user]);
+    if (user?.id && loadedUserIdRef.current !== user.id) {
+      loadProfile();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   useImperativeHandle(ref, () => ({
     validate: () => {

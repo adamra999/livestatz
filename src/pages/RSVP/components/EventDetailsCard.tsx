@@ -13,7 +13,7 @@ export const EventDetailsCard = ({ event }: EventDetailsCardProps) => {
   return (
     <Card className="mb-8 overflow-hidden">
       {event.coverImage && (
-        <div className="w-full h-64 overflow-hidden">
+        <div className="w-full h-48 sm:h-56 md:h-72 lg:h-80 overflow-hidden">
           <img
             src={event.coverImage}
             alt={event.title}

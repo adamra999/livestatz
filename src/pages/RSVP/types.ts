@@ -21,6 +21,7 @@ export interface EventData {
   eventUrl?: string;
   duration?: string;
   calendarOption?: "auto" | "ask" | "none";
+  coverImage?: string;
 }
 
 export interface CalendarEvent {
